@@ -1,4 +1,7 @@
-https://gist.github.com/kannankumar/4c613cac6d9db896062a16e1cc57d3e5
+
+![brainyTransparent](https://user-images.githubusercontent.com/66754038/210727741-989a9ddb-43d2-43a3-afd0-e329b03e4511.png)
+
+
 <p align="center">
 <h1 align="center">Second-Brain</h1>
 </p>
