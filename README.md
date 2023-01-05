@@ -1,4 +1,5 @@
-![logoTransparent](https://user-images.githubusercontent.com/66754038/210720200-fb25f5b7-dc9b-46ef-94b7-d2018e40a991.png)
+
+![brainyTransparent](https://user-images.githubusercontent.com/66754038/210724793-8dde6b6a-b840-444a-8ddb-d9e4368ed3e1.png)
 
 
 # Second-Brain
