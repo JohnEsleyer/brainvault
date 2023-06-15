@@ -1,5 +1,4 @@
 
-![brainyTransparent](https://user-images.githubusercontent.com/66754038/210727741-989a9ddb-43d2-43a3-afd0-e329b03e4511.png)
 
 
 <p align="center">
