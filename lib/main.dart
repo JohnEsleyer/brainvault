@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:secondbrain/screens/main_screen.dart';
+import 'package:secondbrain/screens/storage_edit.dart';
 
 void main() {
   runApp(
@@ -7,7 +8,7 @@ void main() {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       routes: {
-        '/': (context) => SecondBrainApp(),
+        '/': (context) => StorageEdit(),
       },
     ),
   );
