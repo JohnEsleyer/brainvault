@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:secondbrain/screens/database_selector.dart';
 import 'package:secondbrain/screens/main_screen.dart';
 import 'package:secondbrain/screens/storage_edit.dart';
 
@@ -8,7 +9,8 @@ void main() {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       routes: {
-        '/': (context) => StorageEdit(),
+        '/': (context) => DatabaseSelector(),
+        '/selector': (context) => DatabaseSelector(),
       },
     ),
   );
