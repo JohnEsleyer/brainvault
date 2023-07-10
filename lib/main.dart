@@ -43,34 +43,7 @@ class _TempState extends State<Temp>{
   String inputString = '# Hello';
 
   @override
-  Widget build(BuildContext context) {
-    
-    return Column(
-      children: [
-        Container(
-          height: 100,
-          child: TextField(
-            expands: true,
-            minLines: null,
-            maxLines: null,
-            onChanged: (String data){
-              setState(() {
-                inputString = data;
-              });
-            },
-          ),
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height * 0.70,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: MarkdownWidget(
-              data: inputString,
-              styleConfig: StyleConfig(markdownTheme: MarkdownTheme.darkTheme),
-            ),
-          ),
-        ),
-      ],
-    );
+  Widget build(BuildContext context){
+    return Image.network('https://images7.alphacoders.com/131/1316242.jpg');
   }
 }

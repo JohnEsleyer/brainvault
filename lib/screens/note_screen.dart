@@ -21,9 +21,6 @@ class _NoteScreenState extends State<NoteScreen> {
   // flag for image mode
   bool imageMode = false;
 
-  // Image URL used during image
-  String imageUrl = '';
-
   var codeTheme = {
     'root': TextStyle(
         backgroundColor: Color.fromARGB(237, 34, 34, 34),
@@ -62,7 +59,12 @@ class _NoteScreenState extends State<NoteScreen> {
     'deletion': TextStyle(color: Color(0xff7f7f7f)),
     'meta': TextStyle(color: Color(0xff7f7f7f)),
   };
-  var items = ['Markdown', 'HTML', 'Code', 'Image'];
+  var items = [
+    'Markdown',
+    'HTML',
+    'Code',
+    'Image',
+  ];
 
   Widget displayNote() {
     if (dropdownValue == 'HTML') {
@@ -72,7 +74,6 @@ class _NoteScreenState extends State<NoteScreen> {
     } else if (dropdownValue == 'Markdown') {
       return TexMarkdown(
         inputString,
-        
       );
     } else if (dropdownValue == 'Code') {
       return HighlightView(
@@ -81,10 +82,9 @@ class _NoteScreenState extends State<NoteScreen> {
         theme: codeTheme,
       );
     } else if (dropdownValue == 'Image') {
-      setState(() {
-        imageMode = true;
-      });
-      return Image.network(imageUrl);
+      return Expanded(
+        child: Image.network(inputString),
+      );
     }
 
     return Container();
@@ -118,6 +118,11 @@ class _NoteScreenState extends State<NoteScreen> {
                           onChanged: (String? newValue) {
                             setState(() {
                               dropdownValue = newValue!;
+                              if (dropdownValue == 'Image') {
+                                imageMode = true;
+                              } else {
+                                imageMode = false;
+                              }
                             });
                             Scaffold.of(context).build(context);
                           }),
@@ -153,15 +158,27 @@ class _NoteScreenState extends State<NoteScreen> {
                       height: MediaQuery.of(context).size.height - 40,
                       child: Center(
                         child: TextField(
-                          onChanged: (String value) {
-                            setState(() {
-                              imageUrl = value;
-                            });
-                          },
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Enter Image URL',
+                            hintText: 'Enter image URL',
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
                           ),
+                          expands: false,
+                          minLines: 1,
+                          onChanged: (String value) {
+                            if (value != '') {
+                              setState(() {
+                                isEmpty = false;
+
+                                inputString = value;
+                              });
+                            } else {
+                              setState(() {
+                                isEmpty = true;
+                              });
+                            }
+                          },
                         ),
                       ),
                     ),
