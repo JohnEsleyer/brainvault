@@ -67,7 +67,7 @@ class _NoteScreenState extends State<NoteScreen> {
     'Markdown',
     'HTML',
     'Code',
-    'Image',
+    'Image + Markdown',
   ];
 
   Widget displayNote() {
@@ -93,14 +93,21 @@ class _NoteScreenState extends State<NoteScreen> {
       );
     }
      // If user selected 'Image' option
-    else if (dropdownValue == 'Image') {
+    else if (dropdownValue == 'Image + Markdown') {
 
       // Check if Input String is URL or not
       if (isUrl(imageUrl)){
         return Expanded(
-        child: Image.network(imageUrl, errorBuilder: (context, error, stackTrace) {
-          return Text("Invalid URL");
-        },),
+        child: Column(
+          children: [
+            Image.network(imageUrl, errorBuilder: (context, error, stackTrace) {
+              return Text("Invalid URL");
+            },),
+            TexMarkdown(
+              inputString,
+            ),
+          ],
+        ),
       );
       }else{
         return Text("Invalid URL");
@@ -117,8 +124,8 @@ class _NoteScreenState extends State<NoteScreen> {
       children: [
         // Editor section
         Container(
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 37, 37, 37),
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 37, 37, 37),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -139,7 +146,7 @@ class _NoteScreenState extends State<NoteScreen> {
                           onChanged: (String? newValue) {
                             setState(() {
                               dropdownValue = newValue!;
-                              if (dropdownValue == 'Image') {
+                              if (dropdownValue == 'Image + Markdown') {
                                 imageMode = true;
                               } else {
                                 imageMode = false;
@@ -158,28 +165,37 @@ class _NoteScreenState extends State<NoteScreen> {
                       width: MediaQuery.of(context).size.width * 0.50,
                       height: MediaQuery.of(context).size.height - 40,
                       child: TextField(
-                        cursorColor: Colors.white,
-                        decoration: InputDecoration(
-                          hintText: 'Type something...',
-                          hoverColor: Colors.white,
-                        ),
-                        expands: true,
-                        maxLines: null,
-                        minLines: null,
-                        onChanged: (String value) {
-                          if (value != '') {
-                            setState(() {
-                              isEmpty = false;
+                              cursorColor: Colors.white,
+                              decoration: const InputDecoration(
+                                isCollapsed: true,
+                                hintText: 'Type something...',
+                                hoverColor: Colors.white,
+                                focusColor: Colors.white,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
 
-                              inputString = value;
-                            });
-                          } else {
-                            setState(() {
-                              isEmpty = true;
-                            });
-                          }
-                        },
-                      ),
+                              ),
+                              expands: true,
+                              maxLines: null,
+                              minLines: null,
+                              onChanged: (String value) {
+                                if (value != '') {
+                                  setState(() {
+                                    isEmpty = false;
+                            
+                                    inputString = value;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isEmpty = true;
+                                  });
+                                }
+                              },
+                              ),
                     )
                   :
                   // If Image mode is true
@@ -188,32 +204,74 @@ class _NoteScreenState extends State<NoteScreen> {
                       height: MediaQuery.of(context).size.height - 40,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          cursorColor: Colors.white,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color:Colors.white,),
-                            ),
-                            hintText: 'Enter image URL',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                          ),
-                          expands: false,
-                          minLines: 1,
-                          onChanged: (String value) {
-                            if (value != '') {
-                              setState(() {
-                                isEmpty = false;
+                        child: 
+                        // Ask Image URL
+                        Column(
+                          children: [
+                            TextField(
+                              cursorColor: Colors.white,
+                              decoration: const InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color:Colors.white,),
+                                ),
+                                hintText: 'Enter image URL',
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                              ),
+                              expands: false,
+                              minLines: 1,
+                              onChanged: (String value) {
+                                if (value != '') {
+                                  setState(() {
+                                    isEmpty = false;
                       
-                                imageUrl = value;
-                              });
-                            } else {
-                              setState(() {
-                                isEmpty = true;
-                              });
-                            }
-                          },
+                                    imageUrl = value;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isEmpty = true;
+                                  });
+                                }
+                              },
+                            ),
+                          
+                            // Image Description 
+                            SizedBox(height: 15),
+                            Expanded(
+                              child: TextField(
+                              cursorColor: Colors.white,
+                              decoration: const InputDecoration(
+                                isCollapsed: true,
+                                hintText: 'Type something...',
+                                hoverColor: Colors.white,
+                                focusColor: Colors.white,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              expands: true,
+                              maxLines: null,
+                              minLines: null,
+                              onChanged: (String value) {
+                                if (value != '') {
+                                  setState(() {
+                                    isEmpty = false;
+                            
+                                    inputString = value;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isEmpty = true;
+                                  });
+                                }
+                              },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
