@@ -97,8 +97,7 @@ class _NoteScreenState extends State<NoteScreen> {
 
       // Check if Input String is URL or not
       if (isUrl(imageUrl)){
-        return Expanded(
-        child: Column(
+        return Column(
           children: [
             Image.network(imageUrl, errorBuilder: (context, error, stackTrace) {
               return Text("Invalid URL");
@@ -107,8 +106,7 @@ class _NoteScreenState extends State<NoteScreen> {
               inputString,
             ),
           ],
-        ),
-      );
+        );
       }else{
         return Text("Invalid URL");
       }

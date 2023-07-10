@@ -33,3 +33,11 @@ class _SecondBrainApp extends State<SecondBrainApp> {
 }
 
 
+class Temp extends StatelessWidget{
+  @override 
+  Widget build(BuildContext context){
+    return Scaffold(
+      body: Image.network('https://images7.alphacoders.com/131/1316242.jpg'),
+    );
+  }
+}
