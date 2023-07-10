@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:markdown_widget/markdown_widget.dart';
 
 import 'package:secondbrain/screens/database_selector.dart';
 

@@ -22,6 +22,9 @@ class _NoteScreenState extends State<NoteScreen> {
   // flag for image mode
   bool imageMode = false;
 
+  // Image URL
+  String imageUrl = '';
+
   var codeTheme = {
     'root': TextStyle(
         backgroundColor: Color.fromARGB(237, 34, 34, 34),
@@ -68,24 +71,34 @@ class _NoteScreenState extends State<NoteScreen> {
   ];
 
   Widget displayNote() {
+     // If user selected 'HTML' option
     if (dropdownValue == 'HTML') {
       return HtmlWidget(
         inputString,
       );
-    } else if (dropdownValue == 'Markdown') {
+    }
+     // If user selected 'Markdown' option 
+    else if (dropdownValue == 'Markdown') {
       return TexMarkdown(
         inputString,
       );
-    } else if (dropdownValue == 'Code') {
+      
+    } 
+    // If user selected 'Code' option
+    else if (dropdownValue == 'Code') {
       return HighlightView(
         inputString,
         language: 'dart',
         theme: codeTheme,
       );
-    } else if (dropdownValue == 'Image') {
-      if (isUrl(inputString)){
+    }
+     // If user selected 'Image' option
+    else if (dropdownValue == 'Image') {
+
+      // Check if Input String is URL or not
+      if (isUrl(imageUrl)){
         return Expanded(
-        child: Image.network(inputString, errorBuilder: (context, error, stackTrace) {
+        child: Image.network(imageUrl, errorBuilder: (context, error, stackTrace) {
           return Text("Invalid URL");
         },),
       );
@@ -139,10 +152,17 @@ class _NoteScreenState extends State<NoteScreen> {
                 ),
               ),
               !imageMode
-                  ? Container(
+                  ? 
+                  // If Image mode is false
+                  Container(
                       width: MediaQuery.of(context).size.width * 0.50,
                       height: MediaQuery.of(context).size.height - 40,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        decoration: InputDecoration(
+                          hintText: 'Type something...',
+                          hoverColor: Colors.white,
+                        ),
                         expands: true,
                         maxLines: null,
                         minLines: null,
@@ -161,12 +181,19 @@ class _NoteScreenState extends State<NoteScreen> {
                         },
                       ),
                     )
-                  : Container(
+                  :
+                  // If Image mode is true
+                   Container(
                       width: MediaQuery.of(context).size.width * 0.50,
                       height: MediaQuery.of(context).size.height - 40,
-                      child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: TextField(
+                          cursorColor: Colors.white,
                           decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color:Colors.white,),
+                            ),
                             hintText: 'Enter image URL',
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
@@ -178,8 +205,8 @@ class _NoteScreenState extends State<NoteScreen> {
                             if (value != '') {
                               setState(() {
                                 isEmpty = false;
-
-                                inputString = value;
+                      
+                                imageUrl = value;
                               });
                             } else {
                               setState(() {
@@ -228,7 +255,7 @@ class _NoteScreenState extends State<NoteScreen> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('Write something.'),
+                    child: Text('Write something on the editor.'),
                   ),
                 ),
               ),
