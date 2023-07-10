@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+
 import 'package:secondbrain/screens/database_selector.dart';
-import 'package:secondbrain/screens/main_screen.dart';
-import 'package:secondbrain/screens/storage_edit.dart';
 
 import 'screens/note_screen.dart';
 
@@ -32,5 +31,4 @@ class _SecondBrainApp extends State<SecondBrainApp> {
     );
   }
 }
-
 
