@@ -214,6 +214,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.10+6"
+  flutter_math_fork:
+    dependency: transitive
+    description:
+      name: flutter_math_fork
+      sha256: a143a3a89131b578043ecbdb5e759c1033a1b3e9174f5cd1b979d93f4a7fb41c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   flutter_svg:
     dependency: transitive
     description:
@@ -416,6 +424,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  markdown_widget:
+    dependency: "direct main"
+    description:
+      name: markdown_widget
+      sha256: "738c3f74f032ae3350018b5c49546d03a74a255ae7b211d15362442398aaf8e1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.9"
   matcher:
     dependency: transitive
     description:
@@ -584,6 +600,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  scrollable_positioned_list:
+    dependency: transitive
+    description:
+      name: scrollable_positioned_list
+      sha256: "1b54d5f1329a1e263269abc9e2543d90806131aa14fe7c6062a8054d57249287"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.8"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -661,6 +685,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  tex_markdown:
+    dependency: "direct main"
+    description:
+      name: tex_markdown
+      sha256: "353479c7d7363c7ffa3dd5facfc888f5ce79fc71b5ed2fe9af1b723f5a208c8e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.8"
+  tex_text:
+    dependency: transitive
+    description:
+      name: tex_text
+      sha256: d970cdcf16fb38b28f16b6118853434703191c9757117bc264c43c212d554949
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.8"
+  tuple:
+    dependency: transitive
+    description:
+      name: tuple
+      sha256: a97ce2013f240b2f3807bcbaf218765b6f301c3eff91092bcfa23a039e7dd151
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   typed_data:
     dependency: transitive
     description:
