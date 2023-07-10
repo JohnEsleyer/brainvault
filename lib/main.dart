@@ -8,6 +8,7 @@ import 'package:markdown/markdown.dart' as md;
 void main() {
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       routes: {
@@ -38,8 +39,8 @@ class NoteWidget extends StatefulWidget{
 }
 
 class _NoteWidgetState extends State<NoteWidget>{
-  String htmlString = "";
   String dropdownValue = "Markdown";
+  String htmlString = "";
   var items = [    
     'Markdown',
     'HTML',
@@ -101,11 +102,27 @@ class _NoteWidgetState extends State<NoteWidget>{
             ],
           ),
         ),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.50,
-          height: double.infinity,
-          child: HtmlWidget(
-            htmlString,
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.46,
+                  
+                  decoration: BoxDecoration(
+                              color: Color.fromARGB(237, 34, 34, 34),
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: HtmlWidget(
+                      htmlString,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
