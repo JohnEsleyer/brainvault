@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:secondbrain/functions.dart';
 import 'package:tex_markdown/tex_markdown.dart';
 
 class NoteScreen extends StatefulWidget {
@@ -82,9 +83,16 @@ class _NoteScreenState extends State<NoteScreen> {
         theme: codeTheme,
       );
     } else if (dropdownValue == 'Image') {
-      return Expanded(
-        child: Image.network(inputString),
+      if (isUrl(inputString)){
+        return Expanded(
+        child: Image.network(inputString, errorBuilder: (context, error, stackTrace) {
+          return Text("Invalid URL");
+        },),
       );
+      }else{
+        return Text("Invalid URL");
+      }
+      
     }
 
     return Container();
