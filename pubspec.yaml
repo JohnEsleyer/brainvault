@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   markdown_editor_plus: ^0.2.13
   markdown_viewer: ^0.5.0
+  markdown: ^5.0.0
+  flutter_widget_from_html: ^0.10.2
 
 dev_dependencies:
   flutter_test:

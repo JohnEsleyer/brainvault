@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:secondbrain/screens/database_selector.dart';
 import 'package:secondbrain/screens/main_screen.dart';
 import 'package:secondbrain/screens/storage_edit.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:markdown/markdown.dart' as md;
 
 void main() {
   runApp(
@@ -9,7 +11,7 @@ void main() {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       routes: {
-        '/': (context) => DatabaseSelector(),
+        '/': (context) => SecondBrainApp(),
         '/selector': (context) => DatabaseSelector(),
       },
     ),
@@ -25,7 +27,88 @@ class _SecondBrainApp extends State<SecondBrainApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MainScreen(),
+      body: NoteWidget(),
+    );
+  }
+}
+
+class NoteWidget extends StatefulWidget{
+  @override 
+  _NoteWidgetState createState() => _NoteWidgetState();
+}
+
+class _NoteWidgetState extends State<NoteWidget>{
+  String htmlString = "";
+  String dropdownValue = "Markdown";
+  var items = [    
+    'Markdown',
+    'HTML',
+  ];
+
+  @override 
+  Widget build(BuildContext context){
+    
+    return Row(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 37, 37, 37),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                child: Container(
+                  height: 40,
+                  child: Row(
+                    children: [
+                      DropdownButton(
+                        value: dropdownValue,
+                        items: items.map((String items){
+                          return DropdownMenuItem(
+                            value: items, 
+                            child: Text(items),
+                          );
+                        }).toList(),
+                        onChanged:(String? newValue){
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                          Scaffold.of(context).build(context);
+                        }),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.50,
+                height: MediaQuery.of(context).size.height - 40,
+                child: TextField(
+                  expands: true,
+                  maxLines: null,
+                  minLines: null,
+                  onChanged: (String value){
+                    setState(() {
+                      if (dropdownValue == "Markdown"){
+                        htmlString = md.markdownToHtml(value);
+                      }else{
+                        htmlString = value;
+                      }                      
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.50,
+          height: double.infinity,
+          child: HtmlWidget(
+            htmlString,
+          ),
+        ),
+      ],
     );
   }
 }
