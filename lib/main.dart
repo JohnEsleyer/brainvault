@@ -3,7 +3,7 @@ import 'package:secondbrain/screens/database_selector.dart';
 import 'package:secondbrain/screens/main_screen.dart';
 import 'package:secondbrain/screens/storage_edit.dart';
 
-import 'widgets/note_widget.dart';
+import 'screens/note_screen.dart';
 
 void main() {
   runApp(
@@ -28,7 +28,7 @@ class _SecondBrainApp extends State<SecondBrainApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NoteWidget(),
+      body: NoteScreen(),
     );
   }
 }

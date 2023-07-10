@@ -4,14 +4,14 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:markdown/markdown.dart' as md;
 
 
-class NoteWidget extends StatefulWidget{
+class NoteScreen extends StatefulWidget{
   @override 
-  _NoteWidgetState createState() => _NoteWidgetState();
+  _NoteScreenState createState() => _NoteScreenState();
 }
 
-class _NoteWidgetState extends State<NoteWidget>{
+class _NoteScreenState extends State<NoteScreen>{
   String dropdownValue = "Markdown";
-  String htmlString = "";
+  String inputString = 'Write something.';
   var items = [    
     'Markdown',
     'HTML',
@@ -60,19 +60,27 @@ class _NoteWidgetState extends State<NoteWidget>{
                   maxLines: null,
                   minLines: null,
                   onChanged: (String value){
-                    setState(() {
+                    if (value != ''){
+                      setState(() {
                       if (dropdownValue == "Markdown"){
-                        htmlString = md.markdownToHtml(value);
+                        inputString = md.markdownToHtml(value);
                       }else{
-                        htmlString = value;
-                      }                      
+                        inputString = value;
+                      }
                     });
+                    }else{
+                      setState(() {
+                        inputString = 'Write something.';
+                      });
+                    }
+                    
                   },
                 ),
               ),
             ],
           ),
         ),
+        
         SingleChildScrollView(
           child: Column(
             children: [
@@ -88,7 +96,7 @@ class _NoteWidgetState extends State<NoteWidget>{
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: HtmlWidget(
-                      htmlString,
+                      inputString,
                     ),
                   ),
                 ),
