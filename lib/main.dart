@@ -33,17 +33,4 @@ class _SecondBrainApp extends State<SecondBrainApp> {
   }
 }
 
-class Temp extends StatefulWidget {
-  @override
-  _TempState createState() => _TempState();
-}
 
-class _TempState extends State<Temp>{
-
-  String inputString = '# Hello';
-
-  @override
-  Widget build(BuildContext context){
-    return Image.network('https://images7.alphacoders.com/131/1316242.jpg');
-  }
-}
