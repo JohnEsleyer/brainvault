@@ -1,19 +1,16 @@
-import 'dart:convert';
+
 
 import 'package:flutter/material.dart';
 
 import 'package:secondbrain/screens/database_selector.dart';
-import 'package:hive/hive.dart';
+
 import 'package:secondbrain/screens/main_screen.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:flutter/foundation.dart';
 import 'functions.dart';
 import 'screens/note_screen.dart';
-import 'dart:async';
-import 'dart:html' as html;
-import 'dart:js' as js;
-import 'package:js/js_util.dart' as jsUtil;
+
 
 
 
