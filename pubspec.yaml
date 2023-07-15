@@ -42,6 +42,9 @@ dependencies:
   flutter_highlight: ^0.7.0
   markdown_widget: ^1.2.9
   tex_markdown: ^0.1.8
+  hive: ^2.2.3
+  sqflite_common_ffi: ^2.2.5
+  sqflite_common_ffi_web: ^0.3.6
 
 dev_dependencies:
   flutter_test:

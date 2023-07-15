@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import '../functions.dart';
 
 class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 800) {
-        // Mobile
+/////////////////////////// MOBILE ////////////////////////////////////
         return Scaffold(
           body: Container(
             width: double.infinity,
@@ -31,17 +34,14 @@ class MainScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Icon(Icons.folder_open),
-                          Text("Open brain"),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.create_new_folder_outlined),
-                          Text("Create new brain"),
-                        ],
+                      GestureDetector(
+                        onTap: (){},
+                        child: Row(
+                          children: [
+                            Icon(Icons.folder_open),
+                            Text("Upload brain"),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -51,7 +51,7 @@ class MainScreen extends StatelessWidget {
           ),
         );
       } else {
-        // Desktop
+/////////////////////////// DESKTOP / WEB ////////////////////////////////////
         return Scaffold(
           body: Row(
             children: [
@@ -90,18 +90,21 @@ class MainScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Icon(Icons.folder_open),
-                          Text("Open brain"),
-                        ],
+                      GestureDetector(
+                        onTap: () async {
+                          print('upload db file');
+                          await uploadDatabase();
+                          print('db file uploaded');
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.folder_open),
+                            Text("Open brain"),
+                          ],
+                        ),
                       ),
-                      Row(
-                        children: [
-                          Icon(Icons.create_new_folder_outlined),
-                          Text("Create new brain"),
-                        ],
-                      ),
+                     
                     ],
                   ),
                 ),
@@ -111,5 +114,68 @@ class MainScreen extends StatelessWidget {
         );
       }
     });
+  }
+}
+
+
+
+//// TEMP
+
+class Test extends StatefulWidget {
+  @override
+  _TestState createState() => _TestState();
+}
+
+class _TestState extends State<Test> {
+  String userString = '__';
+  List<String> users = [];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: [
+            Text(userString),
+            ElevatedButton(onPressed: () async {
+              print(users);
+              var db = await openDatabase('brain.db', version: 1);
+                 var temp = await db.query('users');
+
+                for (var user in temp) {
+                  print('User: ${user['id']}, ${user['name']}');
+                  setState(() {
+                    users.add(user['name'] as String);
+                  });
+                  
+                }
+            }, child: Text("Display all"),),
+            ElevatedButton(
+              child: Text("Press Me"),
+              onPressed: () async {
+                print('upload db file');
+                await uploadDatabase();
+                print('db file uploaded');
+                setState(() {
+                  userString = 'uploaded';
+                });
+                var db = await openDatabase('brain.db', version: 1);
+                 var temp = await db.query('users');
+
+                for (var user in temp) {
+                  print('User: ${user['name']}');
+                }
+              },
+            ),
+            ElevatedButton(onPressed: (){
+              downloadDatabase();
+            }, child: Text('Download DB'),),
+            Column(children: [
+              for (var i=0;i<users.length;i++)
+                Text('User: ${users[i]}'),
+            ],)
+          ],
+        ),
+      ),
+    );
   }
 }
