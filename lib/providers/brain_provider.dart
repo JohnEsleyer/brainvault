@@ -7,8 +7,13 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 
 class BrainProvider{
-  
+  String dbPath = 'brain.db';
   late Database db;
+
+  
+  Future<void> initialize() async {
+    db = await openDatabase(dbPath);
+  }
 
   /// Upload .brain
   Future<void> uploadBrain() async {
@@ -23,7 +28,6 @@ class BrainProvider{
 
   // Create brain
   Future<void> createBrain() async {
-    String dbPath = 'brain.db';
 
     db = await openDatabase(
       dbPath,

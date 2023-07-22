@@ -2,11 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:secondbrain/helpers/BrainProvider.dart';
+import 'package:secondbrain/providers/brain_provider.dart';
 
-import 'package:secondbrain/screens/database_selector.dart';
+import 'package:secondbrain/screens/dashboard.dart';
 
 import 'package:secondbrain/screens/main_screen.dart';
+import 'package:secondbrain/widgets/custom_scroll_behavior.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:flutter/foundation.dart';
@@ -28,12 +29,13 @@ void main() async {
         Provider<BrainProvider>(create: (_) => BrainProvider(),),
       ],
       child: MaterialApp(
+        scrollBehavior: MyCustomScrollBehavior(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData.light(),
         darkTheme: ThemeData.dark(),
         routes: {
           '/': (context) => MainScreen(),
-          '/selector': (context) => DatabaseSelector(),
+          '/dashboard': (context) => Dashboard(),
         },
       ),
     ),
@@ -87,7 +89,7 @@ class _TestState extends State<Test> {
               child: Text("Press Me"),
               onPressed: () async {
                 print('upload db file');
-                await uploadDatabase();
+
                 print('db file uploaded');
                 setState(() {
                   userString = 'uploaded';
@@ -101,7 +103,7 @@ class _TestState extends State<Test> {
               },
             ),
             ElevatedButton(onPressed: (){
-              downloadDatabase();
+
             }, child: Text('Download DB'),),
             Column(children: [
               for (var i=0;i<users.length;i++)

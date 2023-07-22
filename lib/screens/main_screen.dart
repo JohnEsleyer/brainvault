@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../functions.dart';
-import '../helpers/BrainProvider.dart';
+import '../providers/brain_provider.dart';
 
 class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -39,9 +39,7 @@ class MainScreen extends StatelessWidget {
                     children: [
                      GestureDetector(
                         onTap: () async {
-                          print('upload db file');
-                          await uploadDatabase();
-                          print('db file uploaded');
+                          
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
                         },
                         child: Row(
@@ -100,9 +98,7 @@ class MainScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          print('upload db file');
-                          await uploadDatabase();
-                          print('db file uploaded');
+                        
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
                         },
                         child: Row(
@@ -194,8 +190,8 @@ class _TestState extends State<Test> {
               },
             ),
             ElevatedButton(onPressed: (){
-              downloadDatabase();
-            }, child: Text('Download DB'),),
+              Navigator.of(context).popAndPushNamed('/dashboard');
+            }, child: Text('Dashboard'),),
             Column(children: [
               for (var i=0;i<collectionList.length;i++)
                 Text('Title: ${collectionList[i]}'),
