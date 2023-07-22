@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:secondbrain/colors.dart';
 import 'package:secondbrain/functions.dart';
 import '../providers/brain_provider.dart';
 
@@ -23,6 +24,7 @@ class _DashboardState extends State<Dashboard> {
         // Mobile
         return Scaffold(
           body: Container(
+            color: palette[4],
             padding: const EdgeInsets.all(15),
             child: Center(
               child: Column(
@@ -30,7 +32,7 @@ class _DashboardState extends State<Dashboard> {
                   Container(
                     width: con_width,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(237, 34, 34, 34),
+                      color: palette[0],
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     child: Padding(
@@ -38,7 +40,7 @@ class _DashboardState extends State<Dashboard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Collections", style: TextStyle(fontSize: 30)),
+                          Text("Collections", style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold)),
                           Container(
                             height: 130,
                             child: FutureBuilder(
@@ -70,13 +72,13 @@ class _DashboardState extends State<Dashboard> {
                                                 height: 100,
                                                 width: 130,
                                                 decoration: BoxDecoration(
-                                                  color: const Color.fromARGB(255, 49, 49, 49),
+                                                  color: palette[3],
                                                   borderRadius: BorderRadius.all(
                                                       Radius.circular(10)),
                                                 ),
                                                 child: Center(
                                                   child: Text(
-                                                          '${data?[index]['title']}'),
+                                                          '${data?[index]['title']}', style: TextStyle(color: Colors.black),),
                                                 ),
                                               ),
                                               SizedBox(width: 10,)

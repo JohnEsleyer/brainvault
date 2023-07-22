@@ -31,8 +31,7 @@ void main() async {
       child: MaterialApp(
         scrollBehavior: MyCustomScrollBehavior(),
         debugShowCheckedModeBanner: false,
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
+
         routes: {
           '/': (context) => MainScreen(),
           '/dashboard': (context) => Dashboard(),
