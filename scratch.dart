@@ -2,54 +2,73 @@ import 'dart:convert';
 
 import 'package:hive/hive.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'dart:html' as html;
-
-Future<void> uploadDatabase() async {
-  final fileInput = html.FileUploadInputElement();
-  fileInput.accept = '.db'; // Restrict file selection to .db files
-  fileInput.click();
-
-  await fileInput.onChange.first; // Wait for the user to select a file
-
-  final file = fileInput.files!.first;
-  final reader = html.FileReader();
-
-  reader.readAsText(file);
-
-  await reader.onLoad.first; // Wait for the file to be loaded
-
-  final jsonData = reader.result as String;
-  final users = json.decode(jsonData);
-
-  var path = 'brain.db';
-  var db = await openDatabase(path, version: 1, onCreate: (db, version) async {
-    db.execute('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)');
-  });
-
-  // Insert the users into the database
-  for (var user in users) {
-    await db.insert('users', user);
-  }
-}
-
-
+import 'package:path/path.dart';
 
 void main() async {
+  databaseFactory = databaseFactoryFfi;
+  // sqfliteFfiInit();
 
-  sqfliteFfiInit();
+  // Open the database
+  Database database = await openDatabase(
+    'brain.db',
+    version: 1,
+    onCreate: (db, version) async {
+      // Create the tables
+      await db.execute('''
+        CREATE TABLE Collection (
+          ID INTEGER PRIMARY KEY,
+          Name TEXT
+        )
+      ''');
 
+      await db.execute('''
+        CREATE TABLE Document (
+          ID INTEGER PRIMARY KEY,
+          Title TEXT
+        )
+      ''');
 
-  var database = await databaseFactoryFfi.openDatabase('brain.db');
+      await db.execute('''
+        CREATE TABLE Note (
+          ID INTEGER PRIMARY KEY,
+          Content TEXT
+        )
+      ''');
 
-  final users = await database.query('users');
+      await db.execute('''
+        CREATE TABLE DocumentTag (
+          ID INTEGER PRIMARY KEY,
+          DocumentID INTEGER,
+          NameOfTag TEXT,
+          CreatedAt TEXT,
+          UpdatedAt TEXT,
+          LastReviewedAt TEXT,
+          NextReviewAt TEXT,
+          ReviewInterval TEXT,
+          OrderIndex INTEGER,
+          FOREIGN KEY (DocumentID) REFERENCES Document (ID)
+        )
+      ''');
 
-  for (var user in users){
-    var id = user['id'];
-    var name = user['name'];
-    var email = user['email'];
+      await db.execute('''
+        CREATE TABLE NoteTag (
+          ID INTEGER PRIMARY KEY,
+          NoteID INTEGER,
+          Title TEXT,
+          Content TEXT,
+          CreatedAt TEXT,
+          UpdatedAt TEXT,
+          LastReviewedAt TEXT,
+          NextReviewAt TEXT,
+          ReviewInterval TEXT,
+          OrderIndex INTEGER,
+          FOREIGN KEY (NoteID) REFERENCES Note (ID)
+        )
+      ''');
+    },
+  );
 
-    print('User: $id, $name');
-  }
+  print('Database created successfully!');
 }
 
 

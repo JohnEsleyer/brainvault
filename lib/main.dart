@@ -1,6 +1,8 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:secondbrain/helpers/BrainProvider.dart';
 
 import 'package:secondbrain/screens/database_selector.dart';
 
@@ -19,25 +21,24 @@ void main() async {
     // Change default factory on the web
     databaseFactory = databaseFactoryFfiWeb;
   }
-
-  // runApp(MaterialApp(
-  //   home: Test(),
-  // ));
-
+  
   runApp(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      routes: {
-        '/': (context) => MainScreen(),
-        '/selector': (context) => DatabaseSelector(),
-      },
+    MultiProvider(
+      providers: [
+        Provider<BrainProvider>(create: (_) => BrainProvider(),),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
+        routes: {
+          '/': (context) => MainScreen(),
+          '/selector': (context) => DatabaseSelector(),
+        },
+      ),
     ),
   );
 }
-
-
 
 class SecondBrainApp extends StatefulWidget {
   @override
@@ -61,6 +62,7 @@ class Test extends StatefulWidget {
 class _TestState extends State<Test> {
   String userString = '__';
   List<String> users = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

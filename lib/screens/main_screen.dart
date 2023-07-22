@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../functions.dart';
+import '../helpers/BrainProvider.dart';
 
 class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
+    var brainProvider = Provider.of<BrainProvider>(context);
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 800) {
 /////////////////////////// MOBILE ////////////////////////////////////
@@ -34,12 +37,17 @@ class MainScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: (){},
+                     GestureDetector(
+                        onTap: () async {
+                          print('upload db file');
+                          await uploadDatabase();
+                          print('db file uploaded');
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
+                        },
                         child: Row(
                           children: [
                             Icon(Icons.folder_open),
-                            Text("Upload brain"),
+                            Text("Open brain"),
                           ],
                         ),
                       ),
@@ -104,6 +112,19 @@ class MainScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                      GestureDetector(
+                        onTap: () async {
+                          
+                          await brainProvider.createBrain();
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.folder_open),
+                            Text("Create new brain"),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -119,7 +140,6 @@ class MainScreen extends StatelessWidget {
 
 
 //// TEMP
-
 class Test extends StatefulWidget {
   @override
   _TestState createState() => _TestState();
@@ -127,50 +147,58 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   String userString = '__';
-  List<String> users = [];
+  List<String> collectionList = [];
   @override
   Widget build(BuildContext context) {
+    var brainProvider = Provider.of<BrainProvider>(context);
     return Scaffold(
       body: Center(
         child: Column(
           children: [
             Text(userString),
             ElevatedButton(onPressed: () async {
-              print(users);
-              var db = await openDatabase('brain.db', version: 1);
-                 var temp = await db.query('users');
-
-                for (var user in temp) {
-                  print('User: ${user['id']}, ${user['name']}');
-                  setState(() {
-                    users.add(user['name'] as String);
-                  });
-                  
+              
+              try{
+                List<Map<String, dynamic>> collections = await brainProvider.getBrainCollections();
+              if (collections.isNotEmpty){
+                // Display the retrieved brain collections
+                print('Brain Collections:');
+                setState(() {
+                for (var collection in collections){
+                  collectionList.add(collection['title']);
                 }
+                });
+                
+              }else{
+                print('No collections found.');
+              }
+              }catch(e){
+                print('Error while getting collections: $e');
+              }
             }, child: Text("Display all"),),
             ElevatedButton(
-              child: Text("Press Me"),
+              child: Text("Insert Collection"),
               onPressed: () async {
-                print('upload db file');
-                await uploadDatabase();
-                print('db file uploaded');
-                setState(() {
-                  userString = 'uploaded';
-                });
-                var db = await openDatabase('brain.db', version: 1);
-                 var temp = await db.query('users');
 
-                for (var user in temp) {
-                  print('User: ${user['name']}');
+                var data = {
+                  'title': 'Sample Collection',
+                  'description': 'This is a sample brain collection.',
+                  'created_at': DateTime.now().microsecondsSinceEpoch,
+                };
+                try{
+                  await brainProvider.insertBrainCollection(data);
+                }catch(e){
+                  print('Error while inserting a collection: $e');
                 }
+                
               },
             ),
             ElevatedButton(onPressed: (){
               downloadDatabase();
             }, child: Text('Download DB'),),
             Column(children: [
-              for (var i=0;i<users.length;i++)
-                Text('User: ${users[i]}'),
+              for (var i=0;i<collectionList.length;i++)
+                Text('Title: ${collectionList[i]}'),
             ],)
           ],
         ),

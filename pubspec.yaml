@@ -45,6 +45,7 @@ dependencies:
   hive: ^2.2.3
   sqflite_common_ffi: ^2.2.5
   sqflite_common_ffi_web: ^0.3.6
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
