@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:secondbrain/colors.dart';
-import 'package:secondbrain/functions.dart';
-import '../providers/brain_provider.dart';
+
+import '../services/database_service.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -10,11 +10,16 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  final dbHelper = DatabaseService();
+
+  // @override 
+  // void initState(){
+  //   super.initState();
+
+  // }
+
   @override
   Widget build(BuildContext context) {
-    // Brain provider
-    var brainProvider = Provider.of<BrainProvider>(context);
-    brainProvider.initialize();
 
     // Container size
     double con_width = MediaQuery.of(context).size.width * 0.90;
@@ -44,7 +49,7 @@ class _DashboardState extends State<Dashboard> {
                           Container(
                             height: 130,
                             child: FutureBuilder(
-                              future: brainProvider.getBrainCollections(),
+                              future: dbHelper.getAllCollections(),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
@@ -78,7 +83,7 @@ class _DashboardState extends State<Dashboard> {
                                                 ),
                                                 child: Center(
                                                   child: Text(
-                                                          '${data?[index]['title']}', style: TextStyle(color: Colors.black),),
+                                                          '${data?[index]['title']}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
                                                 ),
                                               ),
                                               SizedBox(width: 10,)

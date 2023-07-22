@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:secondbrain/providers/brain_provider.dart';
+import 'package:secondbrain/services/database_service.dart';
 
 import 'package:secondbrain/screens/dashboard.dart';
 
@@ -11,7 +11,7 @@ import 'package:secondbrain/widgets/custom_scroll_behavior.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:flutter/foundation.dart';
-import 'functions.dart';
+
 import 'screens/note_screen.dart';
 
 
@@ -24,19 +24,14 @@ void main() async {
   }
   
   runApp(
-    MultiProvider(
-      providers: [
-        Provider<BrainProvider>(create: (_) => BrainProvider(),),
-      ],
-      child: MaterialApp(
-        scrollBehavior: MyCustomScrollBehavior(),
-        debugShowCheckedModeBanner: false,
+    MaterialApp(
+      scrollBehavior: MyCustomScrollBehavior(),
+      debugShowCheckedModeBanner: false,
 
-        routes: {
-          '/': (context) => MainScreen(),
-          '/dashboard': (context) => Dashboard(),
-        },
-      ),
+      routes: {
+        '/': (context) => MainScreen(),
+        '/dashboard': (context) => Dashboard(),
+      },
     ),
   );
 }

@@ -2,12 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../functions.dart';
-import '../providers/brain_provider.dart';
 
-class MainScreen extends StatelessWidget {
+import '../services/database_service.dart';
+
+
+class MainScreen extends StatefulWidget{
+
+  @override 
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+
+
+  final dbHelper = DatabaseService();
+
+  @override 
+  void initState(){
+    super.initState();
+    _initializeDatabase();
+  }
+
+  Future<void> _initializeDatabase() async {
+    // Initialie the database
+    final db = await dbHelper.database;
+  }
+
+
   Widget build(BuildContext context) {
-    var brainProvider = Provider.of<BrainProvider>(context);
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 800) {
 /////////////////////////// MOBILE ////////////////////////////////////
@@ -110,8 +132,6 @@ class MainScreen extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          
-                          await brainProvider.createBrain();
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
                         },
                         child: Row(
@@ -144,18 +164,20 @@ class Test extends StatefulWidget {
 class _TestState extends State<Test> {
   String userString = '__';
   List<String> collectionList = [];
+  final dbHelper = DatabaseService();
+
   @override
   Widget build(BuildContext context) {
-    var brainProvider = Provider.of<BrainProvider>(context);
+
     return Scaffold(
       body: Center(
         child: Column(
           children: [
             Text(userString),
             ElevatedButton(onPressed: () async {
-              
+              var db = DatabaseService();
               try{
-                List<Map<String, dynamic>> collections = await brainProvider.getBrainCollections();
+                List<Map<String, dynamic>> collections = await dbHelper.getAllCollections();
               if (collections.isNotEmpty){
                 // Display the retrieved brain collections
                 print('Brain Collections:');
@@ -182,11 +204,11 @@ class _TestState extends State<Test> {
                   'created_at': DateTime.now().microsecondsSinceEpoch,
                 };
                 try{
-                  await brainProvider.insertBrainCollection(data);
+                  var db = DatabaseService();
+                  await db.insertCollection(data);
                 }catch(e){
                   print('Error while inserting a collection: $e');
                 }
-                
               },
             ),
             ElevatedButton(onPressed: (){
