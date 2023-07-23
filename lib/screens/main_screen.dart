@@ -150,6 +150,7 @@ class _TestState extends State<Test> {
   String userString = '__';
   List<String> collectionList = [];
   final dbHelper = DatabaseService();
+  int count = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -189,8 +190,7 @@ class _TestState extends State<Test> {
                   'created_at': DateTime.now().microsecondsSinceEpoch,
                 };
                 try {
-                  var db = DatabaseService();
-                  await db.insertCollection(data);
+                  await dbHelper.insertCollection(data);
                 } catch (e) {
                   print('Error while inserting a collection: $e');
                 }
@@ -198,9 +198,26 @@ class _TestState extends State<Test> {
             ),
             ElevatedButton(
               onPressed: () async {
+                var data = {
+                  'collection_id': 2,
+                  'title': 'Sample Document',
+                  'position': count,
+                  'created_at': DateTime.now().millisecondsSinceEpoch,
+                  'last_reviewed': DateTime.now().millisecondsSinceEpoch,
+                  'next_review': DateTime.now().millisecondsSinceEpoch + 86400000, // Adding 1 day in milliseconds
+                  'spaced_repetition_level': 0,
+                };
 
+                try{
+                  await dbHelper.insertDocument(data);
+                  setState(() {
+                    count++;
+                  });
+                }catch(e){
+                  print('Error inserting document: $e');
+                }
               },
-              child: Text('Insert chunk'),
+              child: Text('Insert document'),
             ),
             ElevatedButton(
               onPressed: () {

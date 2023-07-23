@@ -1,8 +1,6 @@
-
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-
-class DatabaseService{
+class DatabaseService {
   String dbPath = 'brain.db';
 
   static final DatabaseService _instance = DatabaseService.internal();
@@ -23,19 +21,16 @@ class DatabaseService{
 
   void _onCreate(Database db, int version) async {
     // Create your database table(s) here
-    await db.execute(
-        '''
+    await db.execute('''
           CREATE TABLE collections (
             id INTEGER PRIMARY KEY,
             title TEXT,
             description TEXT,
             created_at INTEGER
           );
-          '''
-        );
+          ''');
 
-        await db.execute(
-          '''
+    await db.execute('''
           CREATE TABLE documents (
             id INTEGER PRIMARY KEY,
             collection_id INTEGER,
@@ -48,11 +43,9 @@ class DatabaseService{
             FOREIGN KEY (collection_id) REFERENCES collections (collection_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
-          '''
-        );
+          ''');
 
-        await db.execute(
-          '''
+    await db.execute('''
           CREATE TABLE notes (
             id INTEGER PRIMARY KEY,
             document_id INTEGER,
@@ -65,8 +58,7 @@ class DatabaseService{
             FOREIGN KEY (document_id) REFERENCES documents (document_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
-          '''
-    );
+          ''');
   }
 
   // CRUD Operations for 'collections' table
@@ -81,21 +73,19 @@ class DatabaseService{
   }
 
   Future<Map<String, dynamic>> getCollectionById(int id) async {
-  final db = await database;
-  final List<Map<String, dynamic>> collections = await db.query(
-    'collections',
-    where: 'id = ?',
-    whereArgs: [id],
-  );
+    final db = await database;
+    final List<Map<String, dynamic>> collections = await db.query(
+      'collections',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
 
-  if (collections.isNotEmpty) {
-    return collections.first;
-  } else {
-  
-    throw Exception('Collection with ID $id not found.');
+    if (collections.isNotEmpty) {
+      return collections.first;
+    } else {
+      throw Exception('Collection with ID $id not found.');
+    }
   }
-}
-
 
   Future<int> updateCollection(Map<String, dynamic> collection) async {
     final db = await database;
@@ -120,7 +110,8 @@ class DatabaseService{
     return await db.query('documents');
   }
 
-  Future<List<Map<String, dynamic>>> getDocumentsByCollectionId(int collectionId) async {
+  Future<List<Map<String, dynamic>>> getDocumentsByCollectionId(
+      int collectionId) async {
     final db = await database;
     final List<Map<String, dynamic>> documents = await db.query(
       'documents',
@@ -145,8 +136,6 @@ class DatabaseService{
     }
   }
 
-
-
   Future<int> updateDocument(Map<String, dynamic> document) async {
     final db = await database;
     return await db.update('documents', document,
@@ -155,7 +144,8 @@ class DatabaseService{
 
   Future<int> deleteDocument(int documentId) async {
     final db = await database;
-    return await db.delete('documents', where: 'document_id = ?', whereArgs: [documentId]);
+    return await db
+        .delete('documents', where: 'document_id = ?', whereArgs: [documentId]);
   }
 
   // CRUD Operations for 'notes' table

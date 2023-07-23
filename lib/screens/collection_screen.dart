@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:secondbrain/colors.dart';
+import 'package:secondbrain/screens/document_screen.dart';
 import 'package:secondbrain/services/database_service.dart';
 
 class CollectionScreen extends StatefulWidget {
-  int collectionId;
+  final int collectionId;
 
   CollectionScreen({super.key, required this.collectionId});
 
@@ -14,7 +15,7 @@ class CollectionScreen extends StatefulWidget {
 
 class _CollectionScreenState extends State<CollectionScreen> {
   final dbHelper = DatabaseService();
-  late List<Map<String, dynamic>> chunks;
+  late List<Map<String, dynamic>> documents;
   late Map<String, dynamic> collection;
   bool isLoading = true;
 
@@ -27,7 +28,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   void loadData() async {
     try {
       collection = await dbHelper.getCollectionById(widget.collectionId);
-      chunks = await dbHelper.getChunksByCollectionId(widget.collectionId);
+      documents = await dbHelper.getDocumentsByCollectionId(widget.collectionId);
 
       // When successfull
       setState(() {
@@ -96,162 +97,27 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           width: MediaQuery.of(context).size.width,
                           child: Wrap(
                             children: [
+                              for (var document in documents)
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) => DocumentScreen(documentId: document['id']),
+                                    ));
+                                  },
+                                  child: Container(
+                                    height: 100,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      color: palette[2],
+                                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    ),
+                                    child: Center(child: Text(document['title'])),
                                   ),
-                                  child: Center(child: Text('Title')),
                                 ),
                               ),
-                            Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    color: palette[2],
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Center(child: Text('Title')),
-                                ),
-                              ),
+                            
                             ],
                           ),
                         ),
