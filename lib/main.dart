@@ -24,6 +24,7 @@ void main() async {
   
   runApp(
     MaterialApp(
+      theme: ThemeData.dark(),
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
 

@@ -29,11 +29,14 @@ class _DashboardState extends State<Dashboard> {
       if (constraints.maxWidth < 800) {
         // Mobile
         return Scaffold(
-          appBar: AppBar(
-            title: Text('Second-Brain'),
-            centerTitle: true,
-            backgroundColor: palette[2],
-            automaticallyImplyLeading: false,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(50.0),
+            child: AppBar(
+              title: Text('Second-Brain'),
+              centerTitle: true,
+              backgroundColor: palette[2],
+              automaticallyImplyLeading: false,
+            ),
           ),
           body: Container(
             color: palette[1],

@@ -80,6 +80,23 @@ class DatabaseService{
     return await db.query('collections');
   }
 
+  Future<Map<String, dynamic>> getCollectionById(int id) async {
+  final db = await database;
+  final List<Map<String, dynamic>> collections = await db.query(
+    'collections',
+    where: 'id = ?',
+    whereArgs: [id],
+  );
+
+  if (collections.isNotEmpty) {
+    return collections.first;
+  } else {
+  
+    throw Exception('Collection with ID $id not found.');
+  }
+}
+
+
   Future<int> updateCollection(Map<String, dynamic> collection) async {
     final db = await database;
     return await db.update('collections', collection,
@@ -92,6 +109,24 @@ class DatabaseService{
         where: 'collection_id = ?', whereArgs: [collectionId]);
   }
 
+  // Future<String> getCollectionTitleById(int id) async {
+  //   final db = await database;
+  //   final List<Map<String, dynamic>> collections = await db.query(
+  //     'collections',
+  //     columns: ['title'],
+  //     where: 'id = ?',
+  //     whereArgs: [id],
+  //   );
+
+  //   if (collections.isNotEmpty) {
+  //     // Extract the title from the first record and return it.
+  //     return collections.first['title'] as String;
+  //   } else {
+  //     throw Exception('Collection with ID $id not found.');
+  //   }
+  // }
+
+
   // CRUD Operations for 'chunks' table
   Future<int> insertChunk(Map<String, dynamic> chunk) async {
     final db = await database;
@@ -102,6 +137,33 @@ class DatabaseService{
     final db = await database;
     return await db.query('chunks');
   }
+
+  Future<List<Map<String, dynamic>>> getChunksByCollectionId(int collectionId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> chunks = await db.query(
+      'chunks',
+      where: 'collection_id = ?',
+      whereArgs: [collectionId],
+    );
+    return chunks;
+  }
+
+  Future<Map<String, dynamic>> getChunkById(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> chunks = await db.query(
+      'chunks',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (chunks.isNotEmpty) {
+      return chunks.first;
+    } else {
+      throw Exception('Chunk with ID $id not found.');
+    }
+  }
+
+
 
   Future<int> updateChunk(Map<String, dynamic> chunk) async {
     final db = await database;
