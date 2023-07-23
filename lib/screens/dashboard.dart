@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import 'package:secondbrain/colors.dart';
+import 'package:secondbrain/screens/collection_screen.dart';
 
 import '../services/database_service.dart';
 
@@ -11,16 +12,16 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final dbHelper = DatabaseService();
-
-  // @override 
-  // void initState(){
-  //   super.initState();
-
-  // }
+  late Future<List<Map<String, dynamic>>> allCollections;
+  
+  @override
+  void initState() {
+    super.initState();
+    allCollections = dbHelper.getAllCollections();
+  }
 
   @override
   Widget build(BuildContext context) {
-
     // Container size
     double con_width = MediaQuery.of(context).size.width * 0.90;
 
@@ -28,8 +29,14 @@ class _DashboardState extends State<Dashboard> {
       if (constraints.maxWidth < 800) {
         // Mobile
         return Scaffold(
+          appBar: AppBar(
+            title: Text('Second-Brain'),
+            centerTitle: true,
+            backgroundColor: palette[2],
+            automaticallyImplyLeading: false,
+          ),
           body: Container(
-            color: palette[4],
+            color: palette[1],
             padding: const EdgeInsets.all(15),
             child: Center(
               child: Column(
@@ -37,7 +44,7 @@ class _DashboardState extends State<Dashboard> {
                   Container(
                     width: con_width,
                     decoration: BoxDecoration(
-                      color: palette[0],
+                      color: palette[5],
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     child: Padding(
@@ -45,19 +52,27 @@ class _DashboardState extends State<Dashboard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Collections", style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold)),
+                          Text("Collections",
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
                           Container(
                             height: 130,
                             child: FutureBuilder(
-                              future: dbHelper.getAllCollections(),
+                              future: allCollections,
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  return Center(child: CircularProgressIndicator(color: Colors.white)); // Display a loading indicator while waiting for data.
+                                  return Center(
+                                      child: CircularProgressIndicator(
+                                          color: Colors
+                                              .white)); // Display a loading indicator while waiting for data.
                                 } else if (snapshot.hasError) {
                                   print(
                                       "Error fetching brain collections: ${snapshot.error}");
-                                  return Text("Error fetching brain collections");
+                                  return Text(
+                                      "Error fetching brain collections");
                                 } else {
                                   // Handle the case when the future is complete and data is available.
                                   if (snapshot.data != null) {
@@ -65,28 +80,48 @@ class _DashboardState extends State<Dashboard> {
                                     // Process the data and display it in the UI.
                                     // ...
                                     List<dynamic>? data = snapshot.data;
-                          
+
                                     return ListView.builder(
-                                      shrinkWrap: false,
-                                      scrollDirection: Axis.horizontal,
+                                        shrinkWrap: false,
+                                        scrollDirection: Axis.horizontal,
                                         itemCount: data?.length,
                                         itemBuilder: (context, index) {
                                           return Row(
                                             children: [
-                                              Container(
-                                                height: 100,
-                                                width: 130,
-                                                decoration: BoxDecoration(
-                                                  color: palette[3],
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(10)),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                          '${data?[index]['title']}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  int id = await data?[index]['id'];
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                    builder: (_){
+                                                      return CollectionScreen(collectionId: id);
+                                                    }
+                                                  ));
+                                                },
+                                                child: Container(
+                                                  height: 100,
+                                                  width: 130,
+                                                  decoration: BoxDecoration(
+                                                    color: palette[4],
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(10)),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      '${data?[index]['title']}',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                            fontSize: 10,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              SizedBox(width: 10,)
+                                              SizedBox(
+                                                width: 10,
+                                              )
                                             ],
                                           );
                                         });
@@ -95,7 +130,6 @@ class _DashboardState extends State<Dashboard> {
                                         "No brain collections available.");
                                   }
                                 }
-                          
                               },
                             ),
                           ),

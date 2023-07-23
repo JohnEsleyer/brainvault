@@ -1,8 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:secondbrain/services/database_service.dart';
+
 
 import 'package:secondbrain/screens/dashboard.dart';
 

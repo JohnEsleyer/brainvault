@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../services/database_service.dart';
 
 class CollectionScreen extends StatefulWidget{
   int collectionId;
@@ -15,13 +13,20 @@ class _CollectionScreenState extends State<CollectionScreen>{
   @override 
   Widget build(BuildContext context){
     
-    return Scaffold(
-      body: Container(
-        
-        child: Column(
-          
-        )
-      ),
-    );
+    return LayoutBuilder(builder: (context, constraints){
+      if (constraints.maxWidth < 800) {
+        // Mobile View
+        return Scaffold(
+          body: Container(
+            child: Center(
+              child: Text('jipwejfpwe'),
+            ),
+          ),
+        );
+      }else{
+        // Desktop View
+        return Scaffold();
+      }
+    });
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 
 
 import '../services/database_service.dart';
@@ -20,12 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   @override 
   void initState(){
     super.initState();
-    _initializeDatabase();
-  }
 
-  Future<void> _initializeDatabase() async {
-    // Initialie the database
-    final db = await dbHelper.database;
   }
 
 
@@ -175,7 +169,7 @@ class _TestState extends State<Test> {
           children: [
             Text(userString),
             ElevatedButton(onPressed: () async {
-              var db = DatabaseService();
+
               try{
                 List<Map<String, dynamic>> collections = await dbHelper.getAllCollections();
               if (collections.isNotEmpty){

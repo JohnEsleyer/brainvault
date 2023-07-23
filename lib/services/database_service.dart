@@ -26,7 +26,7 @@ class DatabaseService{
     await db.execute(
         '''
           CREATE TABLE collections (
-            collection_id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY,
             title TEXT,
             description TEXT,
             created_at INTEGER
@@ -37,7 +37,7 @@ class DatabaseService{
         await db.execute(
           '''
           CREATE TABLE chunks (
-            chunk_id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY,
             collection_id INTEGER,
             title TEXT,
             position INTEGER,
@@ -54,7 +54,7 @@ class DatabaseService{
         await db.execute(
           '''
           CREATE TABLE notes (
-            note_id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY,
             chunk_id INTEGER,
             content TEXT,
             position INTEGER,
