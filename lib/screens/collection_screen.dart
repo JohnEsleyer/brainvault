@@ -28,7 +28,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
   void loadData() async {
     try {
       collection = await dbHelper.getCollectionById(widget.collectionId);
-      documents = await dbHelper.getDocumentsByCollectionId(widget.collectionId);
+      documents =
+          await dbHelper.getDocumentsByCollectionId(widget.collectionId);
 
       // When successfull
       setState(() {
@@ -48,7 +49,27 @@ class _CollectionScreenState extends State<CollectionScreen> {
           return Scaffold(
             floatingActionButton: FloatingActionButton(
               child: Icon(Icons.add),
-              onPressed: () {},
+              onPressed: () async {
+                var data = {
+                  'collection_id': widget.collectionId,
+                  'title': 'Untitled',
+                  'position': documents.length + 1,
+                  'created_at': DateTime.now().millisecondsSinceEpoch,
+                  'last_reviewed': DateTime.now().millisecondsSinceEpoch,
+                  'next_review': DateTime.now().millisecondsSinceEpoch + 86400000, // Adding 1 day in milliseconds
+                  'spaced_repetition_level': 0,
+                };
+                try{
+                  int id = await dbHelper.insertDocument(data);
+
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => DocumentScreen(documentId: id),
+                  ));
+                }catch(e){
+                  print("Document creation failed: $e");
+                }
+
+              },
               backgroundColor: palette[5],
             ),
             body: Container(
@@ -98,26 +119,34 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           child: Wrap(
                             children: [
                               for (var document in documents)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: (){
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => DocumentScreen(documentId: document['id']),
-                                    ));
-                                  },
-                                  child: Container(
-                                    height: 100,
-                                    width: 150,
-                                    decoration: BoxDecoration(
-                                      color: palette[2],
-                                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (_) => DocumentScreen(
+                                            documentId: document['id']),
+                                      ));
+                                    },
+                                    child: Container(
+                                      height: 100,
+                                      width: 150,
+                                      decoration: BoxDecoration(
+                                        color: palette[2],
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          document['title'],
+                                          textAlign: TextAlign.center,
+                                          
+                                        ),
+                                      ),
                                     ),
-                                    child: Center(child: Text(document['title'])),
                                   ),
                                 ),
-                              ),
-                            
                             ],
                           ),
                         ),

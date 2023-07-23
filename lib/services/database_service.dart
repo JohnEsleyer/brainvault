@@ -142,6 +142,16 @@ class DatabaseService {
         where: 'document_id = ?', whereArgs: [document['document_id']]);
   }
 
+  Future<int> updateDocumentTitle(int documentId, String newTitle) async {
+    final db = await database;
+    final Map<String, dynamic> document = {
+      'title': newTitle,
+    };
+    return await db.update('documents', document,
+        where: 'id = ?', whereArgs: [documentId]);
+  }
+
+
   Future<int> deleteDocument(int documentId) async {
     final db = await database;
     return await db

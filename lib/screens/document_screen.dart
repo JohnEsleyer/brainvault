@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:secondbrain/services/database_service.dart';
 
 import '../colors.dart';
 
@@ -13,13 +14,26 @@ class DocumentScreen extends StatefulWidget{
 }
 
 class _DocumentScreenState extends State<DocumentScreen>{
+  final dbHelper = DatabaseService();
   final TextEditingController _titleController = TextEditingController();
+  late Map<String, dynamic> document;
 
   @override 
   void initState(){
     super.initState();
-    _titleController.text = 'Title';
+    loadData();
   }
+
+  void loadData() async {
+   document = await dbHelper.getDocumentById(widget.documentId);
+   _titleController.text = document['title'];
+  }
+
+  void updateTitle() async {
+    await dbHelper.updateDocumentTitle(widget.documentId, _titleController.text);
+  }
+
+
   @override 
   Widget build(BuildContext context){
     
@@ -37,6 +51,9 @@ class _DocumentScreenState extends State<DocumentScreen>{
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: EditableText(
+                        onChanged: (newText){
+                          updateTitle();
+                        },
                         backgroundCursorColor: palette[1],
                         cursorColor: Colors.white,
                         controller: _titleController,
