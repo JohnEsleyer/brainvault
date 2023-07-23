@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'dart:html' as html;
-
 import '../services/database_service.dart';
 
-
-class MainScreen extends StatefulWidget{
-
-  @override 
+class MainScreen extends StatefulWidget {
+  @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-
-
   final dbHelper = DatabaseService();
 
-  @override 
-  void initState(){
+  @override
+  void initState() {
     super.initState();
-
   }
-
 
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -53,10 +45,10 @@ class _MainScreenState extends State<MainScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                     GestureDetector(
+                      GestureDetector(
                         onTap: () async {
-                          
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Test()));
                         },
                         child: Row(
                           children: [
@@ -114,8 +106,8 @@ class _MainScreenState extends State<MainScreen> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                        
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Test()));
                         },
                         child: Row(
                           children: [
@@ -126,7 +118,8 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Test()));
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Test()));
                         },
                         child: Row(
                           children: [
@@ -147,8 +140,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-
-
 //// TEMP
 class Test extends StatefulWidget {
   @override
@@ -162,58 +153,67 @@ class _TestState extends State<Test> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Center(
         child: Column(
           children: [
             Text(userString),
-            ElevatedButton(onPressed: () async {
-
-              try{
-                List<Map<String, dynamic>> collections = await dbHelper.getAllCollections();
-              if (collections.isNotEmpty){
-                // Display the retrieved brain collections
-                print('Brain Collections:');
-                setState(() {
-                for (var collection in collections){
-                  collectionList.add(collection['title']);
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  List<Map<String, dynamic>> collections =
+                      await dbHelper.getAllCollections();
+                  if (collections.isNotEmpty) {
+                    // Display the retrieved brain collections
+                    print('Brain Collections:');
+                    setState(() {
+                      for (var collection in collections) {
+                        collectionList.add(collection['title']);
+                      }
+                    });
+                  } else {
+                    print('No collections found.');
+                  }
+                } catch (e) {
+                  print('Error while getting collections: $e');
                 }
-                });
-                
-              }else{
-                print('No collections found.');
-              }
-              }catch(e){
-                print('Error while getting collections: $e');
-              }
-            }, child: Text("Display all"),),
+              },
+              child: Text("Display all"),
+            ),
             ElevatedButton(
               child: Text("Insert Collection"),
               onPressed: () async {
-
                 var data = {
                   'title': 'Sample Collection',
                   'description': 'This is a sample brain collection.',
                   'created_at': DateTime.now().microsecondsSinceEpoch,
                 };
-                try{
+                try {
                   var db = DatabaseService();
                   await db.insertCollection(data);
-                }catch(e){
+                } catch (e) {
                   print('Error while inserting a collection: $e');
                 }
               },
             ),
-            ElevatedButton(onPressed: (){
-              Navigator.of(context).popAndPushNamed('/dashboard');
-            }, child: Text('Dashboard'),),
-            Column(children: [
-              for (var i=0;i<collectionList.length;i++)
-                Text('Title: ${collectionList[i]}'),
-            ],),
-            
-          
+            ElevatedButton(
+              onPressed: () async {
+
+              },
+              child: Text('Insert chunk'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).popAndPushNamed('/dashboard');
+              },
+              child: Text('Dashboard'),
+            ),
+            Column(
+              children: [
+                for (var i = 0; i < collectionList.length; i++)
+                  Text('Title: ${collectionList[i]}'),
+              ],
+            ),
           ],
         ),
       ),

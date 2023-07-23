@@ -36,7 +36,7 @@ class DatabaseService{
 
         await db.execute(
           '''
-          CREATE TABLE chunks (
+          CREATE TABLE documents (
             id INTEGER PRIMARY KEY,
             collection_id INTEGER,
             title TEXT,
@@ -55,14 +55,14 @@ class DatabaseService{
           '''
           CREATE TABLE notes (
             id INTEGER PRIMARY KEY,
-            chunk_id INTEGER,
+            document_id INTEGER,
             content TEXT,
             position INTEGER,
             created_at INTEGER,
             last_reviewed INTEGER,
             next_review INTEGER,
             spaced_repetition_level INTEGER,
-            FOREIGN KEY (chunk_id) REFERENCES chunks (chunk_id) 
+            FOREIGN KEY (document_id) REFERENCES documents (document_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
           '''
@@ -109,71 +109,53 @@ class DatabaseService{
         where: 'collection_id = ?', whereArgs: [collectionId]);
   }
 
-  // Future<String> getCollectionTitleById(int id) async {
-  //   final db = await database;
-  //   final List<Map<String, dynamic>> collections = await db.query(
-  //     'collections',
-  //     columns: ['title'],
-  //     where: 'id = ?',
-  //     whereArgs: [id],
-  //   );
-
-  //   if (collections.isNotEmpty) {
-  //     // Extract the title from the first record and return it.
-  //     return collections.first['title'] as String;
-  //   } else {
-  //     throw Exception('Collection with ID $id not found.');
-  //   }
-  // }
-
-
-  // CRUD Operations for 'chunks' table
-  Future<int> insertChunk(Map<String, dynamic> chunk) async {
+  // CRUD Operations for 'documents' table
+  Future<int> insertDocument(Map<String, dynamic> document) async {
     final db = await database;
-    return await db.insert('chunks', chunk);
+    return await db.insert('documents', document);
   }
 
-  Future<List<Map<String, dynamic>>> getAllChunks() async {
+  Future<List<Map<String, dynamic>>> getAllDocuments() async {
     final db = await database;
-    return await db.query('chunks');
+    return await db.query('documents');
   }
 
-  Future<List<Map<String, dynamic>>> getChunksByCollectionId(int collectionId) async {
+  Future<List<Map<String, dynamic>>> getDocumentsByCollectionId(int collectionId) async {
     final db = await database;
-    final List<Map<String, dynamic>> chunks = await db.query(
-      'chunks',
+    final List<Map<String, dynamic>> documents = await db.query(
+      'documents',
       where: 'collection_id = ?',
       whereArgs: [collectionId],
     );
-    return chunks;
+    return documents;
   }
 
-  Future<Map<String, dynamic>> getChunkById(int id) async {
+  Future<Map<String, dynamic>> getDocumentById(int id) async {
     final db = await database;
-    final List<Map<String, dynamic>> chunks = await db.query(
-      'chunks',
+    final List<Map<String, dynamic>> documents = await db.query(
+      'documents',
       where: 'id = ?',
       whereArgs: [id],
     );
 
-    if (chunks.isNotEmpty) {
-      return chunks.first;
+    if (documents.isNotEmpty) {
+      return documents.first;
     } else {
-      throw Exception('Chunk with ID $id not found.');
+      throw Exception('Document with ID $id not found.');
     }
   }
 
 
 
-  Future<int> updateChunk(Map<String, dynamic> chunk) async {
+  Future<int> updateDocument(Map<String, dynamic> document) async {
     final db = await database;
-    return await db.update('chunks', chunk,
-        where: 'chunk_id = ?', whereArgs: [chunk['chunk_id']]);
+    return await db.update('documents', document,
+        where: 'document_id = ?', whereArgs: [document['document_id']]);
   }
 
-  Future<int> deleteChunk(int chunkId) async {
+  Future<int> deleteDocument(int documentId) async {
     final db = await database;
-    return await db.delete('chunks', where: 'chunk_id = ?', whereArgs: [chunkId]);
+    return await db.delete('documents', where: 'document_id = ?', whereArgs: [documentId]);
   }
 
   // CRUD Operations for 'notes' table

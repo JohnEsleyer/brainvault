@@ -104,7 +104,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -117,7 +116,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -130,7 +128,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -143,7 +140,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -156,7 +152,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -169,7 +164,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -182,7 +176,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -195,7 +188,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -208,7 +200,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -221,7 +212,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -234,7 +224,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -247,7 +236,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
@@ -260,7 +248,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   decoration: BoxDecoration(
                                     color: palette[2],
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(child: Text('Title')),
                                 ),
