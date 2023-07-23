@@ -138,7 +138,9 @@ class _NoteScreenState extends State<NoteScreen> {
 
   void loadData() async {
     note = await dbHelper.getNoteById(widget.noteId);
-    inputString = note['content'];
+    setState(() {
+      inputString = note['content'];
+    });
   }
 
   void updateData() async {
@@ -154,26 +156,20 @@ class _NoteScreenState extends State<NoteScreen> {
       setState(() {
         dropdownValue = 'HTML';
       });
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(237, 34, 34, 34),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: displayNote(),
-                ),
-              ),
+      return Padding(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Color.fromARGB(237, 34, 34, 34),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
-          ],
-        ),
-      );
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: displayNote(),
+            ),
+          ),
+        );
     } else {
       return Scaffold(
         body: Row(
