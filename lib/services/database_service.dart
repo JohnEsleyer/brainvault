@@ -169,10 +169,21 @@ class DatabaseService {
     return await db.query('notes');
   }
 
+  Future<Map<String, dynamic>> getNoteById(int noteId) async {
+    final db = await database;
+    List<Map<String, dynamic>> notes = await db.query('notes', where: 'id = ?', whereArgs: [noteId]);
+    if (notes.isNotEmpty) {
+      return notes.first;
+    } else {
+      throw Exception('Note with ID $noteId not found');
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getAllNotesByDocumentId(int documentId) async {
     final db = await database;
     return await db.query('notes', where: 'document_id = ?', whereArgs: [documentId]);
   }
+
 
 
   Future<int> updateNote(Map<String, dynamic> note) async {
@@ -180,6 +191,15 @@ class DatabaseService {
     return await db.update('notes', note,
         where: 'note_id = ?', whereArgs: [note['note_id']]);
   }
+
+  Future<int> updateNoteContent(int noteId, String newContent) async {
+    final db = await database;
+    final Map<String, dynamic> updatedNote = {
+      'content': newContent,
+    };
+    return await db.update('notes', updatedNote, where: 'id = ?', whereArgs: [noteId]);
+  }
+
 
   Future<int> deleteNote(int noteId) async {
     final db = await database;

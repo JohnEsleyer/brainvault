@@ -4,15 +4,22 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:secondbrain/functions.dart';
 import 'package:tex_markdown/tex_markdown.dart';
 
+import '../services/database_service.dart';
+
 class NoteScreen extends StatefulWidget {
   final int noteId;
-  NoteScreen({required this.noteId});
+  final bool readMode;
+  NoteScreen({required this.noteId, required this.readMode});
 
   @override
   _NoteScreenState createState() => _NoteScreenState();
 }
 
 class _NoteScreenState extends State<NoteScreen> {
+
+  // Initialize database helper
+  final dbHelper = DatabaseService();
+
   // Dropdown value
   String dropdownValue = "Markdown";
 
@@ -27,6 +34,9 @@ class _NoteScreenState extends State<NoteScreen> {
 
   // Image URL
   String imageUrl = '';
+
+  // Note data
+  late Map<String, dynamic> note;
 
   var codeTheme = {
     'root': TextStyle(
@@ -74,19 +84,18 @@ class _NoteScreenState extends State<NoteScreen> {
   ];
 
   Widget displayNote() {
-     // If user selected 'HTML' option
+    // If user selected 'HTML' option
     if (dropdownValue == 'HTML') {
       return HtmlWidget(
         inputString,
       );
     }
-     // If user selected 'Markdown' option 
+    // If user selected 'Markdown' option
     else if (dropdownValue == 'Markdown') {
       return TexMarkdown(
         inputString,
       );
-      
-    } 
+    }
     // If user selected 'Code' option
     else if (dropdownValue == 'Code') {
       return HighlightView(
@@ -95,232 +104,283 @@ class _NoteScreenState extends State<NoteScreen> {
         theme: codeTheme,
       );
     }
-     // If user selected 'Image' option
+    // If user selected 'Image' option
     else if (dropdownValue == 'Image + Markdown') {
-
       // Check if Input String is URL or not
-      if (isUrl(imageUrl)){
+      if (isUrl(imageUrl)) {
         return Column(
           children: [
-            Image.network(imageUrl, errorBuilder: (context, error, stackTrace) {
-              return Text("Invalid URL");
-            },),
+            Image.network(
+              imageUrl,
+              errorBuilder: (context, error, stackTrace) {
+                return const Text("Invalid URL");
+              },
+            ),
             TexMarkdown(
               inputString,
             ),
           ],
         );
-      }else{
-        return Text("Invalid URL");
+      } else {
+        return const Text("Invalid URL");
       }
-      
     }
 
     return Container();
   }
 
+
+  @override 
+  void initState(){
+    super.initState();
+    loadData();
+  }
+
+  void loadData() async {
+    note = await dbHelper.getNoteById(widget.noteId);
+    inputString = note['content'];
+  }
+
+  void updateData() async {
+    await dbHelper.updateNoteContent(widget.noteId, inputString);
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          // Editor section
-          Container(
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 37, 37, 37),
+    if (widget.readMode) {
+      // READING MODE
+
+      setState(() {
+        dropdownValue = 'HTML';
+      });
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(237, 34, 34, 34),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: displayNote(),
+                ),
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  child: Container(
-                    height: 40,
-                    child: Row(
-                      children: [
-                        DropdownButton(
-                            value: dropdownValue,
-                            items: items.map((String items) {
-                              return DropdownMenuItem(
-                                value: items,
-                                child: Text(items),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                dropdownValue = newValue!;
-                                if (dropdownValue == 'Image + Markdown') {
-                                  imageMode = true;
-                                } else {
-                                  imageMode = false;
-                                }
-                              });
-                              Scaffold.of(context).build(context);
-                            }),
-                      ],
+          ],
+        ),
+      );
+    } else {
+      return Scaffold(
+        body: Row(
+          children: [
+            // Editor section
+            Container(
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 37, 37, 37),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    child: Container(
+                      height: 40,
+                      child: Row(
+                        children: [
+                          DropdownButton(
+                              value: dropdownValue,
+                              items: items.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(items),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  dropdownValue = newValue!;
+                                  if (dropdownValue == 'Image + Markdown') {
+                                    imageMode = true;
+                                  } else {
+                                    imageMode = false;
+                                  }
+                                });
+                                Scaffold.of(context).build(context);
+                              }),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                !imageMode
-                    ? 
-                    // If Image mode is false
-                    Container(
-                        width: MediaQuery.of(context).size.width * 0.50,
-                        height: MediaQuery.of(context).size.height - 40,
-                        child: TextField(
-                                cursorColor: Colors.white,
-                                decoration: const InputDecoration(
-                                  isCollapsed: true,
-                                  hintText: 'Type something...',
-                                  hoverColor: Colors.white,
-                                  focusColor: Colors.white,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-    
-                                ),
-                                expands: true,
-                                maxLines: null,
-                                minLines: null,
-                                onChanged: (String value) {
-                                  if (value != '') {
-                                    setState(() {
-                                      isEmpty = false;
-                              
-                                      inputString = value;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      isEmpty = true;
-                                    });
-                                  }
-                                },
-                                ),
-                      )
-                    :
-                    // If Image mode is true
-                     Container(
-                        width: MediaQuery.of(context).size.width * 0.50,
-                        height: MediaQuery.of(context).size.height - 40,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: 
-                          // Ask Image URL
-                          Column(
-                            children: [
-                              TextField(
-                                cursorColor: Colors.white,
-                                decoration: const InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color:Colors.white,),
-                                  ),
-                                  hintText: 'Enter image URL',
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                ),
-                                expands: false,
-                                minLines: 1,
-                                onChanged: (String value) {
-                                  if (value != '') {
-                                    setState(() {
-                                      isEmpty = false;
-                        
-                                      imageUrl = value;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      isEmpty = true;
-                                    });
-                                  }
-                                },
+                  !imageMode
+                      ?
+                      // If Image mode is false
+                      Container(
+                          width: MediaQuery.of(context).size.width * 0.50,
+                          height: MediaQuery.of(context).size.height - 40,
+                          child: TextField(
+                            cursorColor: Colors.white,
+                            decoration: const InputDecoration(
+                              isCollapsed: true,
+                              hintText: 'Type something...',
+                              hoverColor: Colors.white,
+                              focusColor: Colors.white,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
                               ),
-                            
-                              // Image Description 
-                              SizedBox(height: 15),
-                              Expanded(
-                                child: TextField(
-                                cursorColor: Colors.white,
-                                decoration: const InputDecoration(
-                                  isCollapsed: true,
-                                  hintText: 'Type something...',
-                                  hoverColor: Colors.white,
-                                  focusColor: Colors.white,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                                expands: true,
-                                maxLines: null,
-                                minLines: null,
-                                onChanged: (String value) {
-                                  if (value != '') {
-                                    setState(() {
-                                      isEmpty = false;
-                              
-                                      inputString = value;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      isEmpty = true;
-                                    });
-                                  }
-                                },
-                                ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
                               ),
-                            ],
+                            ),
+                            expands: true,
+                            maxLines: null,
+                            minLines: null,
+                            onChanged: (String value) {
+                              if (value != '') {
+                                setState(() {
+                                  isEmpty = false;
+
+                                  inputString = value;
+                                });
+                              } else {
+                                setState(() {
+                                  isEmpty = true;
+                                });
+                              }
+                              updateData();
+                            },
                           ),
-                        ),
-                      ),
-              ],
-            ),
-          ),
-    
-          // Renderer Section
-          !isEmpty
-              ? SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.02),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.46,
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(237, 34, 34, 34),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
+                        )
+                      :
+                      // If Image mode is true
+                      Container(
+                          width: MediaQuery.of(context).size.width * 0.50,
+                          height: MediaQuery.of(context).size.height - 40,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: displayNote(),
+                            child:
+                                // Ask Image URL
+                                Column(
+                              children: [
+                                TextField(
+                                  cursorColor: Colors.white,
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    hintText: 'Enter image URL',
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                    ),
+                                  ),
+                                  expands: false,
+                                  minLines: 1,
+                                  onChanged: (String value) {
+                                    if (value != '') {
+                                      setState(() {
+                                        isEmpty = false;
+
+                                        imageUrl = value;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        isEmpty = true;
+                                      });
+                                    }
+                                  },
+                                ),
+
+                                // Image Description
+                                SizedBox(height: 15),
+                                Expanded(
+                                  child: TextField(
+                                    cursorColor: Colors.white,
+                                    decoration: const InputDecoration(
+                                      isCollapsed: true,
+                                      hintText: 'Type something...',
+                                      hoverColor: Colors.white,
+                                      focusColor: Colors.white,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                    expands: true,
+                                    maxLines: null,
+                                    minLines: null,
+                                    onChanged: (String value) {
+                                      if (value != '') {
+                                        setState(() {
+                                          isEmpty = false;
+
+                                          inputString = value;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          isEmpty = true;
+                                        });
+                                      }
+                                      updateData();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
+                ],
+              ),
+            ),
+
+            // Renderer Section
+            !isEmpty
+                ? SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.width * 0.02),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.46,
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(237, 34, 34, 34),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: displayNote(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Padding(
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.02),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.46,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(237, 34, 34, 34),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                    ],
-                  ),
-                )
-              : Padding(
-                  padding:
-                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.46,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(237, 34, 34, 34),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('Write something on the editor.'),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Write something on the editor.'),
+                      ),
                     ),
                   ),
-                ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 }
