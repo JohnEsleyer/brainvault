@@ -169,6 +169,12 @@ class DatabaseService {
     return await db.query('notes');
   }
 
+  Future<List<Map<String, dynamic>>> getAllNotesByDocumentId(int documentId) async {
+    final db = await database;
+    return await db.query('notes', where: 'document_id = ?', whereArgs: [documentId]);
+  }
+
+
   Future<int> updateNote(Map<String, dynamic> note) async {
     final db = await database;
     return await db.update('notes', note,

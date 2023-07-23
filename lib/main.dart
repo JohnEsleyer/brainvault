@@ -36,19 +36,7 @@ void main() async {
   );
 }
 
-class SecondBrainApp extends StatefulWidget {
-  @override
-  _SecondBrainApp createState() => _SecondBrainApp();
-}
 
-class _SecondBrainApp extends State<SecondBrainApp> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: NoteScreen(),
-    );
-  }
-}
 
 class Test extends StatefulWidget {
   @override

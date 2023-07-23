@@ -5,6 +5,9 @@ import 'package:secondbrain/functions.dart';
 import 'package:tex_markdown/tex_markdown.dart';
 
 class NoteScreen extends StatefulWidget {
+  final int noteId;
+  NoteScreen({required this.noteId});
+
   @override
   _NoteScreenState createState() => _NoteScreenState();
 }
@@ -118,204 +121,206 @@ class _NoteScreenState extends State<NoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // Editor section
-        Container(
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 37, 37, 37),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                child: Container(
-                  height: 40,
-                  child: Row(
-                    children: [
-                      DropdownButton(
-                          value: dropdownValue,
-                          items: items.map((String items) {
-                            return DropdownMenuItem(
-                              value: items,
-                              child: Text(items),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              dropdownValue = newValue!;
-                              if (dropdownValue == 'Image + Markdown') {
-                                imageMode = true;
-                              } else {
-                                imageMode = false;
-                              }
-                            });
-                            Scaffold.of(context).build(context);
-                          }),
-                    ],
+    return Scaffold(
+      body: Row(
+        children: [
+          // Editor section
+          Container(
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 37, 37, 37),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  child: Container(
+                    height: 40,
+                    child: Row(
+                      children: [
+                        DropdownButton(
+                            value: dropdownValue,
+                            items: items.map((String items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Text(items),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                dropdownValue = newValue!;
+                                if (dropdownValue == 'Image + Markdown') {
+                                  imageMode = true;
+                                } else {
+                                  imageMode = false;
+                                }
+                              });
+                              Scaffold.of(context).build(context);
+                            }),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              !imageMode
-                  ? 
-                  // If Image mode is false
-                  Container(
-                      width: MediaQuery.of(context).size.width * 0.50,
-                      height: MediaQuery.of(context).size.height - 40,
-                      child: TextField(
-                              cursorColor: Colors.white,
-                              decoration: const InputDecoration(
-                                isCollapsed: true,
-                                hintText: 'Type something...',
-                                hoverColor: Colors.white,
-                                focusColor: Colors.white,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
+                !imageMode
+                    ? 
+                    // If Image mode is false
+                    Container(
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        height: MediaQuery.of(context).size.height - 40,
+                        child: TextField(
+                                cursorColor: Colors.white,
+                                decoration: const InputDecoration(
+                                  isCollapsed: true,
+                                  hintText: 'Type something...',
+                                  hoverColor: Colors.white,
+                                  focusColor: Colors.white,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+    
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
+                                expands: true,
+                                maxLines: null,
+                                minLines: null,
+                                onChanged: (String value) {
+                                  if (value != '') {
+                                    setState(() {
+                                      isEmpty = false;
+                              
+                                      inputString = value;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      isEmpty = true;
+                                    });
+                                  }
+                                },
                                 ),
-
-                              ),
-                              expands: true,
-                              maxLines: null,
-                              minLines: null,
-                              onChanged: (String value) {
-                                if (value != '') {
-                                  setState(() {
-                                    isEmpty = false;
-                            
-                                    inputString = value;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isEmpty = true;
-                                  });
-                                }
-                              },
-                              ),
-                    )
-                  :
-                  // If Image mode is true
-                   Container(
-                      width: MediaQuery.of(context).size.width * 0.50,
-                      height: MediaQuery.of(context).size.height - 40,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: 
-                        // Ask Image URL
-                        Column(
-                          children: [
-                            TextField(
-                              cursorColor: Colors.white,
-                              decoration: const InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color:Colors.white,),
-                                ),
-                                hintText: 'Enter image URL',
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
-                                ),
-                              ),
-                              expands: false,
-                              minLines: 1,
-                              onChanged: (String value) {
-                                if (value != '') {
-                                  setState(() {
-                                    isEmpty = false;
-                      
-                                    imageUrl = value;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isEmpty = true;
-                                  });
-                                }
-                              },
-                            ),
-                          
-                            // Image Description 
-                            SizedBox(height: 15),
-                            Expanded(
-                              child: TextField(
-                              cursorColor: Colors.white,
-                              decoration: const InputDecoration(
-                                isCollapsed: true,
-                                hintText: 'Type something...',
-                                hoverColor: Colors.white,
-                                focusColor: Colors.white,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                              expands: true,
-                              maxLines: null,
-                              minLines: null,
-                              onChanged: (String value) {
-                                if (value != '') {
-                                  setState(() {
-                                    isEmpty = false;
-                            
-                                    inputString = value;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isEmpty = true;
-                                  });
-                                }
-                              },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-            ],
-          ),
-        ),
-
-        // Renderer Section
-        !isEmpty
-            ? SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(
-                          MediaQuery.of(context).size.width * 0.02),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.46,
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(237, 34, 34, 34),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
+                      )
+                    :
+                    // If Image mode is true
+                     Container(
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        height: MediaQuery.of(context).size.height - 40,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: displayNote(),
+                          child: 
+                          // Ask Image URL
+                          Column(
+                            children: [
+                              TextField(
+                                cursorColor: Colors.white,
+                                decoration: const InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color:Colors.white,),
+                                  ),
+                                  hintText: 'Enter image URL',
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                ),
+                                expands: false,
+                                minLines: 1,
+                                onChanged: (String value) {
+                                  if (value != '') {
+                                    setState(() {
+                                      isEmpty = false;
+                        
+                                      imageUrl = value;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      isEmpty = true;
+                                    });
+                                  }
+                                },
+                              ),
+                            
+                              // Image Description 
+                              SizedBox(height: 15),
+                              Expanded(
+                                child: TextField(
+                                cursorColor: Colors.white,
+                                decoration: const InputDecoration(
+                                  isCollapsed: true,
+                                  hintText: 'Type something...',
+                                  hoverColor: Colors.white,
+                                  focusColor: Colors.white,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                expands: true,
+                                maxLines: null,
+                                minLines: null,
+                                onChanged: (String value) {
+                                  if (value != '') {
+                                    setState(() {
+                                      isEmpty = false;
+                              
+                                      inputString = value;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      isEmpty = true;
+                                    });
+                                  }
+                                },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+              ],
+            ),
+          ),
+    
+          // Renderer Section
+          !isEmpty
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.02),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.46,
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(237, 34, 34, 34),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: displayNote(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Padding(
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.46,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(237, 34, 34, 34),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                  ],
-                ),
-              )
-            : Padding(
-                padding:
-                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.46,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(237, 34, 34, 34),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('Write something on the editor.'),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Write something on the editor.'),
+                    ),
                   ),
                 ),
-              ),
-      ],
+        ],
+      ),
     );
   }
 }
