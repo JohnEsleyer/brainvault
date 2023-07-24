@@ -18,6 +18,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   late List<Map<String, dynamic>> documents;
   late Map<String, dynamic> collection;
   bool isLoading = true;
+  bool hidden = true;
 
   @override
   void initState() {
@@ -38,6 +39,27 @@ class _CollectionScreenState extends State<CollectionScreen> {
     } catch (e) {
       print("Loading Data Failed: $e");
     }
+  }
+
+  void refreshData() async {
+    setState(() {
+      hidden = false;
+    });
+    try{
+      var col = await dbHelper.getCollectionById(widget.collectionId);
+      var doc = await dbHelper.getDocumentsByCollectionId(widget.collectionId);
+
+      // When succesfull
+      setState(() {
+        collection = col;
+        documents = doc;
+      },);
+    }catch(e){
+      print('Failed to refreshd data: $e');
+    }
+    setState(() {
+      hidden = true;
+    });
   }
 
   @override
@@ -62,9 +84,10 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 try{
                   int id = await dbHelper.insertDocument(data);
 
-                  Navigator.of(context).push(MaterialPageRoute(
+                  await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => DocumentScreen(documentId: id),
                   ));
+                  refreshData();
                 }catch(e){
                   print("Document creation failed: $e");
                 }
@@ -98,16 +121,19 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           Text(
                             collection['description'],
                           ),
-                          Container(
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(Icons.edit, color: Colors.white),
-                              )),
+                          if (!hidden)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                             Padding(
+                               padding: const EdgeInsets.all(8.0),
+                               child: Container(
+                                height: 20,
+                                width: 20,
+                                child: Icon(Icons.refresh, color: Colors.white)),
+                             ),
+                          ],
+                        ),
                         ],
                       ),
                     ),
@@ -122,12 +148,13 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context)
+                                    onTap: () async {
+                                      await Navigator.of(context)
                                           .push(MaterialPageRoute(
                                         builder: (_) => DocumentScreen(
                                             documentId: document['id']),
                                       ));
+                                      refreshData();
                                     },
                                     child: Container(
                                       height: 100,

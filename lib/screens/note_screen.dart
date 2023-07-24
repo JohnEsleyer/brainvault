@@ -4,6 +4,7 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:secondbrain/functions.dart';
 import 'package:tex_markdown/tex_markdown.dart';
 
+import '../colors.dart';
 import '../services/database_service.dart';
 
 class NoteScreen extends StatefulWidget {
@@ -16,7 +17,6 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
-
   // Initialize database helper
   final dbHelper = DatabaseService();
 
@@ -129,9 +129,8 @@ class _NoteScreenState extends State<NoteScreen> {
     return Container();
   }
 
-
-  @override 
-  void initState(){
+  @override
+  void initState() {
     super.initState();
     loadData();
   }
@@ -147,7 +146,6 @@ class _NoteScreenState extends State<NoteScreen> {
     await dbHelper.updateNoteContent(widget.noteId, inputString);
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (widget.readMode) {
@@ -157,19 +155,19 @@ class _NoteScreenState extends State<NoteScreen> {
         dropdownValue = 'HTML';
       });
       return Padding(
-          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: Color.fromARGB(237, 34, 34, 34),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: displayNote(),
-            ),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Color.fromARGB(237, 34, 34, 34),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-        );
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: displayNote(),
+          ),
+        ),
+      );
     } else {
       return Scaffold(
         body: Row(
@@ -346,7 +344,7 @@ class _NoteScreenState extends State<NoteScreen> {
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.46,
                             decoration: BoxDecoration(
-                              color: Color.fromARGB(237, 34, 34, 34),
+                              color: palette[2],
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
                             ),
@@ -356,23 +354,79 @@ class _NoteScreenState extends State<NoteScreen> {
                             ),
                           ),
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 50,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: palette[5],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Go Back',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: palette[1],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   )
-                : Padding(
-                    padding: EdgeInsets.all(
-                        MediaQuery.of(context).size.width * 0.02),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.46,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(237, 34, 34, 34),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                : Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.02),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.46,
+                          decoration: BoxDecoration(
+                            color: palette[2],
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Write something on the editor.'),
+                          ),
+                        ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Write something on the editor.'),
-                      ),
-                    ),
+                     GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 50,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: palette[5],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Go Back',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: palette[1],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
           ],
         ),

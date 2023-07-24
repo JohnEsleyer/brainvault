@@ -18,7 +18,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
   final TextEditingController _titleController = TextEditingController();
   late Map<String, dynamic> _document;
   late List<Map<String, dynamic>> _notes;
-
+  bool hidden = true;
   late Future<void> loadingData;
 
   @override
@@ -37,6 +37,28 @@ class _DocumentScreenState extends State<DocumentScreen> {
     }
   }
 
+  void refreshData() async {
+    setState(() {
+      hidden = false;
+    });
+    try{
+    var doc = await dbHelper.getDocumentById(widget.documentId);
+    var text = _document['title'];
+    var notes = await dbHelper.getAllNotesByDocumentId(widget.documentId);
+    setState(() {
+      _document = doc;
+      _titleController.text = text;
+      _notes = notes;
+    });
+    }catch(e){
+      print('Failed to refresh data: $e');
+    }
+
+    setState(() {
+      hidden = true;
+    });
+  }
+
   void updateTitle() async {
     await dbHelper.updateDocumentTitle(
         widget.documentId, _titleController.text);
@@ -46,6 +68,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder(
         future: loadingData,
         builder: (context, snapshot) {
@@ -78,13 +101,38 @@ class _DocumentScreenState extends State<DocumentScreen> {
                             ),
                           ),
                         ),
+                        
+
+                        // The purpose of this widget is to forcibly rerender the screen in Web.
+                        if (!hidden)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                             Padding(
+                               padding: const EdgeInsets.all(8.0),
+                               child: Container(
+                                height: 20,
+                                width: 20,
+                                child: Icon(Icons.refresh, color: Colors.white)),
+                             ),
+                          ],
+                        ),
+                          
 
                         for (var note in _notes)
-                          NoteScreen(
-                            noteId: note['id'],
-                            readMode: true,
+                          GestureDetector(
+                            onTap: () async{
+                              await Navigator.of(context).push(MaterialPageRoute(
+                                builder:(_) => NoteScreen(noteId: note['id'], readMode: false),
+                              ));
+                              refreshData();
+                            },
+                            child: NoteScreen(
+                              noteId: note['id'],
+                              readMode: true,
+                            ),
                           ),
-
+                          
                         Padding(
                           padding: EdgeInsets.all(
                               MediaQuery.of(context).size.width * 0.02),
@@ -108,15 +156,16 @@ class _DocumentScreenState extends State<DocumentScreen> {
                               };
                               int noteId = await dbHelper.insertNote(data);
 
-                              Navigator.of(context).push(MaterialPageRoute(
+                              await Navigator.of(context).push(MaterialPageRoute(
                                 builder: (_) => NoteScreen(
                                     noteId: noteId, readMode: false),
                               ));
+                              refreshData();
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
-                                color: palette[2],
+                                color: palette[5],
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10)),
                               ),
@@ -126,7 +175,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     child: Container(
                                   height: 50,
                                   width: 50,
-                                  child: Icon(Icons.add),
+                                  child: Icon(Icons.add, color: palette[1]),
                                 )),
                               ),
                             ),
