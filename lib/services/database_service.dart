@@ -55,6 +55,7 @@ class DatabaseService {
             last_reviewed INTEGER,
             next_review INTEGER,
             spaced_repetition_level INTEGER,
+            type TEXT,
             FOREIGN KEY (document_id) REFERENCES documents (document_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
@@ -205,4 +206,14 @@ class DatabaseService {
     final db = await database;
     return await db.delete('notes', where: 'note_id = ?', whereArgs: [noteId]);
   }
+
+  Future<int> updateNoteType(int noteId, String newType) async {
+    final db = await database;
+    final Map<String, dynamic> updatedNote = {
+      'type': newType,
+    };
+    return await db.update('notes', updatedNote, where: 'id = ?', whereArgs: [noteId]);
+  }
+
+
 }

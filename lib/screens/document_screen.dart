@@ -18,7 +18,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
   final TextEditingController _titleController = TextEditingController();
   late Map<String, dynamic> _document;
   late List<Map<String, dynamic>> _notes;
-  bool hidden = true;
+  bool isLoading = false;
   late Future<void> loadingData;
 
   @override
@@ -39,7 +39,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   void refreshData() async {
     setState(() {
-      hidden = false;
+      isLoading = true;
     });
     try{
     var doc = await dbHelper.getDocumentById(widget.documentId);
@@ -55,7 +55,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
     }
 
     setState(() {
-      hidden = true;
+      isLoading = false;
     });
   }
 
@@ -69,7 +69,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return FutureBuilder(
+    return !isLoading ? FutureBuilder(
         future: loadingData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -101,23 +101,6 @@ class _DocumentScreenState extends State<DocumentScreen> {
                             ),
                           ),
                         ),
-                        
-
-                        // The purpose of this widget is to forcibly rerender the screen in Web.
-                        if (!hidden)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                             Padding(
-                               padding: const EdgeInsets.all(8.0),
-                               child: Container(
-                                height: 20,
-                                width: 20,
-                                child: Icon(Icons.refresh, color: Colors.white)),
-                             ),
-                          ],
-                        ),
-                          
 
                         for (var note in _notes)
                           GestureDetector(
@@ -153,6 +136,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                         .millisecondsSinceEpoch +
                                     86400000, // Adding 1 day in milliseconds
                                 'spaced_repetition_level': 0,
+                                'type': 'HTML',
                               };
                               int noteId = await dbHelper.insertNote(data);
 
@@ -194,6 +178,10 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 body: Center(
                     child: CircularProgressIndicator(color: Colors.white)));
           }
-        });
+        }) : Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(color: Colors.white,),
+          ),
+        );
   }
 }

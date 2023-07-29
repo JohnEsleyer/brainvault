@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:markdown_widget/tags/markdown_tags.dart';
 import 'package:secondbrain/functions.dart';
 import 'package:tex_markdown/tex_markdown.dart';
 
@@ -144,6 +143,7 @@ class _NoteScreenState extends State<NoteScreen> {
     setState(() {
       inputString = note['content'];
       inputController.text = note['content'];
+      dropdownValue = note['type'];
     });
 
     if (inputController.text.length > 0){
@@ -159,6 +159,7 @@ class _NoteScreenState extends State<NoteScreen> {
       inputString = inputController.text;
     });
     await dbHelper.updateNoteContent(widget.noteId, inputController.text);
+    await dbHelper.updateNoteType(widget.noteId, dropdownValue);
   }
 
   @override
@@ -166,21 +167,29 @@ class _NoteScreenState extends State<NoteScreen> {
     if (widget.readMode) {
       // READING MODE
 
-      setState(() {
-        dropdownValue = 'HTML';
-      });
       return Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            color: Color.fromARGB(237, 34, 34, 34),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: render(),
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(dropdownValue),
+              ],
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Color.fromARGB(237, 34, 34, 34),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: render(),
+              ),
+            ),
+          ],
         ),
       );
     } else {
