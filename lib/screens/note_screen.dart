@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:markdown_widget/tags/markdown_tags.dart';
 import 'package:secondbrain/functions.dart';
 import 'package:tex_markdown/tex_markdown.dart';
 
@@ -23,8 +24,11 @@ class _NoteScreenState extends State<NoteScreen> {
   // Dropdown value
   String dropdownValue = "Markdown";
 
-  // Input data obtained from the Editor section
+  // Input data obtained from the Editor section used by the renderer component
   String inputString = '';
+
+  // TextField input controller
+  TextEditingController inputController = TextEditingController();
 
   // Checks if editor is empty
   bool isEmpty = true;
@@ -83,7 +87,7 @@ class _NoteScreenState extends State<NoteScreen> {
     'Image + Markdown',
   ];
 
-  Widget displayNote() {
+  Widget render() {
     // If user selected 'HTML' option
     if (dropdownValue == 'HTML') {
       return HtmlWidget(
@@ -139,11 +143,22 @@ class _NoteScreenState extends State<NoteScreen> {
     note = await dbHelper.getNoteById(widget.noteId);
     setState(() {
       inputString = note['content'];
+      inputController.text = note['content'];
     });
+
+    if (inputController.text.length > 0){
+      setState(() {
+        isEmpty = false;
+      });
+    }
   }
 
   void updateData() async {
-    await dbHelper.updateNoteContent(widget.noteId, inputString);
+    setState(() {
+      // This will allow the renderer component to be rerender when TextField changes.
+      inputString = inputController.text;
+    });
+    await dbHelper.updateNoteContent(widget.noteId, inputController.text);
   }
 
   @override
@@ -164,7 +179,7 @@ class _NoteScreenState extends State<NoteScreen> {
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: displayNote(),
+            child: render(),
           ),
         ),
       );
@@ -202,7 +217,7 @@ class _NoteScreenState extends State<NoteScreen> {
                                     imageMode = false;
                                   }
                                 });
-                                Scaffold.of(context).build(context);
+                                // Scaffold.of(context).build(context);
                               }),
                         ],
                       ),
@@ -231,12 +246,11 @@ class _NoteScreenState extends State<NoteScreen> {
                             expands: true,
                             maxLines: null,
                             minLines: null,
+                            controller: inputController,
                             onChanged: (String value) {
                               if (value != '') {
                                 setState(() {
                                   isEmpty = false;
-
-                                  inputString = value;
                                 });
                               } else {
                                 setState(() {
@@ -309,12 +323,11 @@ class _NoteScreenState extends State<NoteScreen> {
                                     expands: true,
                                     maxLines: null,
                                     minLines: null,
+                                    controller: inputController,
                                     onChanged: (String value) {
                                       if (value != '') {
                                         setState(() {
                                           isEmpty = false;
-
-                                          inputString = value;
                                         });
                                       } else {
                                         setState(() {
@@ -333,7 +346,7 @@ class _NoteScreenState extends State<NoteScreen> {
               ),
             ),
 
-            // Renderer Section
+            // Renderer Component
             !isEmpty
                 ? SingleChildScrollView(
                     child: Column(
@@ -350,7 +363,7 @@ class _NoteScreenState extends State<NoteScreen> {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: displayNote(),
+                              child: render(),
                             ),
                           ),
                         ),
