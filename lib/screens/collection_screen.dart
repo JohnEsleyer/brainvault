@@ -65,9 +65,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
   @override
   Widget build(BuildContext context) {
     if (!isLoading) {
-      return LayoutBuilder(builder: (context, constraints) {
-        if (constraints.maxWidth < 800) {
-          // Mobile View
           return Scaffold(
             floatingActionButton: FloatingActionButton(
               child: Icon(Icons.add),
@@ -182,11 +179,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   ],
                 )),
           );
-        } else {
-          // Desktop View
-          return Scaffold();
-        }
-      });
+        
+      
     } else {
       return Center(
         child: CircularProgressIndicator(color: Colors.white),
