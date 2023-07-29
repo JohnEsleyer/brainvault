@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -140,13 +142,26 @@ class _NoteScreenState extends State<NoteScreen> {
 
   void loadData() async {
     note = await dbHelper.getNoteById(widget.noteId);
-    setState(() {
-      inputString = note['content'];
-      inputController.text = note['content'];
-      dropdownValue = note['type'];
-    });
 
-    if (inputController.text.length > 0){
+
+    if (note['type'] == "Image + Markdown"){
+      // Image + Markdown type has a JSON content that needs to be parsed
+      Map<String, dynamic> data = jsonDecode(note['content']);
+      setState(() {
+        inputString = data['content'];
+        inputController.text = data['content'];
+        dropdownValue = note['type'];
+        imageUrl = data['imageUrl'];
+      });
+    }else{
+      setState(() {
+        inputString = note['content'];
+        inputController.text = note['content'];
+        dropdownValue = note['type'];
+      });
+    }
+
+    if (inputController.text.length > 0) {
       setState(() {
         isEmpty = false;
       });
@@ -158,7 +173,21 @@ class _NoteScreenState extends State<NoteScreen> {
       // This will allow the renderer component to be rerender when TextField changes.
       inputString = inputController.text;
     });
-    await dbHelper.updateNoteContent(widget.noteId, inputController.text);
+
+    if (dropdownValue == "Image + Markdown"){
+      // Creating JSON
+      Map<String, dynamic> data = {
+        'content': inputString,
+        'imageUrl': imageUrl,
+      };
+      String jsonString = jsonEncode(data);
+      dbHelper.updateNoteContent(widget.noteId, jsonString);
+    }else{
+      await dbHelper.updateNoteContent(widget.noteId, inputController.text);
+    }
+    
+
+
     await dbHelper.updateNoteType(widget.noteId, dropdownValue);
   }
 
@@ -175,7 +204,12 @@ class _NoteScreenState extends State<NoteScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(dropdownValue),
+                Text(
+                  dropdownValue,
+                  style: TextStyle(
+                    color: Colors.white30,
+                  ),
+                ),
               ],
             ),
             Container(
@@ -422,32 +456,32 @@ class _NoteScreenState extends State<NoteScreen> {
                           ),
                         ),
                       ),
-                     GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 50,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: palette[5],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Go Back',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: palette[1],
-                                  ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: palette[5],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Go Back',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: palette[1],
                                 ),
                               ),
                             ),
                           ),
                         ),
+                      ),
                     ],
                   ),
           ],
