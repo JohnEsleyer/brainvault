@@ -133,12 +133,10 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                 'content': '',
                                 'position': _notes.length + 1,
                                 'created_at':
-                                    DateTime.now().millisecondsSinceEpoch,
+                                    DateTime.now().toIso8601String(),
                                 'last_reviewed':
-                                    DateTime.now().millisecondsSinceEpoch,
-                                'next_review': DateTime.now()
-                                        .millisecondsSinceEpoch +
-                                    86400000, // Adding 1 day in milliseconds
+                                    DateTime.now().toIso8601String(),
+                                'next_review': DateTime.now().toIso8601String(),
                                 'spaced_repetition_level': 0,
                                 'type': 'HTML',
                               };

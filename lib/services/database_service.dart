@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:html' as html;
+
+import 'package:flutter/foundation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 
 class DatabaseService {
   String dbPath = 'brain.db';
@@ -26,7 +31,7 @@ class DatabaseService {
             id INTEGER PRIMARY KEY,
             title TEXT,
             description TEXT,
-            created_at INTEGER
+            created_at DATETIME
           );
           ''');
 
@@ -36,9 +41,9 @@ class DatabaseService {
             collection_id INTEGER,
             title TEXT,
             position INTEGER,
-            created_at INTEGER,
-            last_reviewed INTEGER,
-            next_review INTEGER,
+            created_at DATETIME,
+            last_reviewed DATETIME,
+            next_review DATETIME,
             spaced_repetition_level INTEGER,
             FOREIGN KEY (collection_id) REFERENCES collections (collection_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
@@ -51,9 +56,9 @@ class DatabaseService {
             document_id INTEGER,
             content TEXT,
             position INTEGER,
-            created_at INTEGER,
-            last_reviewed INTEGER,
-            next_review INTEGER,
+            created_at DATETIME,
+            last_reviewed DATETIME,
+            next_review DATETIME,
             spaced_repetition_level INTEGER,
             type TEXT,
             FOREIGN KEY (document_id) REFERENCES documents (document_id) 
@@ -61,6 +66,48 @@ class DatabaseService {
           );
           ''');
   }
+
+   Future<Uint8List> getDatabaseDataAsJson() async {
+    final db = await database;
+
+    // Query the necessary tables and retrieve the data
+    List<Map<String, dynamic>> collectionsData = await db.query('collections');
+    List<Map<String, dynamic>> documentsData = await db.query('documents');
+    List<Map<String, dynamic>> notesData = await db.query('notes');
+
+    // Organize the data as needed in a Map
+    Map<String, dynamic> jsonData = {
+      'collections': collectionsData,
+      'documents': documentsData,
+      'notes': notesData,
+    };
+
+    // Convert the data to JSON-formatted string
+    String jsonString = jsonEncode(jsonData);
+
+    // Convert the JSON string to Uint8List to use in Blob
+    Uint8List jsonUint8List = Uint8List.fromList(utf8.encode(jsonString));
+    return jsonUint8List;
+  }
+
+void generateAndDownloadJsonFile() async {
+  DatabaseService databaseService = DatabaseService();
+  Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
+
+  // Create a Blob with the JSON data
+  final blob = html.Blob([jsonData], 'application/json');
+
+  // Create a URL for the Blob
+  final url = html.Url.createObjectUrlFromBlob(blob);
+
+  // Create an anchor element (a) to initiate the download
+  html.AnchorElement(href: url)
+    ..setAttribute("download", "database_data.json") // Set the file name
+    ..click(); // Simulate a click event to trigger the download
+
+  // Release the URL resource
+  html.Url.revokeObjectUrl(url);
+}
 
   // CRUD Operations for 'collections' table
   Future<int> insertCollection(Map<String, dynamic> collection) async {

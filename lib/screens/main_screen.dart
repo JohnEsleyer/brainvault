@@ -187,7 +187,7 @@ class _TestState extends State<Test> {
                 var data = {
                   'title': 'Sample Collection',
                   'description': 'This is a sample brain collection.',
-                  'created_at': DateTime.now().microsecondsSinceEpoch,
+                  'created_at': DateTime.now().toIso8601String(),
                 };
                 try {
                   await dbHelper.insertCollection(data);
@@ -202,9 +202,9 @@ class _TestState extends State<Test> {
                   'collection_id': 2,
                   'title': 'Sample Document',
                   'position': count,
-                  'created_at': DateTime.now().millisecondsSinceEpoch,
-                  'last_reviewed': DateTime.now().millisecondsSinceEpoch,
-                  'next_review': DateTime.now().millisecondsSinceEpoch + 86400000, // Adding 1 day in milliseconds
+                  'created_at': DateTime.now().toIso8601String(),
+                  'last_reviewed': DateTime.now().toIso8601String(),
+                  'next_review': DateTime.now().toIso8601String(), 
                   'spaced_repetition_level': 0,
                 };
 
@@ -231,6 +231,9 @@ class _TestState extends State<Test> {
                   Text('Title: ${collectionList[i]}'),
               ],
             ),
+            ElevatedButton(onPressed: (){
+              dbHelper.generateAndDownloadJsonFile();
+            }, child: Text('Download brain'))
           ],
         ),
       ),
