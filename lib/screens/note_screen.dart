@@ -12,7 +12,8 @@ import '../services/database_service.dart';
 class NoteScreen extends StatefulWidget {
   final int noteId;
   final bool readMode;
-  NoteScreen({required this.noteId, required this.readMode});
+  final Function? onDelete;
+  NoteScreen({required this.noteId, required this.readMode, this.onDelete});
 
   @override
   _NoteScreenState createState() => _NoteScreenState();
@@ -42,6 +43,8 @@ class _NoteScreenState extends State<NoteScreen> {
 
   // Note data
   late Map<String, dynamic> note;
+
+  List<Color> deleteColor = [Colors.white30, Color.fromARGB(255, 43, 43, 43)];
 
   var codeTheme = {
     'root': TextStyle(
@@ -87,6 +90,9 @@ class _NoteScreenState extends State<NoteScreen> {
     'Code',
     'Image + Markdown',
   ];
+
+
+
 
   Widget render() {
     // If user selected 'HTML' option
@@ -191,6 +197,39 @@ class _NoteScreenState extends State<NoteScreen> {
     await dbHelper.updateNoteType(widget.noteId, dropdownValue);
   }
 
+
+  Future<void> deleteNote(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: const Text('Delete this note?'),
+          content: const Text('This cannot be undone.'),
+          actions: <Widget> [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+                ),
+              onPressed: () async {
+                await dbHelper.deleteNote(widget.noteId);
+                Navigator.of(context).pop();
+                widget.onDelete?.call();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.readMode) {
@@ -204,12 +243,48 @@ class _NoteScreenState extends State<NoteScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+               
                 Text(
                   dropdownValue,
                   style: TextStyle(
                     color: Colors.white30,
                   ),
                 ),
+                Text(
+                  ' | ',
+                  style: TextStyle(
+                    color: Colors.white30,
+                  ),
+                ),
+                MouseRegion(
+                  onHover: (event){
+                    setState(() {
+                      deleteColor = [Colors.red, Colors.red];
+                    });
+                  },
+                  onExit: (event){
+                    setState(() {
+                      deleteColor = [Colors.white30, Color.fromARGB(255, 43, 43, 43)];
+                    });
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      deleteNote(context);
+                      
+                    },
+                    child: Row(
+                      children: [
+                       Text(
+                      'Delete',
+                      style: TextStyle(
+                        color: deleteColor[0],
+                      ),
+                    ),
+                     Icon(Icons.delete_forever, color: deleteColor[1],),
+                    ],),
+                  ),
+                ),
+               
               ],
             ),
             Container(

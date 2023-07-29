@@ -24,6 +24,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
   @override
   void initState() {
     super.initState();
+
     loadingData = loadData();
   }
 
@@ -101,7 +102,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                             ),
                           ),
                         ),
-
+                    
                         for (var note in _notes)
                           GestureDetector(
                             onTap: () async{
@@ -113,6 +114,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
                             child: NoteScreen(
                               noteId: note['id'],
                               readMode: true,
+                              onDelete: (){
+                                refreshData();
+                              },
                             ),
                           ),
                           
@@ -122,7 +126,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                           child: GestureDetector(
                             onTap: () async {
                               // Create new note
-
+                    
                               var data = {
                                 'document_id': widget
                                     .documentId, // Replace with the appropriate document_id of the associated document
@@ -139,7 +143,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                 'type': 'HTML',
                               };
                               int noteId = await dbHelper.insertNote(data);
-
+                    
                               await Navigator.of(context).push(MaterialPageRoute(
                                 builder: (_) => NoteScreen(
                                     noteId: noteId, readMode: false),

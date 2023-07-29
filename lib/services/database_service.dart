@@ -204,7 +204,7 @@ class DatabaseService {
 
   Future<int> deleteNote(int noteId) async {
     final db = await database;
-    return await db.delete('notes', where: 'note_id = ?', whereArgs: [noteId]);
+    return await db.delete('notes', where: 'id = ?', whereArgs: [noteId]);
   }
 
   Future<int> updateNoteType(int noteId, String newType) async {

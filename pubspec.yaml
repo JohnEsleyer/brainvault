@@ -46,6 +46,7 @@ dependencies:
   sqflite_common_ffi: ^2.2.5
   sqflite_common_ffi_web: ^0.3.6
   provider: ^6.0.5
+  web_smooth_scroll: ^1.1.0
 
 dev_dependencies:
   flutter_test:
