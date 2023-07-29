@@ -91,9 +91,6 @@ class _NoteScreenState extends State<NoteScreen> {
     'Image + Markdown',
   ];
 
-
-
-
   Widget render() {
     // If user selected 'HTML' option
     if (dropdownValue == 'HTML') {
@@ -149,28 +146,37 @@ class _NoteScreenState extends State<NoteScreen> {
   void loadData() async {
     note = await dbHelper.getNoteById(widget.noteId);
 
-
-    if (note['type'] == "Image + Markdown"){
+    if (note['type'] == "Image + Markdown") {
       // Image + Markdown type has a JSON content that needs to be parsed
       Map<String, dynamic> data = jsonDecode(note['content']);
-      setState(() {
-        inputString = data['content'];
-        inputController.text = data['content'];
-        dropdownValue = note['type'];
-        imageUrl = data['imageUrl'];
-      });
-    }else{
-      setState(() {
-        inputString = note['content'];
-        inputController.text = note['content'];
-        dropdownValue = note['type'];
-      });
+
+      // Check if the widget is still mounted before calling setState
+      if (mounted) {
+        setState(() {
+          inputString = data['content'];
+          inputController.text = data['content'];
+          dropdownValue = note['type'];
+          imageUrl = data['imageUrl'];
+        });
+      }
+    } else {
+      // Check if the widget is still mounted before calling setState
+      if (mounted) {
+        setState(() {
+          inputString = note['content'];
+          inputController.text = note['content'];
+          dropdownValue = note['type'];
+        });
+      }
     }
 
     if (inputController.text.length > 0) {
-      setState(() {
-        isEmpty = false;
-      });
+      // Check if the widget is still mounted before calling setState
+      if (mounted) {
+        setState(() {
+          isEmpty = false;
+        });
+      }
     }
   }
 
@@ -180,7 +186,7 @@ class _NoteScreenState extends State<NoteScreen> {
       inputString = inputController.text;
     });
 
-    if (dropdownValue == "Image + Markdown"){
+    if (dropdownValue == "Image + Markdown") {
       // Creating JSON
       Map<String, dynamic> data = {
         'content': inputString,
@@ -188,28 +194,25 @@ class _NoteScreenState extends State<NoteScreen> {
       };
       String jsonString = jsonEncode(data);
       dbHelper.updateNoteContent(widget.noteId, jsonString);
-    }else{
+    } else {
       await dbHelper.updateNoteContent(widget.noteId, inputController.text);
     }
-    
-
 
     await dbHelper.updateNoteType(widget.noteId, dropdownValue);
   }
-
 
   Future<void> deleteNote(BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context){
+      builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete this note?'),
           content: const Text('This cannot be undone.'),
-          actions: <Widget> [
+          actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
-              onPressed: (){
+              onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
@@ -217,7 +220,7 @@ class _NoteScreenState extends State<NoteScreen> {
               child: const Text(
                 'Delete',
                 style: TextStyle(color: Colors.red),
-                ),
+              ),
               onPressed: () async {
                 await dbHelper.deleteNote(widget.noteId);
                 Navigator.of(context).pop();
@@ -243,7 +246,6 @@ class _NoteScreenState extends State<NoteScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-               
                 Text(
                   dropdownValue,
                   style: TextStyle(
@@ -257,34 +259,39 @@ class _NoteScreenState extends State<NoteScreen> {
                   ),
                 ),
                 MouseRegion(
-                  onHover: (event){
+                  onHover: (event) {
                     setState(() {
                       deleteColor = [Colors.red, Colors.red];
                     });
                   },
-                  onExit: (event){
+                  onExit: (event) {
                     setState(() {
-                      deleteColor = [Colors.white30, Color.fromARGB(255, 43, 43, 43)];
+                      deleteColor = [
+                        Colors.white30,
+                        Color.fromARGB(255, 43, 43, 43)
+                      ];
                     });
                   },
                   child: GestureDetector(
                     onTap: () {
                       deleteNote(context);
-                      
                     },
                     child: Row(
                       children: [
-                       Text(
-                      'Delete',
-                      style: TextStyle(
-                        color: deleteColor[0],
-                      ),
+                        Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: deleteColor[0],
+                          ),
+                        ),
+                        Icon(
+                          Icons.delete_forever,
+                          color: deleteColor[1],
+                        ),
+                      ],
                     ),
-                     Icon(Icons.delete_forever, color: deleteColor[1],),
-                    ],),
                   ),
                 ),
-               
               ],
             ),
             Container(
