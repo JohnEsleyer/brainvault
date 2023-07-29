@@ -17,6 +17,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
   final dbHelper = DatabaseService();
   late List<Map<String, dynamic>> documents;
   late Map<String, dynamic> collection;
+  final TextEditingController _titleController = TextEditingController();
+
   bool isLoading = true;
   bool hidden = true;
 
@@ -31,6 +33,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
       collection = await dbHelper.getCollectionById(widget.collectionId);
       documents =
           await dbHelper.getDocumentsByCollectionId(widget.collectionId);
+      _titleController.text = collection['title'];
+
 
       // When successfull
       setState(() {
@@ -60,6 +64,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
     setState(() {
       hidden = true;
     });
+  }
+
+  void updateTitle() async {
+    await dbHelper.updateCollectionTitle(
+        widget.collectionId, _titleController.text);
   }
 
   @override
@@ -101,13 +110,20 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     // Title
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        collection['title'],
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: EditableText(
+                            onChanged: (newText) {
+                              updateTitle();
+                            },
+                            backgroundCursorColor: palette[1],
+                            cursorColor: Colors.white,
+                            controller: _titleController,
+                            focusNode: FocusNode(canRequestFocus: true),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                     ),
                     // Description and other buttons
                     Padding(
@@ -127,7 +143,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                child: Container(
                                 height: 20,
                                 width: 20,
-                                child: Icon(Icons.refresh, color: Colors.white)),
+                                child: CircularProgressIndicator(color: Colors.white)),
                              ),
                           ],
                         ),

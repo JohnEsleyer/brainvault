@@ -20,6 +20,19 @@ class _DashboardState extends State<Dashboard> {
     allCollections = dbHelper.getAllCollections();
   }
 
+  void refreshData() async {
+    try{
+      Future<List<Map<String, dynamic>>> collections = dbHelper.getAllCollections();
+      // When succesfull
+      setState(() {
+        allCollections = collections;
+      });
+    }catch(e){
+      print('Failed to refreshd data: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     // Container size
@@ -94,11 +107,12 @@ class _DashboardState extends State<Dashboard> {
                                               GestureDetector(
                                                 onTap: () async {
                                                   int id = await data?[index]['id'];
-                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                  await Navigator.of(context).push(MaterialPageRoute(
                                                     builder: (_){
                                                       return CollectionScreen(collectionId: id);
                                                     }
                                                   ));
+                                                  refreshData();
                                                 },
                                                 child: Container(
                                                   height: 100,
