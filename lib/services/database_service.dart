@@ -90,24 +90,34 @@ class DatabaseService {
     return jsonUint8List;
   }
 
-void generateAndDownloadJsonFile() async {
-  DatabaseService databaseService = DatabaseService();
-  Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
+  void generateAndDownloadJsonFile() async {
+    DatabaseService databaseService = DatabaseService();
+    Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
 
-  // Create a Blob with the JSON data
-  final blob = html.Blob([jsonData], 'application/json');
+    // Create a Blob with the JSON data
+    final blob = html.Blob([jsonData], 'application/json');
 
-  // Create a URL for the Blob
-  final url = html.Url.createObjectUrlFromBlob(blob);
+    // Create a URL for the Blob
+    final url = html.Url.createObjectUrlFromBlob(blob);
 
-  // Create an anchor element (a) to initiate the download
-  html.AnchorElement(href: url)
-    ..setAttribute("download", "database_data.json") // Set the file name
-    ..click(); // Simulate a click event to trigger the download
+    // Create an anchor element (a) to initiate the download
+    html.AnchorElement(href: url)
+      ..setAttribute("download", "database_data.json") // Set the file name
+      ..click(); // Simulate a click event to trigger the download
 
-  // Release the URL resource
-  html.Url.revokeObjectUrl(url);
-}
+    // Release the URL resource
+    html.Url.revokeObjectUrl(url);
+  }
+
+  Future<void> clearDatabase() async {
+    final db = await database;
+
+    // Delete all rows from each table
+    await db.delete('collections');
+    await db.delete('documents');
+    await db.delete('notes');
+  }
+
 
   // CRUD Operations for 'collections' table
   Future<int> insertCollection(Map<String, dynamic> collection) async {
@@ -270,6 +280,8 @@ void generateAndDownloadJsonFile() async {
     };
     return await db.update('notes', updatedNote, where: 'id = ?', whereArgs: [noteId]);
   }
+
+
 
 
 }
