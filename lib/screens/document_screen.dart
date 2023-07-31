@@ -97,7 +97,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     ),
                                   ),
                                   Container(
-                                    width: 500,
+                                    width: MediaQuery.of(context).size.width * 0.90,
                                     child: EditableText(
                                       onChanged: (newText) {
                                         updateTitle();
