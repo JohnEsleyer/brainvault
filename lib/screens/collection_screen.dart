@@ -107,20 +107,40 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     // Title
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: EditableText(
-                            onChanged: (newText) {
-                              updateTitle();
-                            },
-                            backgroundCursorColor: palette[1],
-                            cursorColor: Colors.white,
-                            controller: _titleController,
-                            focusNode: FocusNode(canRequestFocus: true),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: (){
+                                      Navigator.pop(context);
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.90,
+                                    child: EditableText(
+                                      onChanged: (newText) {
+
+                                        updateTitle();
+                                      },
+                                      expands: true,
+                                      maxLines: null,
+                                      minLines: null,
+                                      backgroundCursorColor: palette[1],
+                                      cursorColor: Colors.white,
+                                      controller: _titleController,
+                                      focusNode: FocusNode(canRequestFocus: true),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                     ),
                     // Description and other buttons
                     Padding(

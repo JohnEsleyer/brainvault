@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:secondbrain/colors.dart';
 import 'package:secondbrain/screens/collection_screen.dart';
+import 'package:secondbrain/screens/search_screen.dart';
 
 import '../services/database_service.dart';
 
@@ -68,22 +69,92 @@ class _DashboardState extends State<Dashboard> {
             child: Center(
               child: Column(
                 children: [
+                  // Search
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SearchScreen(),
+                      ));
+                    },
+                    child: Hero(
+                      tag: 'search',
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: palette[2],
+                            borderRadius: BorderRadius.circular(10),),
+                          width: con_width,
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Icon(Icons.search, color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Collections
                   Container(
                     width: con_width,
                     decoration: BoxDecoration(
-                      color: palette[5],
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: palette[2],
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                        bottom: 8.0,
+                        right: 4.0,
+                        left: 4.0,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Collections",
-                              style: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Collections",
+                                style: TextStyle(
+                                    fontSize: 30, fontWeight: FontWeight.bold),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    var data = {
+                                      'title': 'Untitled Collection',
+                                      'description':
+                                          'This is a brain collection.',
+                                    };
+                                    try {
+                                      await dbHelper.insertCollection(data);
+                                    } catch (e) {
+                                      print(
+                                          'Error while inserting a collection: $e');
+                                    }
+                                    refreshData();
+                                  },
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      border: Border.all(color: Colors.white),
+                                    ),
+                                    child: Icon(Icons.add, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           Container(
                             height: 130,
                             child: FutureBuilder(
@@ -127,24 +198,28 @@ class _DashboardState extends State<Dashboard> {
                                                   }));
                                                   refreshData();
                                                 },
-                                                child: Container(
-                                                  height: 100,
-                                                  width: 130,
-                                                  decoration: BoxDecoration(
-                                                    color: palette[4],
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10)),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      '${data?[index]['title']}',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 10,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    height: 100,
+                                                    width: 130,
+                                                    decoration: BoxDecoration(
+                                                      color: palette[4],
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        '${data?[index]['title']}',
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 10,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -165,6 +240,29 @@ class _DashboardState extends State<Dashboard> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                  ),
+
+                  // Study Mode
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Container(
+                      width: con_width,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: palette[3],
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Study Mode',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
                   ),
