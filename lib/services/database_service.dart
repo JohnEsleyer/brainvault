@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:html' as html;
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -108,6 +109,58 @@ class DatabaseService {
     // Release the URL resource
     html.Url.revokeObjectUrl(url);
   }
+
+   // Method for uploading and inserting JSON data into the database
+  Future<void> uploadAndInsertJsonData() async {
+    // Create an input element of type "file" to handle file upload
+    final html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.accept = '.json'; // Set the accepted file type (JSON in this case)
+    uploadInput.click(); // Simulate a click on the input element
+
+    // Wait for the user to select a file and read it
+    await uploadInput.onChange.first;
+
+    // Get the selected file from the input element
+    final html.File uploadedFile = uploadInput.files!.first;
+
+    // Read the selected JSON file as text
+    final reader = html.FileReader();
+    reader.readAsText(uploadedFile);
+
+    // Wait for the reader to finish loading the file
+    await reader.onLoad.first;
+
+    // Get the JSON data as a String
+    String jsonDataString = reader.result as String;
+
+    // Parse the JSON data
+    Map<String, dynamic> jsonData = json.decode(jsonDataString);
+
+    // Insert collections
+    if (jsonData.containsKey('collections') && jsonData['collections'] is List) {
+      List<dynamic> collectionsData = jsonData['collections'];
+      for (var collectionData in collectionsData) {
+        await insertCollection(collectionData as Map<String, dynamic>);
+      }
+    }
+
+    // Insert documents
+    if (jsonData.containsKey('documents') && jsonData['documents'] is List) {
+      List<dynamic> documentsData = jsonData['documents'];
+      for (var documentData in documentsData) {
+        await insertDocument(documentData as Map<String, dynamic>);
+      }
+    }
+
+    // Insert notes
+    if (jsonData.containsKey('notes') && jsonData['notes'] is List) {
+      List<dynamic> notesData = jsonData['notes'];
+      for (var noteData in notesData) {
+        await insertNote(noteData as Map<String, dynamic>);
+      }
+    }
+  }
+
 
   Future<void> clearDatabase() async {
     final db = await database;
