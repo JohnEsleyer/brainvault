@@ -207,11 +207,19 @@ class _NoteScreenState extends State<NoteScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+          backgroundColor: palette[1],
           title: const Text('Delete this note?'),
-          content: const Text('This cannot be undone.'),
+          content: const Text(
+            'This cannot be undone.',
+            style: TextStyle(fontSize: 15),
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -239,7 +247,12 @@ class _NoteScreenState extends State<NoteScreen> {
       // READING MODE
 
       return Padding(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+        padding: EdgeInsets.only(
+          left: MediaQuery.of(context).size.width * 0.02,
+          right: MediaQuery.of(context).size.width * 0.02,
+          top: 5,
+          bottom: 5,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -250,13 +263,16 @@ class _NoteScreenState extends State<NoteScreen> {
                   dropdownValue,
                   style: TextStyle(
                     color: Colors.white30,
+                    fontSize: 10,
                   ),
                 ),
                 Text(
                   ' | ',
                   style: TextStyle(
                     color: Colors.white30,
+                    fontSize: 10,
                   ),
+                  
                 ),
                 MouseRegion(
                   onHover: (event) {
@@ -282,11 +298,13 @@ class _NoteScreenState extends State<NoteScreen> {
                           'Delete',
                           style: TextStyle(
                             color: deleteColor[0],
+                            fontSize: 10,
                           ),
                         ),
                         Icon(
                           Icons.delete_forever,
                           color: deleteColor[1],
+                          size: 20,
                         ),
                       ],
                     ),
@@ -297,7 +315,7 @@ class _NoteScreenState extends State<NoteScreen> {
             Container(
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                color: Color.fromARGB(237, 34, 34, 34),
+                color: palette[2],
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
               child: Padding(

@@ -13,7 +13,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final dbHelper = DatabaseService();
   late Future<List<Map<String, dynamic>>> allCollections;
-  
+
   @override
   void initState() {
     super.initState();
@@ -21,17 +21,17 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void refreshData() async {
-    try{
-      Future<List<Map<String, dynamic>>> collections = dbHelper.getAllCollections();
+    try {
+      Future<List<Map<String, dynamic>>> collections =
+          dbHelper.getAllCollections();
       // When succesfull
       setState(() {
         allCollections = collections;
       });
-    }catch(e){
+    } catch (e) {
       print('Failed to refreshd data: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +49,17 @@ class _DashboardState extends State<Dashboard> {
               centerTitle: true,
               backgroundColor: palette[2],
               automaticallyImplyLeading: false,
+              actions: [
+                GestureDetector(
+                  onTap: () async {
+                    dbHelper.generateAndDownloadJsonFile();
+                  },
+                  child: Icon(
+                    Icons.download,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
           ),
           body: Container(
@@ -106,12 +117,14 @@ class _DashboardState extends State<Dashboard> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () async {
-                                                  int id = await data?[index]['id'];
-                                                  await Navigator.of(context).push(MaterialPageRoute(
-                                                    builder: (_){
-                                                      return CollectionScreen(collectionId: id);
-                                                    }
-                                                  ));
+                                                  int id =
+                                                      await data?[index]['id'];
+                                                  await Navigator.of(context)
+                                                      .push(MaterialPageRoute(
+                                                          builder: (_) {
+                                                    return CollectionScreen(
+                                                        collectionId: id);
+                                                  }));
                                                   refreshData();
                                                 },
                                                 child: Container(
@@ -121,7 +134,8 @@ class _DashboardState extends State<Dashboard> {
                                                     color: palette[4],
                                                     borderRadius:
                                                         BorderRadius.all(
-                                                            Radius.circular(10)),
+                                                            Radius.circular(
+                                                                10)),
                                                   ),
                                                   child: Center(
                                                     child: Text(
@@ -130,7 +144,7 @@ class _DashboardState extends State<Dashboard> {
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                            fontSize: 10,
+                                                        fontSize: 10,
                                                       ),
                                                     ),
                                                   ),
