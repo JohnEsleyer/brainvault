@@ -42,16 +42,16 @@ class _DocumentScreenState extends State<DocumentScreen> {
     setState(() {
       isLoading = true;
     });
-    try{
-    var doc = await dbHelper.getDocumentById(widget.documentId);
-    var text = _document['title'];
-    var notes = await dbHelper.getAllNotesByDocumentId(widget.documentId);
-    setState(() {
-      _document = doc;
-      _titleController.text = text;
-      _notes = notes;
-    });
-    }catch(e){
+    try {
+      var doc = await dbHelper.getDocumentById(widget.documentId);
+      var text = _document['title'];
+      var notes = await dbHelper.getAllNotesByDocumentId(widget.documentId);
+      setState(() {
+        _document = doc;
+        _titleController.text = text;
+        _notes = notes;
+      });
+    } catch (e) {
       print('Failed to refresh data: $e');
     }
 
@@ -65,125 +65,149 @@ class _DocumentScreenState extends State<DocumentScreen> {
         widget.documentId, _titleController.text);
   }
 
-
-
   @override
   Widget build(BuildContext context) {
+    return !isLoading
+        ? FutureBuilder(
+            future: loadingData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return LayoutBuilder(builder: ((context, constraints) {
+                  if (constraints.maxWidth < 800) {
+                    // Portrait View
+                    return Scaffold(
+                      body: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        color: palette[1],
+                        child: ListView(
+                          children: [
+                            // Title
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: (){
+                                      Navigator.pop(context);
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 500,
+                                    child: EditableText(
+                                      onChanged: (newText) {
+                                        updateTitle();
+                                      },
+                                      expands: true,
+                                      maxLines: null,
+                                      minLines: null,
+                                      backgroundCursorColor: palette[1],
+                                      cursorColor: Colors.white,
+                                      controller: _titleController,
+                                      focusNode: FocusNode(canRequestFocus: true),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
 
-    return !isLoading ? FutureBuilder(
-        future: loadingData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return LayoutBuilder(builder: ((context, constraints) {
-              if (constraints.maxWidth < 800) {
-                // Mobile View
+                            for (var note in _notes)
+                              GestureDetector(
+                                onTap: () async {
+                                  await Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (_) => NoteScreen(
+                                        noteId: note['id'], readMode: false),
+                                  ));
+                                  refreshData();
+                                },
+                                child: NoteScreen(
+                                  noteId: note['id'],
+                                  readMode: true,
+                                  onDelete: () {
+                                    refreshData();
+                                  },
+                                ),
+                              ),
+
+                            Padding(
+                              padding: EdgeInsets.all(
+                                  MediaQuery.of(context).size.width * 0.02),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  // Create new note
+
+                                  var data = {
+                                    'document_id': widget
+                                        .documentId, // Replace with the appropriate document_id of the associated document
+                                    'content': '',
+                                    'position': _notes.length + 1,
+                                    'created_at':
+                                        DateTime.now().toIso8601String(),
+                                    'last_reviewed':
+                                        DateTime.now().toIso8601String(),
+                                    'next_review':
+                                        DateTime.now().toIso8601String(),
+                                    'spaced_repetition_level': 0,
+                                    'type': 'HTML',
+                                  };
+                                  int noteId = await dbHelper.insertNote(data);
+
+                                  await Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (_) => NoteScreen(
+                                        noteId: noteId, readMode: false),
+                                  ));
+                                  refreshData();
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    color: palette[5],
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                        child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: Icon(Icons.add, color: palette[1]),
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  // Landscape View
+                  return Scaffold();
+                }));
+              } else {
                 return Scaffold(
-                  body: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    color: palette[1],
-                    child: ListView(
-                      children: [
-                        // Title
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: EditableText(
-                            onChanged: (newText) {
-                              updateTitle();
-                            },
-                            backgroundCursorColor: palette[1],
-                            cursorColor: Colors.white,
-                            controller: _titleController,
-                            focusNode: FocusNode(canRequestFocus: true),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    
-                        for (var note in _notes)
-                          GestureDetector(
-                            onTap: () async{
-                              await Navigator.of(context).push(MaterialPageRoute(
-                                builder:(_) => NoteScreen(noteId: note['id'], readMode: false),
-                              ));
-                              refreshData();
-                            },
-                            child: NoteScreen(
-                              noteId: note['id'],
-                              readMode: true,
-                              onDelete: (){
-                                refreshData();
-                              },
-                            ),
-                          ),
-                          
-                        Padding(
-                          padding: EdgeInsets.all(
-                              MediaQuery.of(context).size.width * 0.02),
-                          child: GestureDetector(
-                            onTap: () async {
-                              // Create new note
-                    
-                              var data = {
-                                'document_id': widget
-                                    .documentId, // Replace with the appropriate document_id of the associated document
-                                'content': '',
-                                'position': _notes.length + 1,
-                                'created_at':
-                                    DateTime.now().toIso8601String(),
-                                'last_reviewed':
-                                    DateTime.now().toIso8601String(),
-                                'next_review': DateTime.now().toIso8601String(),
-                                'spaced_repetition_level': 0,
-                                'type': 'HTML',
-                              };
-                              int noteId = await dbHelper.insertNote(data);
-                    
-                              await Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => NoteScreen(
-                                    noteId: noteId, readMode: false),
-                              ));
-                              refreshData();
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: palette[5],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                    child: Container(
-                                  height: 50,
-                                  width: 50,
-                                  child: Icon(Icons.add, color: palette[1]),
-                                )),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                    body: Center(
+                        child: CircularProgressIndicator(color: Colors.white)));
               }
-              // Desktop View
-              return Scaffold();
-            }));
-          } else {
-            return Scaffold(
-                body: Center(
-                    child: CircularProgressIndicator(color: Colors.white)));
-          }
-        }) : Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(color: Colors.white,),
-          ),
-        );
+            })
+        : Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
+          );
   }
 }

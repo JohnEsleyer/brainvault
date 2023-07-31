@@ -40,7 +40,7 @@ class _DashboardState extends State<Dashboard> {
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 800) {
-        // Mobile
+        // Portrait View
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
@@ -174,7 +174,7 @@ class _DashboardState extends State<Dashboard> {
           ),
         );
       } else {
-        // Desktop
+        // Landscape view
         return Scaffold(
           body: Container(),
         );
