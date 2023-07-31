@@ -82,10 +82,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   'collection_id': widget.collectionId,
                   'title': 'Untitled',
                   'position': documents.length + 1,
-                  'created_at': DateTime.now().millisecondsSinceEpoch,
-                  'last_reviewed': DateTime.now().millisecondsSinceEpoch,
-                  'next_review': DateTime.now().millisecondsSinceEpoch + 86400000, // Adding 1 day in milliseconds
-                  'spaced_repetition_level': 0,
+                  
                 };
                 try{
                   int id = await dbHelper.insertDocument(data);

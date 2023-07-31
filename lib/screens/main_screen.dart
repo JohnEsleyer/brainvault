@@ -205,7 +205,7 @@ class _TestState extends State<Test> {
                 var data = {
                   'title': 'Sample Collection',
                   'description': 'This is a sample brain collection.',
-                  'created_at': DateTime.now().toIso8601String(),
+                
                 };
                 try {
                   await dbHelper.insertCollection(data);

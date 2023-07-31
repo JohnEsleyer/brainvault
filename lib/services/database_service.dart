@@ -31,8 +31,7 @@ class DatabaseService {
           CREATE TABLE collections (
             id INTEGER PRIMARY KEY,
             title TEXT,
-            description TEXT,
-            created_at DATETIME
+            description TEXT
           );
           ''');
 
@@ -42,10 +41,6 @@ class DatabaseService {
             collection_id INTEGER,
             title TEXT,
             position INTEGER,
-            created_at DATETIME,
-            last_reviewed DATETIME,
-            next_review DATETIME,
-            spaced_repetition_level INTEGER,
             FOREIGN KEY (collection_id) REFERENCES collections (collection_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
@@ -57,10 +52,6 @@ class DatabaseService {
             document_id INTEGER,
             content TEXT,
             position INTEGER,
-            created_at DATETIME,
-            last_reviewed DATETIME,
-            next_review DATETIME,
-            spaced_repetition_level INTEGER,
             type TEXT,
             FOREIGN KEY (document_id) REFERENCES documents (document_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION

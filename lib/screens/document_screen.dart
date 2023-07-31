@@ -44,11 +44,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
     });
     try {
       var doc = await dbHelper.getDocumentById(widget.documentId);
-      var text = _document['title'];
+      // var text = _document['title'];
       var notes = await dbHelper.getAllNotesByDocumentId(widget.documentId);
       setState(() {
         _document = doc;
-        _titleController.text = text;
+        // _titleController.text = text;
         _notes = notes;
       });
     } catch (e) {
@@ -100,6 +100,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     width: MediaQuery.of(context).size.width * 0.90,
                                     child: EditableText(
                                       onChanged: (newText) {
+
                                         updateTitle();
                                       },
                                       expands: true,
@@ -151,13 +152,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                         .documentId, // Replace with the appropriate document_id of the associated document
                                     'content': '',
                                     'position': _notes.length + 1,
-                                    'created_at':
-                                        DateTime.now().toIso8601String(),
-                                    'last_reviewed':
-                                        DateTime.now().toIso8601String(),
-                                    'next_review':
-                                        DateTime.now().toIso8601String(),
-                                    'spaced_repetition_level': 0,
+                                    
                                     'type': 'HTML',
                                   };
                                   int noteId = await dbHelper.insertNote(data);
