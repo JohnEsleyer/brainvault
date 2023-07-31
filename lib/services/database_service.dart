@@ -103,7 +103,7 @@ class DatabaseService {
 
     // Create an anchor element (a) to initiate the download
     html.AnchorElement(href: url)
-      ..setAttribute("download", "database_data.json") // Set the file name
+      ..setAttribute("download", "database_data.brain") // Set the file name
       ..click(); // Simulate a click event to trigger the download
 
     // Release the URL resource
@@ -114,7 +114,7 @@ class DatabaseService {
   Future<void> uploadAndInsertJsonData() async {
     // Create an input element of type "file" to handle file upload
     final html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
-    uploadInput.accept = '.json'; // Set the accepted file type (JSON in this case)
+    uploadInput.accept = '.brain'; // Set the accepted file type (JSON in this case)
     uploadInput.click(); // Simulate a click on the input element
 
     // Wait for the user to select a file and read it

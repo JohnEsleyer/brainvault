@@ -314,8 +314,8 @@ class _NoteScreenState extends State<NoteScreen> {
           children: [
             // Editor section
             Container(
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 37, 37, 37),
+              decoration: BoxDecoration(
+                color: palette[2],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,

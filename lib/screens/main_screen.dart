@@ -93,7 +93,7 @@ class _MainScreenState extends State<MainScreen> {
                     children: [
                       Image.asset('assets/logo.png'),
                       Text(
-                        "Second Brain",
+                        "Brainiac",
                         style: TextStyle(
                           fontSize: 40,
                         ),
