@@ -51,15 +51,24 @@ class _DashboardState extends State<Dashboard> {
               backgroundColor: palette[2],
               automaticallyImplyLeading: false,
               actions: [
-                // GestureDetector(
-                //   onTap: () async {
-                //     dbHelper.generateAndDownloadJsonFile();
-                //   },
-                //   child: Icon(
-                //     Icons.download,
-                //     color: Colors.white,
-                //   ),
-                // ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      dbHelper.generateAndDownloadJsonFile();
+                    },
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.save,
+                          color: Colors.white,
+                          size: 15,
+                        ),
+                        Text('Save'),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

@@ -5,7 +5,8 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 
@@ -85,24 +86,48 @@ class DatabaseService {
     return jsonUint8List;
   }
 
-  // void generateAndDownloadJsonFile() async {
-  //   DatabaseService databaseService = DatabaseService();
-  //   Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
+  Future<void> generateAndDownloadJsonFile() async {
+    DatabaseService databaseService = DatabaseService();
+    Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
 
-  //   // Create a Blob with the JSON data
-  //   final blob = html.Blob([jsonData], 'application/json');
+    // Get the directory based on the platform
+    Directory? directory;
+    if (Platform.isWindows || Platform.isLinux) {
+      directory = await getDownloadsDirectory();
+    } else if (Platform.isAndroid) {
+      directory = await getExternalStorageDirectory();
+    } else {
+      // Unsupported platform, handle it accordingly
+      return;
+    }
 
-  //   // Create a URL for the Blob
-  //   final url = html.Url.createObjectUrlFromBlob(blob);
+    if (directory == null) {
+      // Directory is not available, handle it accordingly
+      return;
+    }
 
-  //   // Create an anchor element (a) to initiate the download
-  //   html.AnchorElement(href: url)
-  //     ..setAttribute("download", "database_data.brain") // Set the file name
-  //     ..click(); // Simulate a click event to trigger the download
+    // Create the file path with the desired file name
+    String filePath = "${directory.path}/database_data.brain";
 
-  //   // Release the URL resource
-  //   html.Url.revokeObjectUrl(url);
-  // }
+    // Write the JSON data to a file
+    File file = File(filePath);
+    await file.writeAsBytes(jsonData);
+
+    // Trigger the download
+    MethodChannel platform = MethodChannel('flutter/platform');
+    try {
+      await platform.invokeMethod('sendIntent', {
+        'action': 'android.intent.action.VIEW',
+        'type': 'application/json',
+        'data': Uri.file(filePath).toString(),
+        'flag': 1,
+      });
+    } catch (e) {
+      // If the intent invocation fails, prompt the user to open the file manually
+      print('Failed to open the file: $e');
+      // You can show a message or alert here for the user to manually open the file
+    }
+  }
 
 // Method for uploading and inserting JSON data into the database
 Future<void> uploadAndInsertJsonData() async {
