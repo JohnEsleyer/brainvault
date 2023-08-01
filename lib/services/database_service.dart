@@ -5,7 +5,6 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -16,6 +15,8 @@ class DatabaseService {
   static final DatabaseService _instance = DatabaseService.internal();
   factory DatabaseService() => _instance;
   static Database? _db;
+  Directory? directory;
+  String fileName = 'brainFile.brain';
 
   DatabaseService.internal();
 
@@ -91,23 +92,24 @@ class DatabaseService {
     Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
 
     // Get the directory based on the platform
-    Directory? directory;
-    if (Platform.isWindows || Platform.isLinux) {
-      directory = await getDownloadsDirectory();
-    } else if (Platform.isAndroid) {
-      directory = await getExternalStorageDirectory();
-    } else {
-      // Unsupported platform, handle it accordingly
-      return;
-    }
+    // Directory? directory;
+    // if (Platform.isWindows || Platform.isLinux) {
+    //   directory = await getDownloadsDirectory();
+    // } else if (Platform.isAndroid) {
+    //   directory = await getExternalStorageDirectory();
+    // } else {
+    //   // Unsupported platform, handle it accordingly
+    //   return;
+    // }
 
     if (directory == null) {
       // Directory is not available, handle it accordingly
+      print("Directory not found");
       return;
     }
 
     // Create the file path with the desired file name
-    String filePath = "${directory.path}/database_data.brain";
+    String filePath = "${directory?.path}/$fileName";
 
     // Write the JSON data to a file
     File file = File(filePath);
@@ -129,7 +131,7 @@ class DatabaseService {
     }
   }
 
-// Method for uploading and inserting JSON data into the database
+// Method for importing and inserting JSON data into the database
 Future<void> uploadAndInsertJsonData() async {
   // Show a file picker dialog to let the user select a file
   FilePickerResult? result = await getFilePickerResult();
@@ -137,9 +139,16 @@ Future<void> uploadAndInsertJsonData() async {
   if (result != null && result.files.isNotEmpty) {
     // Get the selected file
     PlatformFile file = result.files.first;
+    
+    // Obtain the file name
+    fileName = file.name;
+
+    // Get the directory path of the selected file
+    directory = Directory(file.path ?? '').parent;
 
     // Read the selected JSON file as text
     String jsonDataString = await readJsonFileAsString(file);
+    
 
     // Parse the JSON data
     Map<String, dynamic> jsonData = json.decode(jsonDataString);
@@ -148,6 +157,7 @@ Future<void> uploadAndInsertJsonData() async {
     await insertDataFromJson(jsonData);
   }
 }
+
 
 // Function to get the file picker result
 Future<FilePickerResult?> getFilePickerResult() async {
