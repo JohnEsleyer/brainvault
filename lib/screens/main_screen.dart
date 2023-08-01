@@ -119,6 +119,7 @@ class _MainScreenState extends State<MainScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      // Open Brain button
                       GestureDetector(
                         onTap: () async {
                           await dbHelper.clearDatabase();
@@ -133,6 +134,8 @@ class _MainScreenState extends State<MainScreen> {
                           ],
                         ),
                       ),
+
+                      // Create New Brain button
                       GestureDetector(
                         onTap: () async {
                           await dbHelper.clearDatabase();
@@ -249,9 +252,9 @@ class _TestState extends State<Test> {
                   Text('Title: ${collectionList[i]}'),
               ],
             ),
-            ElevatedButton(onPressed: (){
-              dbHelper.generateAndDownloadJsonFile();
-            }, child: Text('Download brain'))
+            // ElevatedButton(onPressed: (){
+            //   dbHelper.generateAndDownloadJsonFile();
+            // }, child: Text('Download brain'))
           ],
         ),
       ),

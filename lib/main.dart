@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 
@@ -7,18 +9,18 @@ import 'package:secondbrain/screens/dashboard.dart';
 
 import 'package:secondbrain/screens/main_screen.dart';
 import 'package:secondbrain/widgets/custom_scroll_behavior.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:flutter/foundation.dart';
 
 
 
-
 void main() async {
-  if (kIsWeb) {
-    // Change default factory on the web
-    databaseFactory = databaseFactoryFfiWeb;
+  
+  if (Platform.isWindows || Platform.isLinux){
+    sqfliteFfiInit();
   }
+  databaseFactory = databaseFactoryFfi;
   
   runApp(
     MaterialApp(

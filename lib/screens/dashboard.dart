@@ -46,20 +46,20 @@ class _DashboardState extends State<Dashboard> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
             child: AppBar(
-              title: Text('Second-Brain'),
+              title: Text('Brainiac'),
               centerTitle: true,
               backgroundColor: palette[2],
               automaticallyImplyLeading: false,
               actions: [
-                GestureDetector(
-                  onTap: () async {
-                    dbHelper.generateAndDownloadJsonFile();
-                  },
-                  child: Icon(
-                    Icons.download,
-                    color: Colors.white,
-                  ),
-                ),
+                // GestureDetector(
+                //   onTap: () async {
+                //     dbHelper.generateAndDownloadJsonFile();
+                //   },
+                //   child: Icon(
+                //     Icons.download,
+                //     color: Colors.white,
+                //   ),
+                // ),
               ],
             ),
           ),
