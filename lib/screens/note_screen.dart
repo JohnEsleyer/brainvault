@@ -13,9 +13,14 @@ class NoteScreen extends StatefulWidget {
   final int noteId;
   final bool readMode;
   final Function? onDelete;
-  final String? content; // used only when readMode is true 
+  final String? content; // used only when readMode is true
   final String? type; // used only when readMode is true
-  NoteScreen({required this.noteId, required this.readMode, this.onDelete, this.content, this.type});
+  NoteScreen(
+      {required this.noteId,
+      required this.readMode,
+      this.onDelete,
+      this.content,
+      this.type});
 
   @override
   _NoteScreenState createState() => _NoteScreenState();
@@ -34,7 +39,7 @@ class _NoteScreenState extends State<NoteScreen> {
   // TextField input controller
   TextEditingController inputController = TextEditingController();
 
-  // Checks if editor is empty
+  // Checks if editor or widget.content is empty
   bool isEmpty = true;
 
   // flag for image mode
@@ -93,19 +98,18 @@ class _NoteScreenState extends State<NoteScreen> {
     'Image + Markdown',
   ];
 
-
-
-
   @override
   void initState() {
     super.initState();
-    if (widget.readMode == true){
+    if (widget.readMode == true) {
+      // If the given widget.content is empty or null set isEmpty to true
+      isEmpty = widget.content == '' || widget.content == null;
+      // Initialize inputString and dropdownValue in read mode.
       inputString = widget.content ?? '';
       dropdownValue = widget.type ?? 'Markdown';
-    }else{
+    } else {
       loadData();
     }
-    
   }
 
   Widget render() {
@@ -143,6 +147,7 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
             TexMarkdown(
               inputString,
+              
             ),
           ],
         );
@@ -153,7 +158,6 @@ class _NoteScreenState extends State<NoteScreen> {
 
     return Container();
   }
-
 
   void loadData() async {
     note = await dbHelper.getNoteById(widget.noteId);
@@ -219,7 +223,8 @@ class _NoteScreenState extends State<NoteScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
           backgroundColor: palette[1],
           title: const Text('Delete this note?'),
           content: const Text(
@@ -250,6 +255,19 @@ class _NoteScreenState extends State<NoteScreen> {
           ],
         );
       },
+    );
+  }
+
+  Widget _flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    return DefaultTextStyle(
+      style: DefaultTextStyle.of(toHeroContext).style,
+      child: toHeroContext.widget,
     );
   }
 
@@ -284,7 +302,6 @@ class _NoteScreenState extends State<NoteScreen> {
                     color: Colors.white30,
                     fontSize: 10,
                   ),
-                  
                 ),
                 MouseRegion(
                   onHover: (event) {
@@ -324,15 +341,21 @@ class _NoteScreenState extends State<NoteScreen> {
                 ),
               ],
             ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: palette[2],
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: render(),
+            Hero(
+              flightShuttleBuilder: _flightShuttleBuilder,
+              tag: 'note-${widget.noteId}',
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: palette[2],
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: isEmpty
+                      ? Text('This note is empty. Press me to open the editor.')
+                      : render(),
+                ),
               ),
             ),
           ],
@@ -502,101 +525,58 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
 
             // Renderer Component
-            !isEmpty
-                ? SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(
-                              MediaQuery.of(context).size.width * 0.02),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.46,
-                            decoration: BoxDecoration(
-                              color: palette[2],
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: render(),
-                            ),
-                          ),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.02),
+                    child: Hero(
+                      flightShuttleBuilder: _flightShuttleBuilder,
+                      tag: 'note-${widget.noteId}',
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.46,
+                        decoration: BoxDecoration(
+                          color: palette[2],
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            
-                            Navigator.of(context).pop();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 50,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: palette[5],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Go Back',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: palette[1],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.02),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.46,
-                          decoration: BoxDecoration(
-                            color: palette[2],
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('Write something on the editor.'),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 50,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: palette[5],
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Go Back',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: palette[1],
-                                ),
-                              ),
+                          child: !isEmpty
+                              ? render()
+                              : Text('Write something on the editor.'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: 50,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: palette[5],
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Go Back',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: palette[1],
                             ),
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
+                ],
+              ),
+            ),
           ],
         ),
       );
