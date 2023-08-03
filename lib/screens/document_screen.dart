@@ -51,7 +51,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
         // _titleController.text = text;
         _notes = notes;
       });
-      print(_notes);
+
     } catch (e) {
       print('Failed to refresh data: $e');
     }
