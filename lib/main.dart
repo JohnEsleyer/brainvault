@@ -10,8 +10,6 @@ import 'package:secondbrain/screens/dashboard.dart';
 import 'package:secondbrain/screens/main_screen.dart';
 import 'package:secondbrain/widgets/custom_scroll_behavior.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:flutter/foundation.dart';
 
 
 

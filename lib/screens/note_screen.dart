@@ -13,7 +13,9 @@ class NoteScreen extends StatefulWidget {
   final int noteId;
   final bool readMode;
   final Function? onDelete;
-  NoteScreen({required this.noteId, required this.readMode, this.onDelete});
+  final String? content; // used only when readMode is true 
+  final String? type; // used only when readMode is true
+  NoteScreen({required this.noteId, required this.readMode, this.onDelete, this.content, this.type});
 
   @override
   _NoteScreenState createState() => _NoteScreenState();
@@ -91,6 +93,21 @@ class _NoteScreenState extends State<NoteScreen> {
     'Image + Markdown',
   ];
 
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.readMode == true){
+      inputString = widget.content ?? '';
+      dropdownValue = widget.type ?? 'Markdown';
+    }else{
+      loadData();
+    }
+    
+  }
+
   Widget render() {
     // If user selected 'HTML' option
     if (dropdownValue == 'HTML') {
@@ -137,11 +154,6 @@ class _NoteScreenState extends State<NoteScreen> {
     return Container();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    loadData();
-  }
 
   void loadData() async {
     note = await dbHelper.getNoteById(widget.noteId);
@@ -512,6 +524,7 @@ class _NoteScreenState extends State<NoteScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
+                            
                             Navigator.of(context).pop();
                           },
                           child: Padding(

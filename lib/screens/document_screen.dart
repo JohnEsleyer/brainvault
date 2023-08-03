@@ -51,10 +51,12 @@ class _DocumentScreenState extends State<DocumentScreen> {
         // _titleController.text = text;
         _notes = notes;
       });
+      print(_notes);
     } catch (e) {
       print('Failed to refresh data: $e');
     }
 
+    await Future.delayed(Duration(seconds: 1));
     setState(() {
       isLoading = false;
     });
@@ -134,6 +136,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                 child: NoteScreen(
                                   noteId: note['id'],
                                   readMode: true,
+                                  content: note['content'],
+                                  type: note['type'],
                                   onDelete: () {
                                     refreshData();
                                   },
