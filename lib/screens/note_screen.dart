@@ -51,8 +51,6 @@ class _NoteScreenState extends State<NoteScreen> {
   // Note data
   late Map<String, dynamic> note;
 
-  bool isVisible = true;
-
   List<Color> deleteColor = [Colors.white30, Color.fromARGB(255, 43, 43, 43)];
 
   var codeTheme = {
@@ -149,6 +147,7 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
             TexMarkdown(
               inputString,
+              
             ),
           ],
         );
@@ -259,10 +258,17 @@ class _NoteScreenState extends State<NoteScreen> {
     );
   }
 
-  void updateHeroVisibility(bool visibleFlag){
-    setState(() {
-      isVisible = visibleFlag;
-    });
+  Widget _flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    return DefaultTextStyle(
+      style: DefaultTextStyle.of(toHeroContext).style,
+      child: toHeroContext.widget,
+    );
   }
 
   @override
@@ -336,6 +342,7 @@ class _NoteScreenState extends State<NoteScreen> {
               ],
             ),
             Hero(
+              flightShuttleBuilder: _flightShuttleBuilder,
               tag: 'note-${widget.noteId}',
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -343,14 +350,11 @@ class _NoteScreenState extends State<NoteScreen> {
                   color: palette[2],
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                child: Visibility(
-                  visible: isVisible,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: isEmpty
-                        ? Text('This note is empty. Press me to open the editor.')
-                        : render(),
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: isEmpty
+                      ? Text('This note is empty. Press me to open the editor.')
+                      : render(),
                 ),
               ),
             ),
@@ -528,6 +532,7 @@ class _NoteScreenState extends State<NoteScreen> {
                     padding: EdgeInsets.all(
                         MediaQuery.of(context).size.width * 0.02),
                     child: Hero(
+                      flightShuttleBuilder: _flightShuttleBuilder,
                       tag: 'note-${widget.noteId}',
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.46,
