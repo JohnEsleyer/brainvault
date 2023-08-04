@@ -51,7 +51,6 @@ class _DocumentScreenState extends State<DocumentScreen> {
         // _titleController.text = text;
         _notes = notes;
       });
-
     } catch (e) {
       print('Failed to refresh data: $e');
     }
@@ -90,7 +89,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                               child: Row(
                                 children: [
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       Navigator.pop(context);
                                     },
                                     child: Icon(
@@ -99,10 +98,10 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     ),
                                   ),
                                   Container(
-                                    width: MediaQuery.of(context).size.width * 0.90,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.90,
                                     child: EditableText(
                                       onChanged: (newText) {
-
                                         updateTitle();
                                       },
                                       expands: true,
@@ -111,7 +110,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                       backgroundCursorColor: palette[1],
                                       cursorColor: Colors.white,
                                       controller: _titleController,
-                                      focusNode: FocusNode(canRequestFocus: true),
+                                      focusNode:
+                                          FocusNode(canRequestFocus: true),
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 30,
@@ -129,7 +129,10 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                   await Navigator.of(context)
                                       .push(MaterialPageRoute(
                                     builder: (_) => NoteScreen(
-                                        noteId: note['id'], readMode: false),
+                                      noteId: note['id'],
+                                      readMode: false,
+                                      
+                                    ),
                                   ));
                                   refreshData();
                                 },
@@ -156,7 +159,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                         .documentId, // Replace with the appropriate document_id of the associated document
                                     'content': '',
                                     'position': _notes.length + 1,
-                                    
+
                                     'type': 'HTML',
                                   };
                                   int noteId = await dbHelper.insertNote(data);

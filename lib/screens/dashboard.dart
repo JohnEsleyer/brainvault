@@ -46,7 +46,7 @@ class _DashboardState extends State<Dashboard> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
             child: AppBar(
-              title: Text('Brainiac'),
+              title: Text('BrainVault'),
               centerTitle: true,
               backgroundColor: palette[2],
               automaticallyImplyLeading: false,

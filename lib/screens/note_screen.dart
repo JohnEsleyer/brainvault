@@ -40,7 +40,7 @@ class _NoteScreenState extends State<NoteScreen> {
   TextEditingController inputController = TextEditingController();
 
   // Checks if editor or widget.content is empty
-  bool isEmpty = true;
+  late bool isEmpty;
 
   // flag for image mode
   bool imageMode = false;
@@ -101,9 +101,9 @@ class _NoteScreenState extends State<NoteScreen> {
   @override
   void initState() {
     super.initState();
+     // If the given widget.content is empty or null set isEmpty to true
+    isEmpty = widget.content == '' || widget.content == null;
     if (widget.readMode == true) {
-      // If the given widget.content is empty or null set isEmpty to true
-      isEmpty = widget.content == '' || widget.content == null;
       // Initialize inputString and dropdownValue in read mode.
       inputString = widget.content ?? '';
       dropdownValue = widget.type ?? 'Markdown';

@@ -27,13 +27,13 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 Image.asset('assets/logo.png'),
                 Text(
-                  "Second Brain",
+                  "BrainVault",
                   style: TextStyle(
                     fontSize: 40,
                   ),
                 ),
                 Text(
-                  "Second Brain is a software tool that acts as your personal knowledge base.",
+                  "BrainVault is a software tool that acts as your personal knowledge base.",
                   style: TextStyle(
                     fontSize: 12,
                   ),
@@ -94,13 +94,13 @@ class _MainScreenState extends State<MainScreen> {
                     children: [
                       Image.asset('assets/logo.png'),
                       Text(
-                        "Brainiac",
+                        "BrainVault",
                         style: TextStyle(
                           fontSize: 40,
                         ),
                       ),
                       Text(
-                        "Second Brain is a software tool that acts as your personal knowledge base.",
+                        "BrainVault is a software tool that acts as your personal knowledge base.",
                         style: TextStyle(
                           fontSize: 12,
                         ),
