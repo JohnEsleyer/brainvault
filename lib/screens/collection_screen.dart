@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:secondbrain/colors.dart';
-import 'package:secondbrain/screens/document_screen.dart';
-import 'package:secondbrain/services/database_service.dart';
+import 'package:brainvault/colors.dart';
+import 'package:brainvault/screens/document_screen.dart';
+import 'package:brainvault/services/database_service.dart';
 
 class CollectionScreen extends StatefulWidget {
   final int collectionId;

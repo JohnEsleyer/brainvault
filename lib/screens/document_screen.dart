@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:secondbrain/screens/note_screen.dart';
-import 'package:secondbrain/services/database_service.dart';
+import 'package:brainvault/screens/note_screen.dart';
+import 'package:brainvault/services/database_service.dart';
 
 import '../colors.dart';
 

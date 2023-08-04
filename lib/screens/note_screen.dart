@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:secondbrain/functions.dart';
+import 'package:brainvault/functions.dart';
 import 'package:tex_markdown/tex_markdown.dart';
 
 import '../colors.dart';

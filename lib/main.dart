@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 
-import 'package:secondbrain/screens/dashboard.dart';
+import 'package:brainvault/screens/dashboard.dart';
 
-import 'package:secondbrain/screens/main_screen.dart';
-import 'package:secondbrain/widgets/custom_scroll_behavior.dart';
+import 'package:brainvault/screens/main_screen.dart';
+import 'package:brainvault/widgets/custom_scroll_behavior.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 

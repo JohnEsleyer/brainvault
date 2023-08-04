@@ -1,6 +1,6 @@
 {
-    "name": "secondbrain",
-    "short_name": "secondbrain",
+    "name": "brainvault",
+    "short_name": "brainvault",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

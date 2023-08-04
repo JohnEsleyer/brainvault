@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:secondbrain/colors.dart';
+import 'package:brainvault/colors.dart';
 
 
 class SearchScreen extends StatefulWidget{

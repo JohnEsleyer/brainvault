@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:secondbrain/colors.dart';
-import 'package:secondbrain/screens/collection_screen.dart';
-import 'package:secondbrain/screens/search_screen.dart';
+import 'package:brainvault/colors.dart';
+import 'package:brainvault/screens/collection_screen.dart';
+import 'package:brainvault/screens/search_screen.dart';
 
 import '../services/database_service.dart';
 

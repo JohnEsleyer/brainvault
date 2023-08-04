@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "secondbrain" "\0"
+            VALUE "FileDescription", "brainvault" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "secondbrain" "\0"
+            VALUE "InternalName", "brainvault" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "secondbrain.exe" "\0"
-            VALUE "ProductName", "secondbrain" "\0"
+            VALUE "OriginalFilename", "brainvault.exe" "\0"
+            VALUE "ProductName", "brainvault" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
