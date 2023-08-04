@@ -101,15 +101,10 @@ class _NoteScreenState extends State<NoteScreen> {
   @override
   void initState() {
     super.initState();
-     // If the given widget.content is empty or null set isEmpty to true
+    // If the given widget.content is empty or null set isEmpty to true
     isEmpty = widget.content == '' || widget.content == null;
-    if (widget.readMode == true) {
-      // Initialize inputString and dropdownValue in read mode.
-      inputString = widget.content ?? '';
-      dropdownValue = widget.type ?? 'Markdown';
-    } else {
-      loadData();
-    }
+
+    loadData();
   }
 
   Widget render() {
@@ -147,7 +142,6 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
             TexMarkdown(
               inputString,
-              
             ),
           ],
         );
@@ -160,38 +154,81 @@ class _NoteScreenState extends State<NoteScreen> {
   }
 
   void loadData() async {
-    note = await dbHelper.getNoteById(widget.noteId);
+    // READ MODE
+    if (widget.readMode == true) {
+      // Initialize inputString and dropdownValue in read mode.
+      inputString = widget.content ?? '';
+      dropdownValue = widget.type ?? 'Markdown';
 
-    if (note['type'] == "Image + Markdown") {
-      // Image + Markdown type has a JSON content that needs to be parsed
-      Map<String, dynamic> data = jsonDecode(note['content']);
+      if (widget.type == "Image + Markdown") {
+        // Image + Markdown type has a JSON content that needs to be parsed
+        Map<String, dynamic> data = jsonDecode(widget.content ?? '');
 
-      // Check if the widget is still mounted before calling setState
-      if (mounted) {
-        setState(() {
-          inputString = data['content'];
-          inputController.text = data['content'];
-          dropdownValue = note['type'];
-          imageUrl = data['imageUrl'];
-        });
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            inputString = data['content'];
+            dropdownValue = widget.type ?? 'Markdown';
+            inputController.text = data['content'];
+            imageUrl = data['imageUrl'];
+          });
+        }
+      } else {
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            inputString = widget.content ?? '';
+            dropdownValue = widget.type ?? 'Markdown';
+            inputController.text = widget.content ?? '';
+            
+          });
+        }
       }
+
+      if (inputController.text.length > 0) {
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            isEmpty = false;
+          });
+        }
+      }
+
+      // EDIT MODE
     } else {
-      // Check if the widget is still mounted before calling setState
-      if (mounted) {
-        setState(() {
-          inputString = note['content'];
-          inputController.text = note['content'];
-          dropdownValue = note['type'];
-        });
-      }
-    }
+      note = await dbHelper.getNoteById(widget.noteId);
 
-    if (inputController.text.length > 0) {
-      // Check if the widget is still mounted before calling setState
-      if (mounted) {
-        setState(() {
-          isEmpty = false;
-        });
+      if (note['type'] == "Image + Markdown") {
+        // Image + Markdown type has a JSON content that needs to be parsed
+        Map<String, dynamic> data = jsonDecode(note['content']);
+
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            inputString = data['content'];
+            inputController.text = data['content'];
+            dropdownValue = note['type'];
+            imageUrl = data['imageUrl'];
+          });
+        }
+      } else {
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            inputString = note['content'];
+            inputController.text = note['content'];
+            dropdownValue = note['type'];
+          });
+        }
+      }
+
+      if (inputController.text.length > 0) {
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            isEmpty = false;
+          });
+        }
       }
     }
   }
