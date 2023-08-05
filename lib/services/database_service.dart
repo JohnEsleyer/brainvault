@@ -46,6 +46,7 @@ class DatabaseService {
             collection_id INTEGER,
             title TEXT,
             position INTEGER,
+            table_name TEXT,
             FOREIGN KEY (collection_id) REFERENCES collections (collection_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
@@ -58,6 +59,7 @@ class DatabaseService {
             content TEXT,
             position INTEGER,
             type TEXT,
+            table_name TEXT,
             FOREIGN KEY (document_id) REFERENCES documents (document_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
@@ -87,6 +89,20 @@ class DatabaseService {
     return jsonUint8List;
   }
 
+  void openDirectoryPicker() async {
+    try {
+      final result = await FilePicker.platform.getDirectoryPath();
+      if (result != null) {
+        directory = Directory(result);
+      }
+    } catch (e) {
+      print('Error picking directory: $e');
+      return;
+    }
+
+    directory = directory;
+    print('Selected directory path: ${directory?.path}');
+  }
   Future<void> generateAndDownloadJsonFile() async {
     DatabaseService databaseService = DatabaseService();
     Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
@@ -318,7 +334,7 @@ Future<void> insertDataFromJson(Map<String, dynamic> jsonData) async {
     final db = await database;
     return await db.insert('notes', note);
   }
-
+  
   Future<List<Map<String, dynamic>>> getAllNotes() async {
     final db = await database;
     return await db.query('notes');

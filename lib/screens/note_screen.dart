@@ -9,18 +9,22 @@ import 'package:tex_markdown/tex_markdown.dart';
 import '../colors.dart';
 import '../services/database_service.dart';
 
+
 class NoteScreen extends StatefulWidget {
   final int noteId;
   final bool readMode;
-  final Function? onDelete;
+  final Function? func;
   final String? content; // used only when readMode is true
   final String? type; // used only when readMode is true
-  NoteScreen(
-      {required this.noteId,
-      required this.readMode,
-      this.onDelete,
-      this.content,
-      this.type});
+  final bool studyMode;
+  NoteScreen({
+    required this.noteId,
+    required this.readMode,
+    required this.studyMode,
+    this.func,
+    this.content,
+    this.type,
+  });
 
   @override
   _NoteScreenState createState() => _NoteScreenState();
@@ -101,15 +105,10 @@ class _NoteScreenState extends State<NoteScreen> {
   @override
   void initState() {
     super.initState();
-     // If the given widget.content is empty or null set isEmpty to true
+    // If the given widget.content is empty or null set isEmpty to true
     isEmpty = widget.content == '' || widget.content == null;
-    if (widget.readMode == true) {
-      // Initialize inputString and dropdownValue in read mode.
-      inputString = widget.content ?? '';
-      dropdownValue = widget.type ?? 'Markdown';
-    } else {
-      loadData();
-    }
+
+    loadData();
   }
 
   Widget render() {
@@ -147,7 +146,6 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
             TexMarkdown(
               inputString,
-              
             ),
           ],
         );
@@ -160,38 +158,80 @@ class _NoteScreenState extends State<NoteScreen> {
   }
 
   void loadData() async {
-    note = await dbHelper.getNoteById(widget.noteId);
+    // READ MODE
+    if (widget.readMode == true) {
+      // Initialize inputString and dropdownValue in read mode.
+      inputString = widget.content ?? '';
+      dropdownValue = widget.type ?? 'Markdown';
 
-    if (note['type'] == "Image + Markdown") {
-      // Image + Markdown type has a JSON content that needs to be parsed
-      Map<String, dynamic> data = jsonDecode(note['content']);
+      if (widget.type == "Image + Markdown") {
+        // Image + Markdown type has a JSON content that needs to be parsed
+        Map<String, dynamic> data = jsonDecode(widget.content ?? '');
 
-      // Check if the widget is still mounted before calling setState
-      if (mounted) {
-        setState(() {
-          inputString = data['content'];
-          inputController.text = data['content'];
-          dropdownValue = note['type'];
-          imageUrl = data['imageUrl'];
-        });
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            inputString = data['content'];
+            dropdownValue = widget.type ?? 'Markdown';
+            inputController.text = data['content'];
+            imageUrl = data['imageUrl'];
+          });
+        }
+      } else {
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            inputString = widget.content ?? '';
+            dropdownValue = widget.type ?? 'Markdown';
+            inputController.text = widget.content ?? '';
+          });
+        }
       }
+
+      if (inputController.text.length > 0) {
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            isEmpty = false;
+          });
+        }
+      }
+
+      // EDIT MODE
     } else {
-      // Check if the widget is still mounted before calling setState
-      if (mounted) {
-        setState(() {
-          inputString = note['content'];
-          inputController.text = note['content'];
-          dropdownValue = note['type'];
-        });
-      }
-    }
+      note = await dbHelper.getNoteById(widget.noteId);
 
-    if (inputController.text.length > 0) {
-      // Check if the widget is still mounted before calling setState
-      if (mounted) {
-        setState(() {
-          isEmpty = false;
-        });
+      if (note['type'] == "Image + Markdown") {
+        // Image + Markdown type has a JSON content that needs to be parsed
+        Map<String, dynamic> data = jsonDecode(note['content']);
+
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            inputString = data['content'];
+            inputController.text = data['content'];
+            dropdownValue = note['type'];
+            imageUrl = data['imageUrl'];
+          });
+        }
+      } else {
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            inputString = note['content'];
+            inputController.text = note['content'];
+            dropdownValue = note['type'];
+          });
+        }
+      }
+
+      if (inputController.text.length > 0) {
+        // Check if the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            isEmpty = false;
+          });
+        }
       }
     }
   }
@@ -249,7 +289,7 @@ class _NoteScreenState extends State<NoteScreen> {
               onPressed: () async {
                 await dbHelper.deleteNote(widget.noteId);
                 Navigator.of(context).pop();
-                widget.onDelete?.call();
+                widget.func?.call();
               },
             ),
           ],
@@ -290,7 +330,7 @@ class _NoteScreenState extends State<NoteScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  dropdownValue,
+                  'Note Type: $dropdownValue',
                   style: TextStyle(
                     color: Colors.white30,
                     fontSize: 10,
@@ -303,42 +343,64 @@ class _NoteScreenState extends State<NoteScreen> {
                     fontSize: 10,
                   ),
                 ),
-                MouseRegion(
-                  onHover: (event) {
-                    setState(() {
-                      deleteColor = [Colors.red, Colors.red];
-                    });
-                  },
-                  onExit: (event) {
-                    setState(() {
-                      deleteColor = [
-                        Colors.white30,
-                        Color.fromARGB(255, 43, 43, 43)
-                      ];
-                    });
-                  },
-                  child: GestureDetector(
-                    onTap: () {
-                      deleteNote(context);
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          'Delete',
-                          style: TextStyle(
-                            color: deleteColor[0],
-                            fontSize: 10,
+                widget.studyMode
+                    ? GestureDetector(
+                      onTap: (){
+                        widget.func?.call();
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Show Location',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                        Icon(
-                          Icons.delete_forever,
-                          color: deleteColor[1],
-                          size: 20,
+                    )
+                    : MouseRegion(
+                        onHover: (event) {
+                          setState(() {
+                            deleteColor = [Colors.red, Colors.red];
+                          });
+                        },
+                        onExit: (event) {
+                          setState(() {
+                            deleteColor = [
+                              Colors.white30,
+                              Color.fromARGB(255, 43, 43, 43)
+                            ];
+                          });
+                        },
+                        child: GestureDetector(
+                          onTap: () {
+                            deleteNote(context);
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                'Delete',
+                                style: TextStyle(
+                                  color: deleteColor[0],
+                                  fontSize: 10,
+                                ),
+                              ),
+                              Icon(
+                                Icons.delete_forever,
+                                color: deleteColor[1],
+                                size: 20,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ],
             ),
             Hero(
@@ -351,7 +413,8 @@ class _NoteScreenState extends State<NoteScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                   child: isEmpty
                       ? Text('This note is empty. Press me to open the editor.')
                       : render(),

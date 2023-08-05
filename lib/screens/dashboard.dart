@@ -1,3 +1,4 @@
+import 'package:brainvault/screens/random_study_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:brainvault/colors.dart';
@@ -96,7 +97,9 @@ class _DashboardState extends State<Dashboard> {
                           width: con_width,
                           height: 50,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                           
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Icon(Icons.search, color: Colors.white),
@@ -256,20 +259,31 @@ class _DashboardState extends State<Dashboard> {
                   // Study Mode
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Container(
-                      width: con_width,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: palette[3],
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Study Mode',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black,
+                    child: GestureDetector(
+                      onTap: () async {
+                        await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RandomStudy()));
+                      },
+                      child: Container(
+                        width: con_width,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: palette[3],
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.casino, color: Colors.black),
+                              Text(
+                                'Study Randomly',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

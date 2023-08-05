@@ -82,13 +82,14 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   'collection_id': widget.collectionId,
                   'title': 'Untitled',
                   'position': documents.length + 1,
+                  'table_name': 'document',
                   
                 };
                 try{
                   int id = await dbHelper.insertDocument(data);
 
                   await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => DocumentScreen(documentId: id),
+                    builder: (context) => DocumentScreen(documentId: id, studyMode: false,),
                   ));
                   refreshData();
                 }catch(e){
@@ -182,7 +183,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                       await Navigator.of(context)
                                           .push(MaterialPageRoute(
                                         builder: (_) => DocumentScreen(
-                                            documentId: document['id']),
+                                            documentId: document['id'],
+                                            studyMode: false,
+                                            ),
                                       ));
                                       refreshData();
                                     },
