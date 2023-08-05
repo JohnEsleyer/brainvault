@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:brainvault/colors.dart';
 
-
-class SearchScreen extends StatefulWidget{
-
-  @override 
+class SearchScreen extends StatefulWidget {
+  @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen>{
+class _SearchScreenState extends State<SearchScreen> {
+  TextEditingController _textEditingController = TextEditingController();
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -21,23 +20,51 @@ class _SearchScreenState extends State<SearchScreen>{
             Hero(
               tag: 'search',
               child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: palette[2],
-                          borderRadius: BorderRadius.circular(10),),
-                        width: MediaQuery.of(context).size.width * 0.90,
-                        height: 50,
-                        child: Row(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: palette[2],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.90,
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(Icons.search, color: Colors.white),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(Icons.close),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.60,
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  isCollapsed: true,
+                                  focusColor: Colors.white,
+                                  hoverColor: Colors.white,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
+                                cursorColor: Colors.white,
+                                // autofocus: true,
+                                // enabled: false,
+                                controller: _textEditingController,
+                              ),
                             ),
                           ],
                         ),
-                      ),
+                        Icon(Icons.search, color: Colors.white),
+                      ],
                     ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

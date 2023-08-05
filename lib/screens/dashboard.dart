@@ -97,7 +97,9 @@ class _DashboardState extends State<Dashboard> {
                           width: con_width,
                           height: 50,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                           
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Icon(Icons.search, color: Colors.white),
