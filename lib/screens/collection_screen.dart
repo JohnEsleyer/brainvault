@@ -82,6 +82,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   'collection_id': widget.collectionId,
                   'title': 'Untitled',
                   'position': documents.length + 1,
+                  'table_name': 'document',
                   
                 };
                 try{

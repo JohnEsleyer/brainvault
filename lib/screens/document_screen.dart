@@ -161,6 +161,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     'position': _notes.length + 1,
 
                                     'type': 'HTML',
+                                    'table_name': 'note',
                                   };
                                   int noteId = await dbHelper.insertNote(data);
 

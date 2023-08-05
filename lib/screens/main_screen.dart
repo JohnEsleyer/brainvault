@@ -61,6 +61,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
+                          dbHelper.openDirectoryPicker();
                           dbHelper.clearDatabase();
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Test()));
