@@ -99,7 +99,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                   ),
                                   Container(
                                     width: MediaQuery.of(context).size.width *
-                                        0.90,
+                                        0.80,
                                     child: EditableText(
                                       onChanged: (newText) {
                                         updateTitle();
@@ -113,8 +113,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                       focusNode:
                                           FocusNode(canRequestFocus: true),
                                       style: TextStyle(
+
                                         color: Colors.white,
-                                        fontSize: 30,
+                                        fontSize: MediaQuery.of(context).size.width * 0.05,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

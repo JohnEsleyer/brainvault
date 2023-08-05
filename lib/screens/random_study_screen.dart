@@ -1,9 +1,8 @@
-
 import 'package:brainvault/colors.dart';
 import 'package:brainvault/screens/document_screen.dart';
 import 'package:brainvault/screens/note_screen.dart';
 import 'package:flutter/material.dart';
-  
+
 import 'dart:math';
 
 import '../services/database_service.dart';
@@ -19,6 +18,8 @@ class _RandomStudyState extends State<RandomStudy> {
   late List<Map<String, dynamic>> _docsNNotes;
   int index = 0;
 
+
+
   void initState() {
     super.initState();
     loadData();
@@ -29,12 +30,12 @@ class _RandomStudyState extends State<RandomStudy> {
     try {
       var docs = await dbHelper.getAllDocuments();
       var notes = await dbHelper.getAllNotes();
-      
+
       // To improve performance, restrict elements to 50 of length only.
-      if (docs.length > 50){
+      if (docs.length > 50) {
         docs = getRandom50Elements(docs);
       }
-      if (notes.length > 50){
+      if (notes.length > 50) {
         notes = getRandom50Elements(notes);
       }
       _docsNNotes.addAll(docs);
@@ -44,51 +45,89 @@ class _RandomStudyState extends State<RandomStudy> {
       setState(() {
         _isLoading = false;
       });
-    }catch(e){
+    } catch (e) {
       print('Failed to load data: $e');
     }
   }
 
+  List<T> getRandom50Elements<T>(List<T> list) {
+    final random = new Random();
+    var _randomList = <T>[];
 
+    for (var i = 0; i < 50; i++) {
+      var index = random.nextInt(list.length - i);
+      _randomList.add(list[index]);
+      list.removeAt(index);
+    }
 
-List<T> getRandom50Elements<T>(List<T> list) {
-  final random = new Random();
-  var _randomList = <T>[];
-
-  for (var i = 0; i < 50; i++) {
-    var index = random.nextInt(list.length - i);
-    _randomList.add(list[index]);
-    list.removeAt(index);
+    return _randomList;
   }
 
-  return _randomList;
-}
+  //  void refreshData() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+  //   try {
+     
+  //     // var text = _document['title'];
+  //     _docsNNotes[index] = await dbHelper.getAllNotesByDocumentId(widget.documentId);
+  //     setState(() {
+  //       _document = doc;
+  //       // _titleController.text = text;
+  //       _notes = notes;
+  //     });
+  //   } catch (e) {
+  //     print('Failed to refresh data: $e');
+  //   }
 
-Widget renderDocNNote(){
-  if (_docsNNotes[index]['table_name'] == 'document'){
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: palette[2],
-      ),
-      child: DocumentScreen(
-        documentId: _docsNNotes[index]['id'],
-      ),
-    );
-  }else{
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: palette[2],
-      ),
-      child: NoteScreen(
-        readMode: true,
-        noteId: _docsNNotes[index]['id'],
-      ),
-    );
+  //   await Future.delayed(Duration(seconds: 1));
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
+
+  Widget renderDocNNote() {
+
+    if (_docsNNotes[index]['table_name'] == 'document') {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: palette[1],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DocumentScreen(
+              documentId: _docsNNotes[index]['id'],
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        width: MediaQuery.of(context).size.width * 0.70,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: palette[2],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: NoteScreen(
+              readMode: true,
+              noteId: _docsNNotes[index]['id'],
+              content: _docsNNotes[index]['content'],
+              type: _docsNNotes[index]['type'],
+              // onDelete: () {
+              //   refreshData();
+              // },
+            ),
+          ),
+        ),
+      );
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +160,8 @@ Widget renderDocNNote(){
                   )
                 : renderDocNNote(),
           ),
-
+  
+      
           // Bottom bar
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -129,15 +169,22 @@ Widget renderDocNNote(){
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: (){
-                    if (index > _docsNNotes.length){
-                      setState(() {
-                        index = 0;
-                      });
-                    }
+                  onTap: () async {
                     setState(() {
-                      index++;
+                      index = (index + 1) % _docsNNotes.length;
+                      _isLoading = true;
                     });
+                    
+                    await Future.delayed(Duration(seconds: 1));
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    print('=========================');
+                    print('LENGTH: ${_docsNNotes.length}');
+                    print('INDEX: $index');
+                    print(_docsNNotes[index]);
+                    print(_docsNNotes[index]['content']);
+                    
                   },
                   child: Container(
                     decoration: BoxDecoration(

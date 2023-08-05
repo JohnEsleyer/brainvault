@@ -388,7 +388,8 @@ class _NoteScreenState extends State<NoteScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.02),
                   child: isEmpty
                       ? Text('This note is empty. Press me to open the editor.')
                       : render(),
