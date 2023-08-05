@@ -9,18 +9,22 @@ import 'package:tex_markdown/tex_markdown.dart';
 import '../colors.dart';
 import '../services/database_service.dart';
 
+
 class NoteScreen extends StatefulWidget {
   final int noteId;
   final bool readMode;
-  final Function? onDelete;
+  final Function? func;
   final String? content; // used only when readMode is true
   final String? type; // used only when readMode is true
-  NoteScreen(
-      {required this.noteId,
-      required this.readMode,
-      this.onDelete,
-      this.content,
-      this.type});
+  final bool studyMode;
+  NoteScreen({
+    required this.noteId,
+    required this.readMode,
+    required this.studyMode,
+    this.func,
+    this.content,
+    this.type,
+  });
 
   @override
   _NoteScreenState createState() => _NoteScreenState();
@@ -180,7 +184,6 @@ class _NoteScreenState extends State<NoteScreen> {
             inputString = widget.content ?? '';
             dropdownValue = widget.type ?? 'Markdown';
             inputController.text = widget.content ?? '';
-            
           });
         }
       }
@@ -286,7 +289,7 @@ class _NoteScreenState extends State<NoteScreen> {
               onPressed: () async {
                 await dbHelper.deleteNote(widget.noteId);
                 Navigator.of(context).pop();
-                widget.onDelete?.call();
+                widget.func?.call();
               },
             ),
           ],
@@ -327,7 +330,7 @@ class _NoteScreenState extends State<NoteScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  dropdownValue,
+                  'Note Type: $dropdownValue',
                   style: TextStyle(
                     color: Colors.white30,
                     fontSize: 10,
@@ -340,42 +343,64 @@ class _NoteScreenState extends State<NoteScreen> {
                     fontSize: 10,
                   ),
                 ),
-                MouseRegion(
-                  onHover: (event) {
-                    setState(() {
-                      deleteColor = [Colors.red, Colors.red];
-                    });
-                  },
-                  onExit: (event) {
-                    setState(() {
-                      deleteColor = [
-                        Colors.white30,
-                        Color.fromARGB(255, 43, 43, 43)
-                      ];
-                    });
-                  },
-                  child: GestureDetector(
-                    onTap: () {
-                      deleteNote(context);
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          'Delete',
-                          style: TextStyle(
-                            color: deleteColor[0],
-                            fontSize: 10,
+                widget.studyMode
+                    ? GestureDetector(
+                      onTap: (){
+                        widget.func?.call();
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Show Location',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                        Icon(
-                          Icons.delete_forever,
-                          color: deleteColor[1],
-                          size: 20,
+                    )
+                    : MouseRegion(
+                        onHover: (event) {
+                          setState(() {
+                            deleteColor = [Colors.red, Colors.red];
+                          });
+                        },
+                        onExit: (event) {
+                          setState(() {
+                            deleteColor = [
+                              Colors.white30,
+                              Color.fromARGB(255, 43, 43, 43)
+                            ];
+                          });
+                        },
+                        child: GestureDetector(
+                          onTap: () {
+                            deleteNote(context);
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                'Delete',
+                                style: TextStyle(
+                                  color: deleteColor[0],
+                                  fontSize: 10,
+                                ),
+                              ),
+                              Icon(
+                                Icons.delete_forever,
+                                color: deleteColor[1],
+                                size: 20,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ],
             ),
             Hero(
@@ -388,8 +413,8 @@ class _NoteScreenState extends State<NoteScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(
-                        MediaQuery.of(context).size.width * 0.02),
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                   child: isEmpty
                       ? Text('This note is empty. Press me to open the editor.')
                       : render(),

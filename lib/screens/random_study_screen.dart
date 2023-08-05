@@ -18,8 +18,6 @@ class _RandomStudyState extends State<RandomStudy> {
   late List<Map<String, dynamic>> _docsNNotes;
   int index = 0;
 
-
-
   void initState() {
     super.initState();
     loadData();
@@ -100,6 +98,7 @@ class _RandomStudyState extends State<RandomStudy> {
             padding: const EdgeInsets.all(8.0),
             child: DocumentScreen(
               documentId: _docsNNotes[index]['id'],
+              studyMode: true,
             ),
           ),
         ),
@@ -115,13 +114,16 @@ class _RandomStudyState extends State<RandomStudy> {
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
             child: NoteScreen(
+              studyMode: true,
               readMode: true,
               noteId: _docsNNotes[index]['id'],
               content: _docsNNotes[index]['content'],
               type: _docsNNotes[index]['type'],
-              // onDelete: () {
-              //   refreshData();
-              // },
+              func: (){
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => DocumentScreen(documentId: _docsNNotes[index]['document_id'], studyMode: false),
+                ));
+              },
             ),
           ),
         ),
@@ -152,6 +154,7 @@ class _RandomStudyState extends State<RandomStudy> {
           // Body
           Container(
             height: MediaQuery.of(context).size.height * 0.82,
+
             child: _isLoading
                 ? Center(
                     child: CircularProgressIndicator(

@@ -6,8 +6,9 @@ import '../colors.dart';
 
 class DocumentScreen extends StatefulWidget {
   final int documentId;
+  final bool studyMode;
 
-  DocumentScreen({required this.documentId});
+  DocumentScreen({required this.documentId, required this.studyMode});
 
   @override
   _DocumentScreenState createState() => _DocumentScreenState();
@@ -88,13 +89,16 @@ class _DocumentScreenState extends State<DocumentScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
+                                  Visibility(
+                                    visible: !widget.studyMode,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                   Container(
@@ -132,7 +136,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     builder: (_) => NoteScreen(
                                       noteId: note['id'],
                                       readMode: false,
-                                      
+                                      studyMode: false,
                                     ),
                                   ));
                                   refreshData();
@@ -142,7 +146,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                   readMode: true,
                                   content: note['content'],
                                   type: note['type'],
-                                  onDelete: () {
+                                  studyMode: false,
+                                  func: () {
                                     refreshData();
                                   },
                                 ),
@@ -169,6 +174,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                   await Navigator.of(context)
                                       .push(MaterialPageRoute(
                                     builder: (_) => NoteScreen(
+                                      studyMode: false,
                                         noteId: noteId, readMode: false),
                                   ));
                                   refreshData();
