@@ -11,23 +11,58 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> _searchResults = [];
+  // List<Map<String, dynamic>> _searchResults = [];
+  List<Map<String, dynamic>> _resultsDocuments = [];
+  List<Map<String, dynamic>> _resultsNotes = [];
+  bool _isLoading = false;
+  bool _documentsVisibility = false;
+  bool _notesVisibility = false;
 
   void _onSearchTextChanged(String query) async {
+    setState(() {
+      _isLoading = true;
+    });
     if (query.isEmpty) {
       setState(() {
-        _searchResults.clear();
+        _resultsDocuments.clear();
+        _resultsNotes.clear();
       });
       return;
     }
-
+    _resultsDocuments.clear();
+    _resultsNotes.clear();
     DatabaseService databaseService = DatabaseService();
     List<Map<String, dynamic>> results =
         await databaseService.searchDocumentsAndNotes(query);
 
+    // Store documents and notes separately
+    for (Map<String, dynamic> res in results) {
+      if (res['table_name'] == 'document') {
+        setState(() {
+          _resultsDocuments.add(res);
+        });
+      } else {
+        setState(() {
+          _resultsNotes.add(res);
+        });
+      }
+    }
+    await Future.delayed(Duration(seconds: 1));
     setState(() {
-      _searchResults = results;
+      if (_resultsDocuments.length == 0){
+        _documentsVisibility = false;
+      }else{
+        _documentsVisibility = true;
+      }
+       if (_resultsNotes.length == 0){
+        _notesVisibility = false;
+      }else{
+        _notesVisibility = true;
+      }
+      _isLoading = false;
     });
+    print('Documents: $_resultsDocuments');
+    print('Notes: ${_resultsNotes}');
   }
 
   @override
@@ -71,7 +106,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               hintText: 'Search keyword',
                             ),
                             controller: _searchController,
-                            onChanged: _onSearchTextChanged,
+                            onSubmitted: _onSearchTextChanged,
                           ),
                         ),
                       ),
@@ -84,68 +119,115 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
-            Expanded(
-              // Wrap the ListView.builder with Expanded
-              child: ListView.builder(
-                itemCount: _searchResults.length,
-                itemBuilder: (context, index) {
-                  Map<String, dynamic> result = _searchResults[index];
-
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _searchResults[index]['table_name'] == 'document'
-                        ? Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return DocumentScreen(
-                                      documentId: _searchResults[index]['id'],
-                                      studyMode: false);
-                                }));
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: palette[2],
-                                  borderRadius: BorderRadius.circular(10),
+            _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
+                : Container(
+                    height: MediaQuery.of(context).size.height * 0.80,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _documentsVisibility ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Documents',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Icon(Icons.edit_document),
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.20,
+                                  decoration: BoxDecoration(
+                                    color: palette[1],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        for (var result in _resultsDocuments)
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return DocumentScreen(
+                                                        documentId:
+                                                            result['id'],
+                                                        studyMode: false);
+                                                  },
+                                                ));
+                                              },
+                                              child: Container(
+                                                height: 100,
+                                                width: 150,
+                                                decoration: BoxDecoration(
+                                                  color: palette[2],
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Center(
+                                                    child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text(result['title']),
+                                                )),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
-                                    Text(result['title']),
-                                  ],
+                                  ),
                                 ),
+                              ],
+                            ) : Container(),
+                        _notesVisibility ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                                Text(
+                              'Notes',
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          )
-                        : NoteScreen(
-                            noteId: _searchResults[index]['id'],
-                            readMode: true,
-                            studyMode: true,
-                            content: _searchResults[index]['content'],
-                            type: _searchResults[index]['type'],
-                            func: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => DocumentScreen(
-                                      documentId: _searchResults[index]
-                                          ['document_id'],
-                                      studyMode: false)));
-                            },
-                          ),
-                  );
-
-                  // return ListTile(
-                  //   title:
-                  //       Text(result['title'] ?? result['content'] ?? 'Unknown'),
-                  //   // Add more widgets to display additional information if needed
-                  // );
-                },
-              ),
-            ),
+                            for (var result in _resultsNotes)
+                              NoteScreen(
+                                noteId: result['id'],
+                                readMode: true,
+                                studyMode: true,
+                                content: result['content'],
+                                type: result['type'],
+                                func: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DocumentScreen(
+                                        documentId: result['document_id'],
+                                        studyMode: false,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
+                        ) : Container(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),
