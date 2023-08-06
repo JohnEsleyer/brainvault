@@ -128,6 +128,13 @@ class _SearchScreenState extends State<SearchScreen> {
                             studyMode: true,
                             content: _searchResults[index]['content'],
                             type: _searchResults[index]['type'],
+                            func: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => DocumentScreen(
+                                      documentId: _searchResults[index]
+                                          ['document_id'],
+                                      studyMode: false)));
+                            },
                           ),
                   );
 
