@@ -66,6 +66,26 @@ class DatabaseService {
           ''');
   }
 
+  // Method to search documents and notes based on title and content.
+  Future<List<Map<String, dynamic>>> searchDocumentsAndNotes(String query) async {
+    final db = await database;
+    final List<Map<String, dynamic>> documents = await db.query(
+      'documents',
+      where: 'title LIKE ? OR table_name LIKE ?',
+      whereArgs: ['%$query%', '%$query%'],
+    );
+
+    final List<Map<String, dynamic>> notes = await db.query(
+      'notes',
+      where: 'content LIKE ? OR table_name LIKE ?',
+      whereArgs: ['%$query%', '%$query%'],
+    );
+
+    // Combine and return the results
+    return [...documents, ...notes];
+  }
+
+
   Future<Uint8List> getDatabaseDataAsJson() async {
     final db = await database;
 

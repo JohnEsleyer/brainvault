@@ -56,6 +56,7 @@ class _NoteScreenState extends State<NoteScreen> {
   late Map<String, dynamic> note;
 
   List<Color> deleteColor = [Colors.white30, Color.fromARGB(255, 43, 43, 43)];
+  Color _showLocationColor = Colors.white30;
 
   var codeTheme = {
     'root': TextStyle(
@@ -348,22 +349,25 @@ class _NoteScreenState extends State<NoteScreen> {
                       onTap: (){
                         widget.func?.call();
                       },
-                      child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Show Location',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                      child: MouseRegion(
+                        onHover: (event){
+                          setState(() {
+                            _showLocationColor = Colors.white;
+                          });
+                        },
+                        onExit: (event){
+                          setState(() {
+                            _showLocationColor = Colors.white30;
+                          });
+                        },
+                        child: Text(
+                          'Show Location',
+                          style: TextStyle(
+                            color: _showLocationColor,
+                            fontSize: 10,
                           ),
                         ),
+                      ),
                     )
                     : MouseRegion(
                         onHover: (event) {
