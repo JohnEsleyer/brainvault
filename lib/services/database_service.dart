@@ -298,6 +298,15 @@ class DatabaseService {
         where: 'id = ?', whereArgs: [collectionId]);
   }
 
+  Future<int> updateCollectionDescription(int collectionId, String newDescription) async {
+    final db = await database;
+    final Map<String, dynamic> collection = {
+      'description': newDescription,
+    };
+    return await db.update('collections', collection,
+        where: 'id = ?', whereArgs: [collectionId]);
+  }
+
   Future<int> updateCollection(Map<String, dynamic> collection) async {
     final db = await database;
     return await db.update('collections', collection,

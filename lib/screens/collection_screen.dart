@@ -18,6 +18,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   late List<Map<String, dynamic>> documents;
   late Map<String, dynamic> collection;
   final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   bool isLoading = true;
   bool hidden = true;
@@ -34,7 +35,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
       documents =
           await dbHelper.getDocumentsByCollectionId(widget.collectionId);
       _titleController.text = collection['title'];
-
+      _descriptionController.text = collection['description'];
 
       // When successfull
       setState(() {
@@ -49,16 +50,18 @@ class _CollectionScreenState extends State<CollectionScreen> {
     setState(() {
       hidden = false;
     });
-    try{
+    try {
       var col = await dbHelper.getCollectionById(widget.collectionId);
       var doc = await dbHelper.getDocumentsByCollectionId(widget.collectionId);
 
       // When succesfull
-      setState(() {
-        collection = col;
-        documents = doc;
-      },);
-    }catch(e){
+      setState(
+        () {
+          collection = col;
+          documents = doc;
+        },
+      );
+    } catch (e) {
       print('Failed to refreshd data: $e');
     }
     setState(() {
@@ -71,152 +74,171 @@ class _CollectionScreenState extends State<CollectionScreen> {
         widget.collectionId, _titleController.text);
   }
 
+  void updateDescription() async {
+    await dbHelper.updateCollectionDescription(
+        widget.collectionId, _descriptionController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!isLoading) {
-          return Scaffold(
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () async {
-                var data = {
-                  'collection_id': widget.collectionId,
-                  'title': 'Untitled',
-                  'position': documents.length + 1,
-                  'table_name': 'document',
-                  
-                };
-                try{
-                  int id = await dbHelper.insertDocument(data);
+      return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () async {
+            var data = {
+              'collection_id': widget.collectionId,
+              'title': 'Untitled',
+              'position': documents.length + 1,
+              'table_name': 'document',
+            };
+            try {
+              int id = await dbHelper.insertDocument(data);
 
-                  await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => DocumentScreen(documentId: id, studyMode: false,),
-                  ));
-                  refreshData();
-                }catch(e){
-                  print("Document creation failed: $e");
-                }
-
-              },
-              backgroundColor: palette[5],
-            ),
-            body: Container(
-                width: MediaQuery.of(context).size.width,
-                color: palette[1],
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: (){
-                                      Navigator.pop(context);
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * 0.90,
-                                    child: EditableText(
-                                      onChanged: (newText) {
-
-                                        updateTitle();
-                                      },
-                                      expands: true,
-                                      maxLines: null,
-                                      minLines: null,
-                                      backgroundCursorColor: palette[1],
-                                      cursorColor: Colors.white,
-                                      controller: _titleController,
-                                      focusNode: FocusNode(canRequestFocus: true),
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                    ),
-                    // Description and other buttons
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            collection['description'],
+              await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => DocumentScreen(
+                  documentId: id,
+                  studyMode: false,
+                ),
+              ));
+              refreshData();
+            } catch (e) {
+              print("Document creation failed: $e");
+            }
+          },
+          backgroundColor: palette[5],
+        ),
+        body: Container(
+            width: MediaQuery.of(context).size.width,
+            color: palette[1],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        child: EditableText(
+                          onChanged: (newText) {
+                            updateTitle();
+                          },
+                          expands: true,
+                          maxLines: null,
+                          minLines: null,
+                          backgroundCursorColor: palette[1],
+                          cursorColor: Colors.white,
+                          controller: _titleController,
+                          focusNode: FocusNode(canRequestFocus: true),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
                           ),
-                          if (!hidden)
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Description and other buttons
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        child: EditableText(
+                          onChanged: (newText) {
+                            updateDescription();
+                          },
+                          expands: true,
+                          maxLines: null,
+                          minLines: null,
+                          backgroundCursorColor: palette[1],
+                          cursorColor: Colors.white,
+                          controller: _descriptionController,
+                          focusNode: FocusNode(canRequestFocus: true),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                      if (!hidden)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                             Padding(
-                               padding: const EdgeInsets.all(8.0),
-                               child: Container(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(color: Colors.white)),
-                             ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                      color: Colors.white)),
+                            ),
                           ],
                         ),
-                        ],
-                      ),
-                    ),
+                    ],
+                  ),
+                ),
 
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Wrap(
-                            children: [
-                              for (var document in documents)
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      await Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (_) => DocumentScreen(
-                                            documentId: document['id'],
-                                            studyMode: false,
-                                            ),
-                                      ));
-                                      refreshData();
-                                    },
-                                    child: Container(
-                                      height: 100,
-                                      width: 150,
-                                      decoration: BoxDecoration(
-                                        color: palette[2],
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          document['title'],
-                                          textAlign: TextAlign.center,
-                                          
-                                        ),
-                                      ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Wrap(
+                        children: [
+                          for (var document in documents)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (_) => DocumentScreen(
+                                      documentId: document['id'],
+                                      studyMode: false,
+                                    ),
+                                  ));
+                                  refreshData();
+                                },
+                                child: Container(
+                                  height: 100,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    color: palette[2],
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      document['title'],
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
-                            ],
-                          ),
-                        ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                  ],
-                )),
-          );
-        
-      
+                  ),
+                ),
+              ],
+            )),
+      );
     } else {
       return Center(
         child: CircularProgressIndicator(color: Colors.white),
