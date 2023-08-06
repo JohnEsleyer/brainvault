@@ -1,3 +1,6 @@
+import 'package:brainvault/screens/document_screen.dart';
+import 'package:brainvault/screens/note_screen.dart';
+import 'package:brainvault/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:brainvault/colors.dart';
 
@@ -7,20 +10,72 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  // List<Map<String, dynamic>> _searchResults = [];
+  List<Map<String, dynamic>> _resultsDocuments = [];
+  List<Map<String, dynamic>> _resultsNotes = [];
+  bool _isLoading = false;
+  bool _documentsVisibility = false;
+  bool _notesVisibility = false;
+
+  void _onSearchTextChanged(String query) async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (query.isEmpty) {
+      setState(() {
+        _resultsDocuments.clear();
+        _resultsNotes.clear();
+      });
+      return;
+    }
+    _resultsDocuments.clear();
+    _resultsNotes.clear();
+    DatabaseService databaseService = DatabaseService();
+    List<Map<String, dynamic>> results =
+        await databaseService.searchDocumentsAndNotes(query);
+
+    // Store documents and notes separately
+    for (Map<String, dynamic> res in results) {
+      if (res['table_name'] == 'document') {
+        setState(() {
+          _resultsDocuments.add(res);
+        });
+      } else {
+        setState(() {
+          _resultsNotes.add(res);
+        });
+      }
+    }
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      if (_resultsDocuments.length == 0){
+        _documentsVisibility = false;
+      }else{
+        _documentsVisibility = true;
+      }
+       if (_resultsNotes.length == 0){
+        _notesVisibility = false;
+      }else{
+        _notesVisibility = true;
+      }
+      _isLoading = false;
+    });
+    print('Documents: $_resultsDocuments');
+    print('Notes: ${_resultsNotes}');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        color: palette[1],
+        height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
-            Hero(
-              tag: 'search',
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Hero(
+                tag: 'search',
                 child: Container(
                   decoration: BoxDecoration(
                     color: palette[2],
@@ -28,44 +83,151 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   width: MediaQuery.of(context).size.width * 0.90,
                   height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Icon(Icons.close),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Icon(Icons.close)),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: TextField(
+                            cursorColor: Colors.white,
+                            decoration: InputDecoration(
+                              focusColor: Colors.white,
+                              hoverColor: Colors.white,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              hintText: 'Search keyword',
                             ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.60,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  isCollapsed: true,
-                                  focusColor: Colors.white,
-                                  hoverColor: Colors.white,
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                ),
-                                cursorColor: Colors.white,
-                                // autofocus: true,
-                                // enabled: false,
-                                controller: _textEditingController,
-                              ),
-                            ),
-                          ],
+                            controller: _searchController,
+                            onSubmitted: _onSearchTextChanged,
+                          ),
                         ),
-                        Icon(Icons.search, color: Colors.white),
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.search, color: Colors.white),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
+            _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
+                : Container(
+                    height: MediaQuery.of(context).size.height * 0.80,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _documentsVisibility ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Documents',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.20,
+                                  decoration: BoxDecoration(
+                                    color: palette[1],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        for (var result in _resultsDocuments)
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return DocumentScreen(
+                                                        documentId:
+                                                            result['id'],
+                                                        studyMode: false);
+                                                  },
+                                                ));
+                                              },
+                                              child: Container(
+                                                height: 100,
+                                                width: 150,
+                                                decoration: BoxDecoration(
+                                                  color: palette[2],
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Center(
+                                                    child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text(result['title']),
+                                                )),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ) : Container(),
+                        _notesVisibility ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                                Text(
+                              'Notes',
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            for (var result in _resultsNotes)
+                              NoteScreen(
+                                noteId: result['id'],
+                                readMode: true,
+                                studyMode: true,
+                                content: result['content'],
+                                type: result['type'],
+                                func: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DocumentScreen(
+                                        documentId: result['document_id'],
+                                        studyMode: false,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
+                        ) : Container(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),
