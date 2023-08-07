@@ -22,7 +22,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
   void _parseMarkdown() {
     List<String> lines = widget.markdown.split('\n');
-    print('executed');
+
     for (String line in lines) {
       print(line);
       if (line.startsWith('# ')) {
@@ -82,6 +82,10 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                 line.substring(2),
                 style: TextStyle(
                   decoration: TextDecoration.none,
+
+              fontWeight: FontWeight.normal,
+              color: Colors.white,
+              fontSize: 16,
                 ),
               ),
             ),
@@ -94,6 +98,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
           style: TextStyle(
             decoration: TextDecoration.none,
             fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 16,
           ),
         ));
       } else if (line.startsWith('_') && line.endsWith('_')) {
@@ -114,7 +120,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
           if (imageUrl.isNotEmpty) {
             _rendered.add(Center(
               child: Container(
-                height: 200,
+                height: 300,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -133,6 +139,9 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             line,
             style: TextStyle(
               decoration: TextDecoration.none,
+              fontWeight: FontWeight.normal,
+              color: Colors.white,
+              fontSize: 16,
             ),
           ),
         );
@@ -142,9 +151,13 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _rendered,
+   
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _rendered,
+      ),
     );
   }
 }

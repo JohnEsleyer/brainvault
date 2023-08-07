@@ -43,35 +43,43 @@ class _NoteScreenState extends State<NoteScreen> {
     if (_editMode == true) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        height: 500,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
+        height: MediaQuery.of(context).size.height * 0.81,
+        child: Scaffold(
+          body: Container(
             color: palette[2],
-            child: TextField(
-              cursorColor: Colors.white,
-              decoration: InputDecoration(
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 9.0,
+                top: 5.0,
               ),
-              expands: true,
-              maxLines: null,
-              minLines: null,
-              controller: _editingController,
-              onChanged: (value) {
-                _updateDb();
-              },
+              child: TextField(
+                cursorColor: Colors.white,
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+                decoration: InputDecoration(
+                  
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                controller: _editingController,
+                onChanged: (value) {
+                  _updateDb();
+                },
+              ),
             ),
           ),
         ),
       );
     } else {
       return Container(
-        color: palette[2],
         width: MediaQuery.of(context).size.width,
-        height: 500,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
+        height: MediaQuery.of(context).size.height * 0.81,
+        color: palette[2],
+        child: SingleChildScrollView(
           child: MarkdownWidget(
             markdown: _editingController.text,
           ),
@@ -82,28 +90,124 @@ class _NoteScreenState extends State<NoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       color: palette[1],
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           GestureDetector(
-            onTap: (){
+          GestureDetector(
+            onTap: () {
               Navigator.pop(context);
             },
-            child: Icon(
-              Icons.arrow_back,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.arrow_back,
+              ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              print(_editMode);
-              setState(() {
-                _editMode = !_editMode;
-              });
-            },
-            child: Text('Change'),
+
+          Container(
+            width: MediaQuery.of(context).size.width,
+          
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: palette[1],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Read Mode
+                        Expanded(
+                          flex: 1,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _editMode = !_editMode;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                                color: _editMode ? palette[1] : palette[2],
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Read View',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                      decoration: TextDecoration.none,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Edit Mode
+                        Expanded(
+                          flex: 1,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _editMode = !_editMode;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                                color: _editMode ? palette[2] : palette[1],
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Editor',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                      decoration: TextDecoration.none,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.83,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: palette[2],
+                      ),
+                      child: SingleChildScrollView(
+                        child: _display(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          _display(),
         ],
       ),
     );

@@ -137,11 +137,15 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                       })
                                     );
                                   },
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 500,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: palette[2],
+                                      ),
+                                      
+                                      width: MediaQuery.of(context).size.width,
                                       child: MarkdownWidget(
                                         markdown: _notes[index]['content'],
                                       ),
