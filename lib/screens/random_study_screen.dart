@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import '../services/database_service.dart';
+import '../widgets/markdown_widget.dart';
 
 class RandomStudy extends StatefulWidget {
   @override
@@ -85,7 +86,9 @@ class _RandomStudyState extends State<RandomStudy> {
   // }
 
   Widget renderDocNNote() {
+    
     if (_docsNNotes[index]['table_name'] == 'document') {
+      // if index is document
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -103,6 +106,7 @@ class _RandomStudyState extends State<RandomStudy> {
         ),
       );
     } else {
+      // If index is note
       return Container(
         width: MediaQuery.of(context).size.width * 0.70,
         decoration: BoxDecoration(
@@ -115,17 +119,19 @@ class _RandomStudyState extends State<RandomStudy> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => DocumentScreen(
-                      documentId: _docsNNotes[index]['document_id'],
-                      studyMode: false),
-                ));
-              },
-              child: NoteScreen(
+                  builder: (context) => NoteScreen(
                 readMode: true,
                 noteId: _docsNNotes[index]['id'],
                 content: _docsNNotes[index]['content'],
                 type: 'markdown',
               ),
+                ));
+              },
+              child: 
+              MarkdownWidget(
+                markdown: _docsNNotes[index]['content'],
+              ),
+            
             ),
           ),
         ),

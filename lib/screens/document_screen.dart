@@ -75,137 +75,158 @@ class _DocumentScreenState extends State<DocumentScreen> {
             future: loadingData,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-
                 return Scaffold(
-                  body: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    color: palette[1],
-                    child: Column(
-                      children: [
-                        // Title
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Visibility(
-                                visible: !widget.studyMode,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: EditableText(
-                                  onChanged: (newText) {
-                                    updateTitle();
-                                  },
-                                  expands: true,
-                                  maxLines: null,
-                                  minLines: null,
-                                  backgroundCursorColor: palette[1],
-                                  cursorColor: Colors.white,
-                                  controller: _titleController,
-                                  focusNode: FocusNode(canRequestFocus: true),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
+                  body: GestureDetector(
+                    onDoubleTap: () {
+                      if (widget.studyMode)
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DocumentScreen(
+                            documentId: widget.documentId,
+                            studyMode: false,
                           ),
-                        ),
-
-                        Expanded(
-                          child: Container(
-                            child: ListView.builder(
-                              itemCount: _notes.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: (){
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context){
-                                        return NoteScreen(readMode: true, content: _notes[index]['content'], noteId: _notes[index]['id'], type: 'markdown');
-                                      })
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: palette[2],
-                                      ),
-                                      
-                                      width: MediaQuery.of(context).size.width,
-                                      child: MarkdownWidget(
-                                        markdown: _notes[index]['content'],
-                                      ),
+                        ));
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      color: palette[1],
+                      child: Column(
+                        children: [
+                          // Title
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Visibility(
+                                  visible: !widget.studyMode,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-
-                        Padding(
-                          padding: EdgeInsets.all(
-                              MediaQuery.of(context).size.width * 0.02),
-                          child: GestureDetector(
-                            onTap: () async {
-                              // Create new note
-
-                              Map<String, dynamic> data = {
-                                'document_id': widget
-                                    .documentId, // Replace with the appropriate document_id of the associated document
-                                'content': '',
-                                'position': _notes.length + 1,
-
-                                'type': 'markdown',
-                                'table_name': 'note',
-                              };
-                              int noteId = await dbHelper.insertNote(data);
-
-                              await Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                builder: (_) => NoteScreen(
-                                  content: data['content'],
-                                  noteId: noteId,
-                                  readMode: false,
-                                  type: 'markdown',
                                 ),
-                              ));
-                              refreshData();
-                            },
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.80,
+                                  child: EditableText(
+                                    onChanged: (newText) {
+                                      updateTitle();
+                                    },
+                                    expands: true,
+                                    maxLines: null,
+                                    minLines: null,
+                                    readOnly: widget.studyMode,
+                                    backgroundCursorColor: palette[1],
+                                    cursorColor: Colors.white,
+                                    controller: _titleController,
+                                    focusNode: FocusNode(canRequestFocus: true),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Expanded(
                             child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: palette[5],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                    child: Container(
-                                  height: 50,
-                                  width: 50,
-                                  child: Icon(Icons.add, color: palette[1]),
-                                )),
+                              child: ListView.builder(
+                                itemCount: _notes.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      if (!widget.studyMode)
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return NoteScreen(
+                                              readMode: true,
+                                              content: _notes[index]['content'],
+                                              noteId: _notes[index]['id'],
+                                              type: 'markdown');
+                                        }));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: palette[2],
+                                        ),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: MarkdownWidget(
+                                          markdown: _notes[index]['content'],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ),
-                        ),
-                      ],
+
+                          Visibility(
+                            visible: !widget.studyMode,
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  MediaQuery.of(context).size.width * 0.02),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  // Create new note
+
+                                  Map<String, dynamic> data = {
+                                    'document_id': widget
+                                        .documentId, // Replace with the appropriate document_id of the associated document
+                                    'content': '',
+                                    'position': _notes.length + 1,
+
+                                    'type': 'markdown',
+                                    'table_name': 'note',
+                                  };
+                                  int noteId = await dbHelper.insertNote(data);
+
+                                  await Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (_) => NoteScreen(
+                                      content: data['content'],
+                                      noteId: noteId,
+                                      readMode: false,
+                                      type: 'markdown',
+                                    ),
+                                  ));
+                                  refreshData();
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    color: palette[5],
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                        child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: Icon(Icons.add, color: palette[1]),
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
