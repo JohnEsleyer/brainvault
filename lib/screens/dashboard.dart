@@ -40,10 +40,7 @@ class _DashboardState extends State<Dashboard> {
     // Container size
     double con_width = MediaQuery.of(context).size.width * 0.90;
 
-    return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth < 800) {
-        // Portrait View
-        return Scaffold(
+    return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
             child: AppBar(
@@ -96,12 +93,12 @@ class _DashboardState extends State<Dashboard> {
                             borderRadius: BorderRadius.circular(10),),
                           width: con_width,
                           height: 50,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                           
+                             
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Icon(Icons.search, color: Colors.white),
                               ),
                             ],
@@ -294,12 +291,6 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
         );
-      } else {
-        // Landscape view
-        return Scaffold(
-          body: Container(),
-        );
-      }
-    });
+
   }
 }

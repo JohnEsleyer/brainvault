@@ -48,6 +48,9 @@ dependencies:
   provider: ^6.0.5
   web_smooth_scroll: ^1.1.0
   file_picker: ^5.3.3
+  flutter_code_editor: ^0.2.9
+  highlight: ^0.7.0
+  youtube_player_flutter: ^8.1.2
 
 dev_dependencies:
   flutter_test:

@@ -66,7 +66,7 @@ class _RandomStudyState extends State<RandomStudy> {
   //     _isLoading = true;
   //   });
   //   try {
-     
+
   //     // var text = _document['title'];
   //     _docsNNotes[index] = await dbHelper.getAllNotesByDocumentId(widget.documentId);
   //     setState(() {
@@ -85,7 +85,6 @@ class _RandomStudyState extends State<RandomStudy> {
   // }
 
   Widget renderDocNNote() {
-
     if (_docsNNotes[index]['table_name'] == 'document') {
       return Padding(
         padding: const EdgeInsets.all(8.0),
@@ -113,17 +112,20 @@ class _RandomStudyState extends State<RandomStudy> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
-            child: NoteScreen(
-              studyMode: true,
-              readMode: true,
-              noteId: _docsNNotes[index]['id'],
-              content: _docsNNotes[index]['content'],
-              type: _docsNNotes[index]['type'],
-              func: (){
+            child: GestureDetector(
+              onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => DocumentScreen(documentId: _docsNNotes[index]['document_id'], studyMode: false),
+                  builder: (context) => DocumentScreen(
+                      documentId: _docsNNotes[index]['document_id'],
+                      studyMode: false),
                 ));
               },
+              child: NoteScreen(
+                readMode: true,
+                noteId: _docsNNotes[index]['id'],
+                content: _docsNNotes[index]['content'],
+                type: 'markdown',
+              ),
             ),
           ),
         ),
@@ -154,7 +156,6 @@ class _RandomStudyState extends State<RandomStudy> {
           // Body
           Container(
             height: MediaQuery.of(context).size.height * 0.82,
-
             child: _isLoading
                 ? Center(
                     child: CircularProgressIndicator(
@@ -163,8 +164,7 @@ class _RandomStudyState extends State<RandomStudy> {
                   )
                 : renderDocNNote(),
           ),
-  
-      
+
           // Bottom bar
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -177,7 +177,7 @@ class _RandomStudyState extends State<RandomStudy> {
                       index = (index + 1) % _docsNNotes.length;
                       _isLoading = true;
                     });
-                    
+
                     await Future.delayed(Duration(seconds: 1));
                     setState(() {
                       _isLoading = false;
@@ -187,7 +187,6 @@ class _RandomStudyState extends State<RandomStudy> {
                     print('INDEX: $index');
                     print(_docsNNotes[index]);
                     print(_docsNNotes[index]['content']);
-                    
                   },
                   child: Container(
                     decoration: BoxDecoration(

@@ -204,14 +204,9 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                             ),
                             for (var result in _resultsNotes)
-                              NoteScreen(
-                                noteId: result['id'],
-                                readMode: true,
-                                studyMode: true,
-                                content: result['content'],
-                                type: result['type'],
-                                func: () {
-                                  Navigator.of(context).push(
+                              GestureDetector(
+                                onTap: (){
+                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => DocumentScreen(
                                         documentId: result['document_id'],
@@ -220,6 +215,13 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                   );
                                 },
+                                child: NoteScreen(
+                                  noteId: result['id'],
+                                  readMode: true,
+                                  content: result['content'],
+                                  type: 'markdown',
+                                  
+                                ),
                               ),
                           ],
                         ) : Container(),
