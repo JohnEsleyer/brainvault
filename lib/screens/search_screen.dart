@@ -1,6 +1,7 @@
 import 'package:brainvault/screens/document_screen.dart';
 import 'package:brainvault/screens/note_screen.dart';
 import 'package:brainvault/services/database_service.dart';
+import 'package:brainvault/widgets/markdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:brainvault/colors.dart';
 
@@ -18,7 +19,7 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _documentsVisibility = false;
   bool _notesVisibility = false;
 
-  void _onSearchTextChanged(String query) async {
+  void _onSearchTextSubmitted(String query) async {
     setState(() {
       _isLoading = true;
     });
@@ -42,27 +43,62 @@ class _SearchScreenState extends State<SearchScreen> {
           _resultsDocuments.add(res);
         });
       } else {
-        setState(() {
-          _resultsNotes.add(res);
-        });
+        // Check if note has more than 5 lines.
+
+        if (countLines(res['content']) > 5) {
+          // Limit the content to 5 lines only
+
+          var tempString = getFirstFiveLines(res['content']);
+
+          // Add 'See more' text
+
+          tempString = tempString + '\n\n\nSee more...';
+          print('tempString: ${tempString}');
+
+          Map<String, dynamic> tempMap = {};
+          tempMap['id'] = res['id'];
+          tempMap['document_id'] = res['document_id'];
+          tempMap['table_name'] = res['table_name'];
+          tempMap['position'] = res['position'];
+          tempMap['type'] = res['id'];
+          tempMap['content'] = tempString;
+          setState(() {
+            _resultsNotes.add(tempMap);
+          });
+        } else {
+          setState(() {
+            _resultsNotes.add(res);
+          });
+        }
       }
     }
     await Future.delayed(Duration(seconds: 1));
     setState(() {
-      if (_resultsDocuments.length == 0){
+      if (_resultsDocuments.length == 0) {
         _documentsVisibility = false;
-      }else{
+      } else {
         _documentsVisibility = true;
       }
-       if (_resultsNotes.length == 0){
+      if (_resultsNotes.length == 0) {
         _notesVisibility = false;
-      }else{
+      } else {
         _notesVisibility = true;
       }
       _isLoading = false;
     });
     print('Documents: $_resultsDocuments');
     print('Notes: ${_resultsNotes}');
+  }
+
+  int countLines(String inputString) {
+    List<String> lines = inputString.split('\n');
+    return lines.length;
+  }
+
+  String getFirstFiveLines(String inputString) {
+    List<String> lines = inputString.split('\n');
+    int endIndex = lines.length < 5 ? lines.length : 5;
+    return lines.sublist(0, endIndex).join('\n');
   }
 
   @override
@@ -106,7 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               hintText: 'Search keyword',
                             ),
                             controller: _searchController,
-                            onSubmitted: _onSearchTextChanged,
+                            onSubmitted: _onSearchTextSubmitted,
                           ),
                         ),
                       ),
@@ -133,98 +169,126 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _documentsVisibility ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Documents',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.20,
-                                  decoration: BoxDecoration(
-                                    color: palette[1],
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: [
-                                        for (var result in _resultsDocuments)
-                                          Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return DocumentScreen(
-                                                        documentId:
-                                                            result['id'],
-                                                        studyMode: false);
-                                                  },
-                                                ));
-                                              },
-                                              child: Container(
-                                                height: 100,
-                                                width: 150,
-                                                decoration: BoxDecoration(
-                                                  color: palette[2],
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
+                            _documentsVisibility
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Documents',
+                                        style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.20,
+                                        decoration: BoxDecoration(
+                                          color: palette[1],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: [
+                                              for (var result
+                                                  in _resultsDocuments)
+                                                Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.push(context,
+                                                          MaterialPageRoute(
+                                                        builder: (context) {
+                                                          return DocumentScreen(
+                                                              documentId:
+                                                                  result['id'],
+                                                              studyMode: false);
+                                                        },
+                                                      ));
+                                                    },
+                                                    child: Container(
+                                                      height: 100,
+                                                      width: 150,
+                                                      decoration: BoxDecoration(
+                                                        color: palette[2],
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Center(
+                                                          child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Text(
+                                                            result['title']),
+                                                      )),
+                                                    ),
+                                                  ),
                                                 ),
-                                                child: Center(
-                                                    child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(result['title']),
-                                                )),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
+                            _notesVisibility
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Notes',
+                                        style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Wrap(
+                                        children: [
+                                            for (var result in _resultsNotes)
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      NoteScreen(
+                                                    noteId: result['id'],
+                                                    readMode: true,
+                                                    content: '',
+                                                    type: 'markdown',
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: palette[2],
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: MarkdownWidget(
+                                                markdown: result['content'],
                                               ),
                                             ),
                                           ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ) : Container(),
-                        _notesVisibility ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                                Text(
-                              'Notes',
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            for (var result in _resultsNotes)
-                              GestureDetector(
-                                onTap: (){
-                                   Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => DocumentScreen(
-                                        documentId: result['document_id'],
-                                        studyMode: false,
+                                        ),
+                                        ],
                                       ),
-                                    ),
-                                  );
-                                },
-                                child: NoteScreen(
-                                  noteId: result['id'],
-                                  readMode: true,
-                                  content: result['content'],
-                                  type: 'markdown',
-                                  
-                                ),
-                              ),
-                          ],
-                        ) : Container(),
+                                    
+                                    ],
+                                  )
+                                : Container(),
                           ],
                         ),
                       ),

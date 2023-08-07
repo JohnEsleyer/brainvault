@@ -109,6 +109,9 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
           style: TextStyle(
             decoration: TextDecoration.none,
             fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.normal,
+              color: Colors.white,
+              fontSize: 16,
           ),
         ));
       } else if (line.startsWith('![') && line.endsWith(')')) {

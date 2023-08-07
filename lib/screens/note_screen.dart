@@ -6,7 +6,7 @@ import '../services/database_service.dart';
 
 class NoteScreen extends StatefulWidget {
   final bool readMode;
-  final String content;
+  final String content; // if empty => load data from db
   final int noteId;
   final String type; // Flash card note type or not and other future types
 
@@ -24,13 +24,39 @@ class _NoteScreenState extends State<NoteScreen> {
   TextEditingController _editingController = TextEditingController();
   final DatabaseService _dbHelper = DatabaseService();
   late bool _editMode;
+  bool _isLoading = false;
 
   void initState() {
     if (widget.readMode == true) {
       _editMode = false;
-      _editingController.text = widget.content;
+      _loadData();
     } else {
       _editMode = true;
+      _loadData();
+    }
+  }
+
+  void _loadData() async {
+    if (widget.content == '') {
+      // If no content hasn't been provided from previous screen.
+      try {
+        setState(() {
+          _isLoading = true;
+        });
+
+        Map<String, dynamic> temp = await _dbHelper.getNoteById(widget.noteId);
+
+        setState(() {
+          _editingController.text = temp['content'];
+        });
+        setState(() {
+          _isLoading = false;
+        });
+      } catch (e) {
+        print('Fetching note data failed: $e');
+      }
+    } else {
+      // If content has been provided by previous screen.
       _editingController.text = widget.content;
     }
   }
@@ -58,7 +84,6 @@ class _NoteScreenState extends State<NoteScreen> {
                   fontSize: 16,
                 ),
                 decoration: InputDecoration(
-                  
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                 ),
@@ -75,22 +100,31 @@ class _NoteScreenState extends State<NoteScreen> {
         ),
       );
     } else {
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.81,
-        color: palette[2],
-        child: SingleChildScrollView(
-          child: MarkdownWidget(
-            markdown: _editingController.text,
+      if (!_isLoading) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.81,
+          color: palette[2],
+          child: SingleChildScrollView(
+            child: MarkdownWidget(
+              markdown: _editingController.text,
+            ),
           ),
-        ),
-      );
+        );
+      }else{
+        return Center(
+          child: CircularProgressIndicator(
+            color: Colors.white,
+          ),
+
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
+    print(_editingController.text);
     return Container(
       color: palette[1],
       child: Column(
@@ -107,10 +141,8 @@ class _NoteScreenState extends State<NoteScreen> {
               ),
             ),
           ),
-
           Container(
             width: MediaQuery.of(context).size.width,
-          
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
