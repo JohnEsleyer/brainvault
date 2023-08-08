@@ -1,3 +1,4 @@
+import 'package:brainvault/widgets/loading_widget.dart';
 import 'package:brainvault/widgets/markdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:brainvault/screens/note_screen.dart';
@@ -22,6 +23,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
   late List<Map<String, dynamic>> _notes;
   bool isLoading = false;
   late Future<void> loadingData;
+  int _loadingNote = -1; // -1 means no note is loading, stores the index of note that is loading
 
   @override
   void initState() {
@@ -57,6 +59,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
       print('Failed to refresh data: $e');
     }
 
+
     await Future.delayed(Duration(seconds: 1));
     setState(() {
       isLoading = false;
@@ -70,32 +73,66 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return !isLoading
-        ? FutureBuilder(
-            future: loadingData,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Scaffold(
-                  body: GestureDetector(
-                    onDoubleTap: () {
-                      if (widget.studyMode)
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => DocumentScreen(
-                            documentId: widget.documentId,
-                            studyMode: false,
-                          ),
-                        ));
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      color: palette[1],
-                      child: Column(
-                        children: [
-                          // Title
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
+    return FutureBuilder(
+        future: loadingData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Scaffold(
+              floatingActionButton: Visibility(
+                visible: !widget.studyMode,
+                child: FloatingActionButton(
+                  onPressed: () async {
+                                // Create new note
+                            
+                                Map<String, dynamic> data = {
+                                  'document_id': widget
+                                      .documentId, // Replace with the appropriate document_id of the associated document
+                                  'content': '',
+                                  'position': _notes.length + 1,
+                            
+                                  'type': 'markdown',
+                                  'table_name': 'note',
+                                };
+                                int noteId = await dbHelper.insertNote(data);
+                            
+                                await Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                  builder: (_) => NoteScreen(
+                                    content: data['content'],
+                                    noteId: noteId,
+                                    readMode: false,
+                                    type: 'markdown',
+                                  ),
+                                ));
+                                refreshData();
+                              },
+                              child: Icon(Icons.add, color: Colors.black),
+                              backgroundColor: Colors.white,
+                              
+                ),
+              ),
+              body: GestureDetector(
+                onDoubleTap: () {
+                  if (widget.studyMode)
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => DocumentScreen(
+                        documentId: widget.documentId,
+                        studyMode: false,
+                      ),
+                    ));
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  color: palette[1],
+                  child: Column(
+                    children: [
+                      // Title
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Row(
                               children: [
                                 Visibility(
                                   visible: !widget.studyMode,
@@ -133,115 +170,78 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                 ),
                               ],
                             ),
-                          ),
-
-                          Expanded(
-                            child: Container(
-                              child: ListView.builder(
-                                itemCount: _notes.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      if (!widget.studyMode)
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return NoteScreen(
-                                              readMode: true,
-                                              content: _notes[index]['content'],
-                                              noteId: _notes[index]['id'],
-                                              type: 'markdown');
-                                        }));
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: palette[2],
-                                        ),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: MarkdownWidget(
-                                          markdown: _notes[index]['content'],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-
-                          Visibility(
-                            visible: !widget.studyMode,
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.02),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  // Create new note
-
-                                  Map<String, dynamic> data = {
-                                    'document_id': widget
-                                        .documentId, // Replace with the appropriate document_id of the associated document
-                                    'content': '',
-                                    'position': _notes.length + 1,
-
-                                    'type': 'markdown',
-                                    'table_name': 'note',
-                                  };
-                                  int noteId = await dbHelper.insertNote(data);
-
-                                  await Navigator.of(context)
-                                      .push(MaterialPageRoute(
-                                    builder: (_) => NoteScreen(
-                                      content: data['content'],
-                                      noteId: noteId,
-                                      readMode: false,
-                                      type: 'markdown',
-                                    ),
-                                  ));
-                                  refreshData();
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                    color: palette[5],
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Center(
-                                        child: Container(
-                                      height: 50,
-                                      width: 50,
-                                      child: Icon(Icons.add, color: palette[1]),
-                                    )),
-                                  ),
+                            Visibility(
+                              visible: isLoading,
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+
+                      Expanded(
+                        child: Container(
+                          child: ListView.builder(
+                            itemCount: _notes.length,
+                            itemBuilder: (context, index) {
+                              return LoadingIndicatorWidget(
+                                isLoading: _loadingNote == index,
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    if (!widget.studyMode)
+                                      await Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                        return NoteScreen(
+                                            readMode: true,
+                                            content: _notes[index]['content'],
+                                            noteId: _notes[index]['id'],
+                                            type: 'markdown');
+                                      }));
+                                      refreshData();
+                                      setState(() {
+                                        _loadingNote = index;
+                                      });
+                                      await Future.delayed(Duration(seconds: 1));
+                                      setState(() {
+                                        _loadingNote = -1;
+                                      });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: palette[2],
+                                      ),
+                                      width: MediaQuery.of(context).size.width,
+                                      child: MarkdownWidget(
+                                        markdown: _notes[index]['content'],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+
+                     
+                    ],
                   ),
-                );
-              } else {
-                return Scaffold(
-                    body: Center(
-                        child: CircularProgressIndicator(color: Colors.white)));
-              }
-            })
-        : Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
+                ),
               ),
-            ),
-          );
+            );
+          } else {
+            return Scaffold(
+                body: Center(
+                    child: CircularProgressIndicator(color: Colors.white)));
+          }
+        });
   }
 }
