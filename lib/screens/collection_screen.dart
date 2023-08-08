@@ -84,7 +84,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
     if (!isLoading) {
       return Scaffold(
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
+          child: Icon(Icons.add,color: Colors.black),
           onPressed: () async {
             var data = {
               'collection_id': widget.collectionId,
@@ -110,7 +110,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
         ),
         body: Container(
             width: MediaQuery.of(context).size.width,
-            color: palette[3],
+            color: palette[1],
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -129,7 +129,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.90,
+                        width: MediaQuery.of(context).size.width * 0.80,
                         child: EditableText(
                           onChanged: (newText) {
                             updateTitle();

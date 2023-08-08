@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../colors.dart';
 
 class MarkdownWidget extends StatefulWidget {
   final String markdown;

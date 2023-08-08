@@ -127,7 +127,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  color: palette[3],
+                  color: palette[1],
                   child: Column(
                     children: [
                       // Title
@@ -153,6 +153,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     ),
                                   ),
                                 ),
+                          
                                 Container(
                                   width:
                                       MediaQuery.of(context).size.width * 0.80,
@@ -251,8 +252,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
             );
           } else {
             return Scaffold(
-                body: Center(
-                    child: CircularProgressIndicator(color: Colors.white)));
+                body: Container(
+                  color: palette[1],
+                  child: Center(
+                      child: CircularProgressIndicator(color: Colors.white)),
+                ));
           }
         });
   }

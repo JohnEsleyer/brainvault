@@ -22,7 +22,32 @@ void main() async {
   
   runApp(
     MaterialApp(
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+        // pageTransitionsTheme: PageTransitionsTheme(
+        //   builders: {
+        //      TargetPlatform.android: CustomPageTransitionBuilder(), // Android transitions
+        //     TargetPlatform.iOS: CustomPageTransitionBuilder(),     // iOS transitions
+        //     TargetPlatform.linux: CustomPageTransitionBuilder(),
+        //     TargetPlatform.windows: CustomPageTransitionBuilder(),
+        //   },
+        // ),
+        textTheme: ThemeData.dark().textTheme,
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbColor: MaterialStatePropertyAll(Colors.white),
+          trackColor:  MaterialStatePropertyAll(Colors.white),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          labelStyle: TextStyle(
+            color: Colors.white,
+          ),
+          hintStyle: TextStyle(
+            color: const Color.fromARGB(255, 139, 139, 139),
+          ),
+        ),
+      ),
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
 
@@ -95,3 +120,4 @@ class _TestState extends State<Test> {
     );
   }
 }
+

@@ -1,6 +1,7 @@
 import 'package:brainvault/colors.dart';
 import 'package:brainvault/screens/document_screen.dart';
 import 'package:brainvault/screens/note_screen.dart';
+import 'package:brainvault/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:math';
@@ -85,24 +86,17 @@ class _RandomStudyState extends State<RandomStudy> {
   //   });
   // }
 
-  Widget renderDocNNote() {
-    
+  Widget _renderDocNote() {
     if (_docsNNotes[index]['table_name'] == 'document') {
       // if index is document
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: palette[1],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DocumentScreen(
-              documentId: _docsNNotes[index]['id'],
-              studyMode: true,
-            ),
-          ),
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: palette[2],
+        ),
+        child: DocumentScreen(
+          documentId: _docsNNotes[index]['id'],
+          studyMode: true,
         ),
       );
     } else {
@@ -120,18 +114,16 @@ class _RandomStudyState extends State<RandomStudy> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => NoteScreen(
-                readMode: true,
-                noteId: _docsNNotes[index]['id'],
-                content: _docsNNotes[index]['content'],
-                type: 'markdown',
-              ),
+                    readMode: true,
+                    noteId: _docsNNotes[index]['id'],
+                    content: _docsNNotes[index]['content'],
+                    type: 'markdown',
+                  ),
                 ));
               },
-              child: 
-              MarkdownWidget(
+              child: MarkdownWidget(
                 markdown: _docsNNotes[index]['content'],
               ),
-            
             ),
           ),
         ),
@@ -142,80 +134,84 @@ class _RandomStudyState extends State<RandomStudy> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // App bar
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(Icons.arrow_back),
-                ),
-              ],
+      body: Container(
+        color: palette[1],
+        child: Column(
+          children: [
+            // Top
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(Icons.arrow_back),
+                  ),
+                ],
+              ),
             ),
-          ),
-          // Body
-          Container(
-            height: MediaQuery.of(context).size.height * 0.82,
-            child: _isLoading
-                ? Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  )
-                : renderDocNNote(),
-          ),
+            // Body
+            Container(
+              height: MediaQuery.of(context).size.height * 0.82,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: palette[1],
+              ),
+              child: LoadingIndicatorWidget(
+                child: _renderDocNote(),
+                isLoading: _isLoading,
+              ),
+            ),
 
-          // Bottom bar
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    setState(() {
-                      index = (index + 1) % _docsNNotes.length;
-                      _isLoading = true;
-                    });
+            // Bottom bar
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      setState(() {
+                        index = (index + 1) % _docsNNotes.length;
+                        _isLoading = true;
+                      });
 
-                    await Future.delayed(Duration(seconds: 1));
-                    setState(() {
-                      _isLoading = false;
-                    });
-                    print('=========================');
-                    print('LENGTH: ${_docsNNotes.length}');
-                    print('INDEX: $index');
-                    print(_docsNNotes[index]);
-                    print(_docsNNotes[index]['content']);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Next",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.black,
+                      await Future.delayed(Duration(seconds: 1));
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      print('=========================');
+                      print('LENGTH: ${_docsNNotes.length}');
+                      print('INDEX: $index');
+                      print(_docsNNotes[index]);
+                      print(_docsNNotes[index]['content']);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Next",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
