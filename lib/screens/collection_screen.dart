@@ -110,7 +110,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
         ),
         body: Container(
             width: MediaQuery.of(context).size.width,
-            color: palette[1],
+            color: palette[3],
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -218,7 +218,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   height: 100,
                                   width: 150,
                                   decoration: BoxDecoration(
-                                    color: palette[2],
+                                    color: palette[4],
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10)),
                                   ),
@@ -226,6 +226,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                     child: Text(
                                       document['title'],
                                       textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
                                     ),
                                   ),
                                 ),

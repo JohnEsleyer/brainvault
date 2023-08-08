@@ -3,6 +3,7 @@ import 'package:brainvault/widgets/markdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:brainvault/screens/note_screen.dart';
 import 'package:brainvault/services/database_service.dart';
+import 'package:flutter/rendering.dart';
 
 import '../colors.dart';
 
@@ -24,6 +25,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
   bool isLoading = false;
   late Future<void> loadingData;
   int _loadingNote = -1; // -1 means no note is loading, stores the index of note that is loading
+
 
   @override
   void initState() {
@@ -73,6 +75,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder(
         future: loadingData,
         builder: (context, snapshot) {
@@ -83,7 +86,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 child: FloatingActionButton(
                   onPressed: () async {
                                 // Create new note
-                            
+                          
                                 Map<String, dynamic> data = {
                                   'document_id': widget
                                       .documentId, // Replace with the appropriate document_id of the associated document
@@ -124,12 +127,16 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  color: palette[1],
+                  color: palette[3],
                   child: Column(
                     children: [
                       // Title
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.only(
+                          top: 8.0,
+                          left: 8.0,
+
+                        ),
                         child: Row(
                           children: [
                             Row(
@@ -183,10 +190,15 @@ class _DocumentScreenState extends State<DocumentScreen> {
                           ],
                         ),
                       ),
-
+                
                       Expanded(
                         child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                                        
+                          ),
                           child: ListView.builder(
+ 
                             itemCount: _notes.length,
                             itemBuilder: (context, index) {
                               return LoadingIndicatorWidget(
@@ -230,7 +242,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                           ),
                         ),
                       ),
-
+                
                      
                     ],
                   ),

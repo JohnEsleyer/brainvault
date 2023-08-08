@@ -71,7 +71,7 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           body: Container(
-            color: palette[1],
+            color: palette[3],
             padding: const EdgeInsets.all(15),
             child: Center(
               child: Column(
@@ -264,7 +264,7 @@ class _DashboardState extends State<Dashboard> {
                         width: con_width,
                         height: 100,
                         decoration: BoxDecoration(
-                          color: palette[3],
+                          color: palette[4],
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
                         child: Center(

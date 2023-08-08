@@ -105,6 +105,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        color: palette[3],
         height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
