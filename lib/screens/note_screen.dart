@@ -25,8 +25,10 @@ class _NoteScreenState extends State<NoteScreen> {
   final DatabaseService _dbHelper = DatabaseService();
   late bool _editMode;
   bool _isLoading = false;
+  bool _isHoverDelete = false;
 
   void initState() {
+    super.initState();
     if (widget.readMode == true) {
       _editMode = false;
       _loadData();
@@ -111,16 +113,20 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
           ),
         );
-      }else{
+      } else {
         return Center(
           child: CircularProgressIndicator(
             color: Colors.white,
           ),
-
         );
       }
     }
   }
+
+void _deleteNote() async {
+   await _dbHelper.deleteNote(widget.noteId);
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,16 +136,79 @@ class _NoteScreenState extends State<NoteScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.arrow_back,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.arrow_back,
+                  ),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            backgroundColor: palette[2],
+                            title: Text('Delete this note?'),
+                            content: Text('This cannot be undone.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: ()  {
+                                  _deleteNote();
+                                  Navigator.pop(context); // Close the dialog
+                                  Navigator.pop(context); // Close the note screen
+                                },
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  child: MouseRegion(
+                    onHover: (event) {
+                      setState(() {
+                        _isHoverDelete = true;
+                      });
+                    },
+                    onExit: (event) {
+                      setState(() {
+                        _isHoverDelete = false;
+                      });
+                    },
+                    child: Icon(
+                      Icons.delete_forever,
+                      color: _isHoverDelete ? Colors.red : Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           Container(
             width: MediaQuery.of(context).size.width,
