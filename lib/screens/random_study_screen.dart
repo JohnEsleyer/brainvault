@@ -117,6 +117,9 @@ class _RandomStudyState extends State<RandomStudy> {
         color: palette[0],
         child: Column(
           children: [
+            SizedBox(
+              height: 20,
+            ),
             // Top
             Expanded(
               flex: 1,

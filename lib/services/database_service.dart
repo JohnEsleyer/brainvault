@@ -66,6 +66,10 @@ class DatabaseService {
     
   }
 
+  void closeDatabase() async {
+    await _db!.close();
+  }
+
   // Method to search topics and notes based on title and content.
   Future<List<Map<String, dynamic>>> searchTopicsAndNotes(
       String query) async {

@@ -1,3 +1,4 @@
+import 'package:brainvault/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 
 import '../services/database_service.dart';
@@ -47,30 +48,64 @@ class _MainScreenState extends State<MainScreen> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-
                           await dbHelper.uploadAndInsertJsonData();
                           Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Test()));
+                              MaterialPageRoute(builder: (context) => Dashboard()));
                         },
-                        child: Row(
-                          children: [
-                            Icon(Icons.folder_open),
-                            Text("Open brain"),
-                          ],
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.folder_open,
+                                  color: Colors.black,
+                                ),
+                                Text(
+                                  'Import .brain',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
+                      SizedBox(height: 15),
                       GestureDetector(
                         onTap: () async {
                           dbHelper.openDirectoryPicker();
                           // dbHelper.clearDatabase();
                           Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Test()));
+                              MaterialPageRoute(builder: (context) => Dashboard()));
                         },
-                        child: Row(
-                          children: [
-                            Icon(Icons.folder_open),
-                            Text("Create new brain"),
-                          ],
+                        child:Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.folder_open,
+                                  color: Colors.black,
+                                ),
+                                Text(
+                                  'Create new brain',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -123,23 +158,23 @@ class _MainScreenState extends State<MainScreen> {
                       // Open Brain button
                       GestureDetector(
                         onTap: () async {
-
                           await dbHelper.uploadAndInsertJsonData();
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Test()));
                         },
-                        child: Row(
-                          children: [
-                            Icon(Icons.folder_open),
-                            Text("Open brain"),
-                          ],
+                        child: Container(
+                          child: Row(
+                            children: [
+                              Icon(Icons.folder_open),
+                              Text('Import .brain'),
+                            ],
+                          ),
                         ),
                       ),
 
                       // Create New Brain button
                       GestureDetector(
                         onTap: () async {
-
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Test()));
                         },
@@ -209,7 +244,6 @@ class _TestState extends State<Test> {
                 var data = {
                   'title': 'Sample subject',
                   'description': 'This is a sample brain subject.',
-                
                 };
                 try {
                   await dbHelper.insertSubject(data);
@@ -226,16 +260,16 @@ class _TestState extends State<Test> {
                   'position': count,
                   'created_at': DateTime.now().toIso8601String(),
                   'last_reviewed': DateTime.now().toIso8601String(),
-                  'next_review': DateTime.now().toIso8601String(), 
+                  'next_review': DateTime.now().toIso8601String(),
                   'spaced_repetition_level': 0,
                 };
 
-                try{
+                try {
                   await dbHelper.insertTopic(data);
                   setState(() {
                     count++;
                   });
-                }catch(e){
+                } catch (e) {
                   print('Error inserting topic: $e');
                 }
               },

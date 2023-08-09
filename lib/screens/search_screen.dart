@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:brainvault/screens/topic_screen.dart';
 import 'package:brainvault/screens/note_screen.dart';
 import 'package:brainvault/services/database_service.dart';
@@ -110,8 +112,11 @@ class _SearchScreenState extends State<SearchScreen> {
         height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
-            SizedBox(
-              height: 20,
+            Visibility(
+              visible: Platform.isAndroid,
+              child: SizedBox(
+                height: 20,
+              ),
             ),
             // Search bar
             Padding(
@@ -168,8 +173,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   )
                 : Container(
-                    height: MediaQuery.of(context).size.height * 0.80,
+                    height: MediaQuery.of(context).size.height * 0.88,
                     child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(

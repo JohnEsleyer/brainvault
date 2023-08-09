@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:brainvault/widgets/markdown_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -139,8 +141,11 @@ class _NoteScreenState extends State<NoteScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 30,
+          Visibility(
+            visible: Platform.isAndroid,
+            child: SizedBox(
+              height: 30,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:brainvault/widgets/loading_widget.dart';
 import 'package:brainvault/widgets/markdown_widget.dart';
 import 'package:flutter/material.dart';
@@ -133,8 +135,11 @@ class _TopicScreenState extends State<TopicScreen> {
                   color: palette[1],
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 20,
+                      Visibility(
+                        visible: Platform.isAndroid,
+                        child: SizedBox(
+                          height: 20,
+                        ),
                       ),
                       // Title
                       Padding(

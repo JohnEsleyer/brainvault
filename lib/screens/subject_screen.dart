@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:brainvault/colors.dart';
 import 'package:brainvault/screens/topic_screen.dart';
@@ -117,8 +119,11 @@ class _SubjectScreenState extends State<SubjectScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 20,
+                Visibility(
+                  visible: Platform.isAndroid,
+                  child: SizedBox(
+                    height: 20,
+                  ),
                 ),
                 // Title
                 Padding(
