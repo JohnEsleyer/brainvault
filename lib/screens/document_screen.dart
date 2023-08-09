@@ -191,64 +191,67 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     ),
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () async {
-                                    await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            backgroundColor: palette[2],
-                                            title:
-                                                Text('Delete this document?'),
-                                            content:
-                                                Text('This action cannot be undone.'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text(
-                                                  'Cancel',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
+                                Visibility(
+                                  visible: !widget.studyMode,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              backgroundColor: palette[2],
+                                              title:
+                                                  Text('Delete this document?'),
+                                              content:
+                                                  Text('This action cannot be undone.'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    'Cancel',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  _deleteDocument();
-                                                  Navigator.pop(
-                                                      context); // Close the dialog
-                                                  Navigator.pop(
-                                                      context); // Close the document screen
-                                                },
-                                                child: Text(
-                                                  'Delete',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
+                                                TextButton(
+                                                  onPressed: () {
+                                                    _deleteDocument();
+                                                    Navigator.pop(
+                                                        context); // Close the dialog
+                                                    Navigator.pop(
+                                                        context); // Close the document screen
+                                                  },
+                                                  child: Text(
+                                                    'Delete',
+                                                    style: TextStyle(
+                                                      color: Colors.red,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: MouseRegion(
-                                      onEnter: (even){
-                                        setState(() {
-                                          _isHoverDelete = true;
-                                        });
-                                      },
-                                      onExit: (event){
-                                         setState(() {
-                                          _isHoverDelete = false;
-                                        });
-                                      },
-                                      child: Icon(
-                                        Icons.delete_forever,
-                                        color: _isHoverDelete ? Colors.red : Colors.white,
+                                              ],
+                                            );
+                                          });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: MouseRegion(
+                                        onEnter: (even){
+                                          setState(() {
+                                            _isHoverDelete = true;
+                                          });
+                                        },
+                                        onExit: (event){
+                                           setState(() {
+                                            _isHoverDelete = false;
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.delete_forever,
+                                          color: _isHoverDelete ? Colors.red : Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),

@@ -67,17 +67,14 @@ class _RandomStudyState extends State<RandomStudy> {
     if (_docsNNotes[index]['table_name'] == 'document') {
       // if index is document
       return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-      
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: palette[2],
-          ),
-          child: DocumentScreen(
-            documentId: _docsNNotes[index]['id'],
-            studyMode: true,
-          ),
+        padding: const EdgeInsets.only(
+          left: 8.0,
+          right: 8.0,
+          bottom: 8.0,
+        ),
+        child: DocumentScreen(
+          documentId: _docsNNotes[index]['id'],
+          studyMode: true,
         ),
       );
     } else {
