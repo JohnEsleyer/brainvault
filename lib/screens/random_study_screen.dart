@@ -91,7 +91,7 @@ class _RandomStudyState extends State<RandomStudy> {
           ));
         },
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.70,
+          // width: MediaQuery.of(context).size.width * 0.70,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: palette[2],

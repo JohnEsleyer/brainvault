@@ -74,6 +74,7 @@ class _NoteScreenState extends State<NoteScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.82,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           body: Container(
             color: palette[2],
             child: Padding(

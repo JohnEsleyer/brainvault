@@ -47,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          await dbHelper.clearDatabase();
+
                           await dbHelper.uploadAndInsertJsonData();
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Test()));
@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
                       GestureDetector(
                         onTap: () async {
                           dbHelper.openDirectoryPicker();
-                          dbHelper.clearDatabase();
+                          // dbHelper.clearDatabase();
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Test()));
                         },
@@ -123,7 +123,7 @@ class _MainScreenState extends State<MainScreen> {
                       // Open Brain button
                       GestureDetector(
                         onTap: () async {
-                          await dbHelper.clearDatabase();
+
                           await dbHelper.uploadAndInsertJsonData();
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Test()));
@@ -139,7 +139,7 @@ class _MainScreenState extends State<MainScreen> {
                       // Create New Brain button
                       GestureDetector(
                         onTap: () async {
-                          await dbHelper.clearDatabase();
+
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Test()));
                         },

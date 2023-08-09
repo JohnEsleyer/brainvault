@@ -26,7 +26,7 @@ class DatabaseService {
   }
 
   Future<Database> initDb() async {
-    return await openDatabase(dbPath, version: 1, onCreate: _onCreate);
+    return await openDatabase(inMemoryDatabasePath, onCreate: _onCreate, version: 1);
   }
 
   void _onCreate(Database db, int version) async {
@@ -218,10 +218,10 @@ class DatabaseService {
 // Function to get the file picker result
   Future<FilePickerResult?> getFilePickerResult() async {
     return FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: [
-        'brain'
-      ], // Set the accepted file type (JSON in this case)
+      type: FileType.any,
+      // allowedExtensions: [
+      //   'brain'
+      // ], // Set the accepted file type (JSON in this case)
     );
   }
 
@@ -255,14 +255,7 @@ class DatabaseService {
     }
   }
 
-  Future<void> clearDatabase() async {
-    final db = await database;
 
-    // Delete all rows from each table
-    // await db.delete('subjects');
-    // await db.delete('topics');
-    // await db.delete('notes');
-  }
 
   // CRUD Operations for 'subjects' table
   Future<int> insertSubject(Map<String, dynamic> subject) async {

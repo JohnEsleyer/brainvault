@@ -1,7 +1,5 @@
 
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 
@@ -15,9 +13,10 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() async {
   
-  if (Platform.isWindows || Platform.isLinux){
-    sqfliteFfiInit();
-  }
+  // if (Platform.isWindows || Platform.isLinux){
+  //   sqfliteFfiInit();
+  // }
+  sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
   
   runApp(
@@ -48,6 +47,7 @@ void main() async {
           ),
         ),
       ),
+    
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
 
@@ -73,6 +73,7 @@ class _TestState extends State<Test> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Column(
           children: [

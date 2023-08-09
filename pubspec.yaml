@@ -52,6 +52,7 @@ dependencies:
   highlight: ^0.7.0
   youtube_player_flutter: ^8.1.2
   sqlite3: ^2.1.0
+  sqlite3_flutter_libs: ^0.5.15
 
 dev_dependencies:
   flutter_test:
