@@ -22,6 +22,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
 
   bool isLoading = true;
   bool hidden = true;
+  bool _isHoverDelete = false;
 
   @override
   void initState() {
@@ -79,12 +80,16 @@ class _CollectionScreenState extends State<CollectionScreen> {
         widget.collectionId, _descriptionController.text);
   }
 
+  void _deleteCollection() async {
+    await dbHelper.deleteCollection(widget.collectionId);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!isLoading) {
       return Scaffold(
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add,color: Colors.black),
+          child: Icon(Icons.add, color: Colors.black),
           onPressed: () async {
             var data = {
               'collection_id': widget.collectionId,
@@ -118,33 +123,97 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.80,
+                            child: EditableText(
+                              onChanged: (newText) {
+                                updateTitle();
+                              },
+                              expands: true,
+                              maxLines: null,
+                              minLines: null,
+                              backgroundCursorColor: palette[1],
+                              cursorColor: Colors.white,
+                              controller: _titleController,
+                              focusNode: FocusNode(canRequestFocus: true),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: EditableText(
-                          onChanged: (newText) {
-                            updateTitle();
+                      GestureDetector(
+                        onTap: () async {
+                          await  showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            backgroundColor: palette[2],
+                                            title:
+                                                Text('Delete this collection?'),
+                                            content:
+                                                Text('This action cannot be undone.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  _deleteCollection();
+                                                  Navigator.pop(
+                                                      context); // Close the dialog
+                                                  Navigator.pop(
+                                                      context); // Close the document screen
+                                                },
+                                                child: Text(
+                                                  'Delete',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                        },
+                        child: MouseRegion(
+                          onHover: (event){
+                            setState(() {
+                              _isHoverDelete = true;
+                            });
                           },
-                          expands: true,
-                          maxLines: null,
-                          minLines: null,
-                          backgroundCursorColor: palette[1],
-                          cursorColor: Colors.white,
-                          controller: _titleController,
-                          focusNode: FocusNode(canRequestFocus: true),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
+                          onExit: (event){
+                            setState(() {
+                              _isHoverDelete = false;
+                            });
+                          },
+                          child: Icon(
+                            Icons.delete_forever,
+                            color: _isHoverDelete ? Colors.red : Colors.white,
                           ),
                         ),
                       ),

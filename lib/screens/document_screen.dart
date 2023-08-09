@@ -201,7 +201,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                             title:
                                                 Text('Delete this document?'),
                                             content:
-                                                Text('This cannot be undone.'),
+                                                Text('This action cannot be undone.'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () {

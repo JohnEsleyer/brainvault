@@ -316,7 +316,7 @@ class DatabaseService {
   Future<int> deleteCollection(int collectionId) async {
     final db = await database;
     return await db.delete('collections',
-        where: 'collection_id = ?', whereArgs: [collectionId]);
+        where: 'id = ?', whereArgs: [collectionId]);
   }
 
   // CRUD Operations for 'documents' table

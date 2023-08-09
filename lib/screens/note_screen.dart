@@ -164,7 +164,7 @@ void _deleteNote() async {
                           return AlertDialog(
                             backgroundColor: palette[2],
                             title: Text('Delete this note?'),
-                            content: Text('This cannot be undone.'),
+                            content: Text('This action cannot be undone.'),
                             actions: [
                               TextButton(
                                 onPressed: () {
