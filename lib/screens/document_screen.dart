@@ -18,14 +18,15 @@ class DocumentScreen extends StatefulWidget {
 }
 
 class _DocumentScreenState extends State<DocumentScreen> {
-  final dbHelper = DatabaseService();
+  final _dbHelper = DatabaseService();
   final TextEditingController _titleController = TextEditingController();
   late Map<String, dynamic> _document;
   late List<Map<String, dynamic>> _notes;
   bool isLoading = false;
   late Future<void> loadingData;
-  int _loadingNote = -1; // -1 means no note is loading, stores the index of note that is loading
-
+  int _loadingNote =
+      -1; // -1 means no note is loading, stores the index of note that is loading
+  bool _isHoverDelete = false;
 
   @override
   void initState() {
@@ -36,9 +37,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   Future<void> loadData() async {
     try {
-      _document = await dbHelper.getDocumentById(widget.documentId);
+      _document = await _dbHelper.getDocumentById(widget.documentId);
       _titleController.text = _document['title'];
-      _notes = await dbHelper.getAllNotesByDocumentId(widget.documentId);
+      _notes = await _dbHelper.getAllNotesByDocumentId(widget.documentId);
     } catch (e) {
       print('Failed to load data: $e');
     }
@@ -49,9 +50,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
       isLoading = true;
     });
     try {
-      var doc = await dbHelper.getDocumentById(widget.documentId);
+      var doc = await _dbHelper.getDocumentById(widget.documentId);
       // var text = _document['title'];
-      var notes = await dbHelper.getAllNotesByDocumentId(widget.documentId);
+      var notes = await _dbHelper.getAllNotesByDocumentId(widget.documentId);
       setState(() {
         _document = doc;
         // _titleController.text = text;
@@ -61,7 +62,6 @@ class _DocumentScreenState extends State<DocumentScreen> {
       print('Failed to refresh data: $e');
     }
 
-
     await Future.delayed(Duration(seconds: 1));
     setState(() {
       isLoading = false;
@@ -69,13 +69,16 @@ class _DocumentScreenState extends State<DocumentScreen> {
   }
 
   void updateTitle() async {
-    await dbHelper.updateDocumentTitle(
+    await _dbHelper.updateDocumentTitle(
         widget.documentId, _titleController.text);
+  }
+
+  void _deleteDocument() async {
+    await _dbHelper.deleteDocument(widget.documentId);
   }
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder(
         future: loadingData,
         builder: (context, snapshot) {
@@ -85,33 +88,31 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 visible: !widget.studyMode,
                 child: FloatingActionButton(
                   onPressed: () async {
-                                // Create new note
-                          
-                                Map<String, dynamic> data = {
-                                  'document_id': widget
-                                      .documentId, // Replace with the appropriate document_id of the associated document
-                                  'content': '',
-                                  'position': _notes.length + 1,
-                            
-                                  'type': 'markdown',
-                                  'table_name': 'note',
-                                };
-                                int noteId = await dbHelper.insertNote(data);
-                            
-                                await Navigator.of(context)
-                                    .push(MaterialPageRoute(
-                                  builder: (_) => NoteScreen(
-                                    content: data['content'],
-                                    noteId: noteId,
-                                    readMode: false,
-                                    type: 'markdown',
-                                  ),
-                                ));
-                                refreshData();
-                              },
-                              child: Icon(Icons.add, color: Colors.black),
-                              backgroundColor: Colors.white,
-                              
+                    // Create new note
+
+                    Map<String, dynamic> data = {
+                      'document_id': widget
+                          .documentId, // Replace with the appropriate document_id of the associated document
+                      'content': '',
+                      'position': _notes.length + 1,
+
+                      'type': 'markdown',
+                      'table_name': 'note',
+                    };
+                    int noteId = await _dbHelper.insertNote(data);
+
+                    await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => NoteScreen(
+                        content: data['content'],
+                        noteId: noteId,
+                        readMode: false,
+                        type: 'markdown',
+                      ),
+                    ));
+                    refreshData();
+                  },
+                  child: Icon(Icons.add, color: Colors.black),
+                  backgroundColor: Colors.white,
                 ),
               ),
               body: GestureDetector(
@@ -135,9 +136,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
                         padding: const EdgeInsets.only(
                           top: 8.0,
                           left: 8.0,
-
                         ),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
@@ -153,7 +154,6 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     ),
                                   ),
                                 ),
-                          
                                 Container(
                                   width:
                                       MediaQuery.of(context).size.width * 0.80,
@@ -178,35 +178,100 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                 ),
                               ],
                             ),
-                            Visibility(
-                              visible: isLoading,
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
+                            Row(
+                            
+                              children: [
+                                Visibility(
+                                  visible: isLoading,
+                                  child: Container(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            backgroundColor: palette[2],
+                                            title:
+                                                Text('Delete this document?'),
+                                            content:
+                                                Text('This cannot be undone.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  _deleteDocument();
+                                                  Navigator.pop(
+                                                      context); // Close the dialog
+                                                  Navigator.pop(
+                                                      context); // Close the document screen
+                                                },
+                                                child: Text(
+                                                  'Delete',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: MouseRegion(
+                                      onEnter: (even){
+                                        setState(() {
+                                          _isHoverDelete = true;
+                                        });
+                                      },
+                                      onExit: (event){
+                                         setState(() {
+                                          _isHoverDelete = false;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.delete_forever,
+                                        color: _isHoverDelete ? Colors.red : Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                
+
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                                        
                           ),
                           child: ListView.builder(
- 
                             itemCount: _notes.length,
                             itemBuilder: (context, index) {
                               return LoadingIndicatorWidget(
                                 isLoading: _loadingNote == index,
                                 child: GestureDetector(
                                   onTap: () async {
-                                    if (!widget.studyMode)
+                                    if (!widget.studyMode) {
                                       await Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) {
                                         return NoteScreen(
@@ -219,10 +284,12 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                       setState(() {
                                         _loadingNote = index;
                                       });
-                                      await Future.delayed(Duration(seconds: 1));
+                                      await Future.delayed(
+                                          Duration(seconds: 1));
                                       setState(() {
                                         _loadingNote = -1;
                                       });
+                                    }
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -243,8 +310,6 @@ class _DocumentScreenState extends State<DocumentScreen> {
                           ),
                         ),
                       ),
-                
-                     
                     ],
                   ),
                 ),
@@ -253,10 +318,10 @@ class _DocumentScreenState extends State<DocumentScreen> {
           } else {
             return Scaffold(
                 body: Container(
-                  color: palette[1],
-                  child: Center(
-                      child: CircularProgressIndicator(color: Colors.white)),
-                ));
+              color: palette[1],
+              child:
+                  Center(child: CircularProgressIndicator(color: Colors.white)),
+            ));
           }
         });
   }

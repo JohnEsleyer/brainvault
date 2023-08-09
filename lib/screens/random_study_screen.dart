@@ -63,64 +63,45 @@ class _RandomStudyState extends State<RandomStudy> {
     return _randomList;
   }
 
-  //  void refreshData() async {
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //   try {
-
-  //     // var text = _document['title'];
-  //     _docsNNotes[index] = await dbHelper.getAllNotesByDocumentId(widget.documentId);
-  //     setState(() {
-  //       _document = doc;
-  //       // _titleController.text = text;
-  //       _notes = notes;
-  //     });
-  //   } catch (e) {
-  //     print('Failed to refresh data: $e');
-  //   }
-
-  //   await Future.delayed(Duration(seconds: 1));
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  // }
-
   Widget _renderDocNote() {
     if (_docsNNotes[index]['table_name'] == 'document') {
       // if index is document
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: palette[2],
-        ),
-        child: DocumentScreen(
-          documentId: _docsNNotes[index]['id'],
-          studyMode: true,
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+      
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: palette[2],
+          ),
+          child: DocumentScreen(
+            documentId: _docsNNotes[index]['id'],
+            studyMode: true,
+          ),
         ),
       );
     } else {
       // If index is note
-      return Container(
-        width: MediaQuery.of(context).size.width * 0.70,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: palette[2],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => NoteScreen(
-                    readMode: true,
-                    noteId: _docsNNotes[index]['id'],
-                    content: _docsNNotes[index]['content'],
-                    type: 'markdown',
-                  ),
-                ));
-              },
+      return GestureDetector(
+        onDoubleTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => NoteScreen(
+              readMode: true,
+              noteId: _docsNNotes[index]['id'],
+              content: _docsNNotes[index]['content'],
+              type: 'markdown',
+            ),
+          ));
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.70,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: palette[2],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
               child: MarkdownWidget(
                 markdown: _docsNNotes[index]['content'],
               ),
@@ -135,34 +116,39 @@ class _RandomStudyState extends State<RandomStudy> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: palette[1],
+        color: palette[0],
         child: Column(
           children: [
             // Top
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Icon(Icons.arrow_back),
-                  ),
-                ],
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Icon(Icons.arrow_back),
+                    ),
+                  ],
+                ),
               ),
             ),
             // Body
-            Container(
-              height: MediaQuery.of(context).size.height * 0.82,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: palette[1],
-              ),
-              child: LoadingIndicatorWidget(
-                child: _renderDocNote(),
-                isLoading: _isLoading,
+            Expanded(
+              flex: 15,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: palette[1],
+                ),
+                child: LoadingIndicatorWidget(
+                  child: _renderDocNote(),
+                  isLoading: _isLoading,
+                ),
               ),
             ),
 

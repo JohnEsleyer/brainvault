@@ -70,8 +70,9 @@ class _NoteScreenState extends State<NoteScreen> {
   Widget _display() {
     if (_editMode == true) {
       return Container(
+
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.81,
+        height: MediaQuery.of(context).size.height * 0.82,
         child: Scaffold(
           body: Container(
             color: palette[2],
@@ -79,6 +80,7 @@ class _NoteScreenState extends State<NoteScreen> {
               padding: const EdgeInsets.only(
                 left: 9.0,
                 top: 5.0,
+      
               ),
               child: TextField(
                 cursorColor: Colors.white,
@@ -88,6 +90,8 @@ class _NoteScreenState extends State<NoteScreen> {
                 decoration: InputDecoration(
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  border: InputBorder.none,
                 ),
                 expands: true,
                 maxLines: null,

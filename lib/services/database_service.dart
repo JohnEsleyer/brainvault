@@ -374,7 +374,7 @@ class DatabaseService {
   Future<int> deleteDocument(int documentId) async {
     final db = await database;
     return await db
-        .delete('documents', where: 'document_id = ?', whereArgs: [documentId]);
+        .delete('documents', where: 'id = ?', whereArgs: [documentId]);
   }
 
   // CRUD Operations for 'notes' table
