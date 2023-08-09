@@ -7,26 +7,28 @@ import 'package:flutter/rendering.dart';
 
 import '../colors.dart';
 
-class DocumentScreen extends StatefulWidget {
-  final int documentId;
-  final bool studyMode;
+class TopicScreen extends StatefulWidget {
+  TopicScreen({required this.topicId, required this.studyMode});
 
-  DocumentScreen({required this.documentId, required this.studyMode});
+  final bool studyMode;
+  final int topicId;
 
   @override
-  _DocumentScreenState createState() => _DocumentScreenState();
+  _TopicScreenState createState() => _TopicScreenState();
 }
 
-class _DocumentScreenState extends State<DocumentScreen> {
-  final _dbHelper = DatabaseService();
-  final TextEditingController _titleController = TextEditingController();
-  late Map<String, dynamic> _document;
-  late List<Map<String, dynamic>> _notes;
+class _TopicScreenState extends State<TopicScreen> {
   bool isLoading = false;
   late Future<void> loadingData;
+
+  final _dbHelper = DatabaseService();
+  bool _isHoverDelete = false;
   int _loadingNote =
       -1; // -1 means no note is loading, stores the index of note that is loading
-  bool _isHoverDelete = false;
+
+  late List<Map<String, dynamic>> _notes;
+  final TextEditingController _titleController = TextEditingController();
+  late Map<String, dynamic> _topic;
 
   @override
   void initState() {
@@ -37,9 +39,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   Future<void> loadData() async {
     try {
-      _document = await _dbHelper.getDocumentById(widget.documentId);
-      _titleController.text = _document['title'];
-      _notes = await _dbHelper.getAllNotesByDocumentId(widget.documentId);
+      _topic = await _dbHelper.getTopicById(widget.topicId);
+      _titleController.text = _topic['title'];
+      _notes = await _dbHelper.getAllNotesByTopicId(widget.topicId);
     } catch (e) {
       print('Failed to load data: $e');
     }
@@ -50,11 +52,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
       isLoading = true;
     });
     try {
-      var doc = await _dbHelper.getDocumentById(widget.documentId);
-      // var text = _document['title'];
-      var notes = await _dbHelper.getAllNotesByDocumentId(widget.documentId);
+      var doc = await _dbHelper.getTopicById(widget.topicId);
+      // var text = _Topic['title'];
+      var notes = await _dbHelper.getAllNotesByTopicId(widget.topicId);
       setState(() {
-        _document = doc;
+        _topic = doc;
         // _titleController.text = text;
         _notes = notes;
       });
@@ -69,12 +71,12 @@ class _DocumentScreenState extends State<DocumentScreen> {
   }
 
   void updateTitle() async {
-    await _dbHelper.updateDocumentTitle(
-        widget.documentId, _titleController.text);
+    await _dbHelper.updateTopicTitle(
+        widget.topicId, _titleController.text);
   }
 
-  void _deleteDocument() async {
-    await _dbHelper.deleteDocument(widget.documentId);
+  void _deleteTopic() async {
+    await _dbHelper.deleteTopic(widget.topicId);
   }
 
   @override
@@ -91,8 +93,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
                     // Create new note
 
                     Map<String, dynamic> data = {
-                      'document_id': widget
-                          .documentId, // Replace with the appropriate document_id of the associated document
+                      'Topic_id': widget
+                          .topicId, // Replace with the appropriate Topic_id of the associated Topic
                       'content': '',
                       'position': _notes.length + 1,
 
@@ -119,8 +121,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 onDoubleTap: () {
                   if (widget.studyMode)
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => DocumentScreen(
-                        documentId: widget.documentId,
+                      builder: (context) => TopicScreen(
+                        topicId: widget.topicId,
                         studyMode: false,
                       ),
                     ));
@@ -201,7 +203,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                             return AlertDialog(
                                               backgroundColor: palette[2],
                                               title:
-                                                  Text('Delete this document?'),
+                                                  Text('Delete this Topic?'),
                                               content:
                                                   Text('This action cannot be undone.'),
                                               actions: [
@@ -218,11 +220,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                                 ),
                                                 TextButton(
                                                   onPressed: () {
-                                                    _deleteDocument();
+                                                    _deleteTopic();
                                                     Navigator.pop(
                                                         context); // Close the dialog
                                                     Navigator.pop(
-                                                        context); // Close the document screen
+                                                        context); // Close the Topic screen
                                                   },
                                                   child: Text(
                                                     'Delete',

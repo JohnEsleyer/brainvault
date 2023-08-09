@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:brainvault/colors.dart';
-import 'package:brainvault/screens/document_screen.dart';
+import 'package:brainvault/screens/topic_screen.dart';
 import 'package:brainvault/services/database_service.dart';
 
-class CollectionScreen extends StatefulWidget {
-  final int collectionId;
+class SubjectScreen extends StatefulWidget {
+  final int subjectId;
 
-  CollectionScreen({super.key, required this.collectionId});
+  SubjectScreen({super.key, required this.subjectId});
 
   @override
   // ignore: library_private_types_in_public_api
-  _CollectionScreenState createState() => _CollectionScreenState();
+  _SubjectScreenState createState() => _SubjectScreenState();
 }
 
-class _CollectionScreenState extends State<CollectionScreen> {
+class _SubjectScreenState extends State<SubjectScreen> {
   final dbHelper = DatabaseService();
-  late List<Map<String, dynamic>> documents;
-  late Map<String, dynamic> collection;
+  late List<Map<String, dynamic>> topics;
+  late Map<String, dynamic> subject;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -32,11 +32,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
 
   void loadData() async {
     try {
-      collection = await dbHelper.getCollectionById(widget.collectionId);
-      documents =
-          await dbHelper.getDocumentsByCollectionId(widget.collectionId);
-      _titleController.text = collection['title'];
-      _descriptionController.text = collection['description'];
+      subject = await dbHelper.getSubjectById(widget.subjectId);
+      topics =
+          await dbHelper.getTopicsBySubjectId(widget.subjectId);
+      _titleController.text = subject['title'];
+      _descriptionController.text = subject['description'];
 
       // When successfull
       setState(() {
@@ -52,14 +52,14 @@ class _CollectionScreenState extends State<CollectionScreen> {
       hidden = false;
     });
     try {
-      var col = await dbHelper.getCollectionById(widget.collectionId);
-      var doc = await dbHelper.getDocumentsByCollectionId(widget.collectionId);
+      var col = await dbHelper.getSubjectById(widget.subjectId);
+      var doc = await dbHelper.getTopicsBySubjectId(widget.subjectId);
 
       // When succesfull
       setState(
         () {
-          collection = col;
-          documents = doc;
+          subject = col;
+          topics = doc;
         },
       );
     } catch (e) {
@@ -71,17 +71,17 @@ class _CollectionScreenState extends State<CollectionScreen> {
   }
 
   void updateTitle() async {
-    await dbHelper.updateCollectionTitle(
-        widget.collectionId, _titleController.text);
+    await dbHelper.updateSubjectTitle(
+        widget.subjectId, _titleController.text);
   }
 
   void updateDescription() async {
-    await dbHelper.updateCollectionDescription(
-        widget.collectionId, _descriptionController.text);
+    await dbHelper.updateSubjectDescription(
+        widget.subjectId, _descriptionController.text);
   }
 
-  void _deleteCollection() async {
-    await dbHelper.deleteCollection(widget.collectionId);
+  void _deleteSubject() async {
+    await dbHelper.deleteSubject(widget.subjectId);
   }
 
   @override
@@ -92,23 +92,23 @@ class _CollectionScreenState extends State<CollectionScreen> {
           child: Icon(Icons.add, color: Colors.black),
           onPressed: () async {
             var data = {
-              'collection_id': widget.collectionId,
+              'subject_id': widget.subjectId,
               'title': 'Untitled',
-              'position': documents.length + 1,
-              'table_name': 'document',
+              'position': topics.length + 1,
+              'table_name': 'topic',
             };
             try {
-              int id = await dbHelper.insertDocument(data);
+              int id = await dbHelper.insertTopic(data);
 
               await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => DocumentScreen(
-                  documentId: id,
+                builder: (context) => TopicScreen(
+                  topicId: id,
                   studyMode: false,
                 ),
               ));
               refreshData();
             } catch (e) {
-              print("Document creation failed: $e");
+              print("topic creation failed: $e");
             }
           },
           backgroundColor: palette[5],
@@ -166,7 +166,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                           return AlertDialog(
                                             backgroundColor: palette[2],
                                             title:
-                                                Text('Delete this collection?'),
+                                                Text('Delete this subject?'),
                                             content:
                                                 Text('This action cannot be undone.'),
                                             actions: [
@@ -183,11 +183,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                               ),
                                               TextButton(
                                                 onPressed: () {
-                                                  _deleteCollection();
+                                                  _deleteSubject();
                                                   Navigator.pop(
                                                       context); // Close the dialog
                                                   Navigator.pop(
-                                                      context); // Close the document screen
+                                                      context); // Close the topic screen
                                                 },
                                                 child: Text(
                                                   'Delete',
@@ -269,15 +269,15 @@ class _CollectionScreenState extends State<CollectionScreen> {
                       width: MediaQuery.of(context).size.width,
                       child: Wrap(
                         children: [
-                          for (var document in documents)
+                          for (var topic in topics)
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: GestureDetector(
                                 onTap: () async {
                                   await Navigator.of(context)
                                       .push(MaterialPageRoute(
-                                    builder: (_) => DocumentScreen(
-                                      documentId: document['id'],
+                                    builder: (_) => TopicScreen(
+                                      topicId: topic['id'],
                                       studyMode: false,
                                     ),
                                   ));
@@ -293,7 +293,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      document['title'],
+                                      topic['title'],
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.black,

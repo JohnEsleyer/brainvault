@@ -32,7 +32,7 @@ class DatabaseService {
   void _onCreate(Database db, int version) async {
     // Create your database table(s) here
     await db.execute('''
-          CREATE TABLE collections (
+          CREATE TABLE subjects (
             id INTEGER PRIMARY KEY,
             title TEXT,
             description TEXT
@@ -40,13 +40,13 @@ class DatabaseService {
           ''');
 
     await db.execute('''
-          CREATE TABLE documents (
+          CREATE TABLE topics (
             id INTEGER PRIMARY KEY,
-            collection_id INTEGER,
+            subject_id INTEGER,
             title TEXT,
             position INTEGER,
             table_name TEXT,
-            FOREIGN KEY (collection_id) REFERENCES collections (collection_id) 
+            FOREIGN KEY (subject_id) REFERENCES subjects (subject_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
           ''');
@@ -54,19 +54,20 @@ class DatabaseService {
     await db.execute('''
           CREATE TABLE notes (
             id INTEGER PRIMARY KEY,
-            document_id INTEGER,
+            topic_id INTEGER,
             content TEXT,
             position INTEGER,
             type TEXT,
             table_name TEXT,
-            FOREIGN KEY (document_id) REFERENCES documents (document_id) 
+            FOREIGN KEY (topic_id) REFERENCES topics (topic_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
           ''');
+    
   }
 
-  // Method to search documents and notes based on title and content.
-  Future<List<Map<String, dynamic>>> searchDocumentsAndNotes(
+  // Method to search topics and notes based on title and content.
+  Future<List<Map<String, dynamic>>> searchTopicsAndNotes(
       String query) async {
     final db = await database;
 
@@ -79,8 +80,8 @@ class DatabaseService {
       return content.replaceAll(htmlTagRegex, '');
     }
 
-    final List<Map<String, dynamic>> documents = await db.query(
-      'documents',
+    final List<Map<String, dynamic>> topics = await db.query(
+      'topics',
       where: 'title LIKE ? OR table_name LIKE ?',
       whereArgs: ['%$query%', '%$query%'],
     );
@@ -102,22 +103,22 @@ class DatabaseService {
       }
     }
 
-    // Combine and return the results (documents and filtered notes).
-    return [...documents, ...filteredNotes];
+    // Combine and return the results (topics and filtered notes).
+    return [...topics, ...filteredNotes];
   }
 
   Future<Uint8List> getDatabaseDataAsJson() async {
     final db = await database;
 
     // Query the necessary tables and retrieve the data
-    List<Map<String, dynamic>> collectionsData = await db.query('collections');
-    List<Map<String, dynamic>> documentsData = await db.query('documents');
+    List<Map<String, dynamic>> subjectsData = await db.query('subjects');
+    List<Map<String, dynamic>> topicsData = await db.query('topics');
     List<Map<String, dynamic>> notesData = await db.query('notes');
 
     // Organize the data as needed in a Map
     Map<String, dynamic> jsonData = {
-      'collections': collectionsData,
-      'documents': documentsData,
+      'subjects': subjectsData,
+      'topics': topicsData,
       'notes': notesData,
     };
 
@@ -209,7 +210,7 @@ class DatabaseService {
       // Parse the JSON data
       Map<String, dynamic> jsonData = json.decode(jsonDataString);
 
-      // Insert collections, documents, and notes
+      // Insert subjects, topics, and notes
       await insertDataFromJson(jsonData);
     }
   }
@@ -229,20 +230,20 @@ class DatabaseService {
     return await File(file.path!).readAsString();
   }
 
-// Function to insert collections, documents, and notes from JSON data
+// Function to insert subjects, topics, and notes from JSON data
   Future<void> insertDataFromJson(Map<String, dynamic> jsonData) async {
-    if (jsonData.containsKey('collections') &&
-        jsonData['collections'] is List) {
-      List<dynamic> collectionsData = jsonData['collections'];
-      for (var collectionData in collectionsData) {
-        await insertCollection(collectionData as Map<String, dynamic>);
+    if (jsonData.containsKey('subjects') &&
+        jsonData['subjects'] is List) {
+      List<dynamic> subjectsData = jsonData['subjects'];
+      for (var subjectData in subjectsData) {
+        await insertSubject(subjectData as Map<String, dynamic>);
       }
     }
 
-    if (jsonData.containsKey('documents') && jsonData['documents'] is List) {
-      List<dynamic> documentsData = jsonData['documents'];
-      for (var documentData in documentsData) {
-        await insertDocument(documentData as Map<String, dynamic>);
+    if (jsonData.containsKey('topics') && jsonData['topics'] is List) {
+      List<dynamic> topicsData = jsonData['topics'];
+      for (var topicData in topicsData) {
+        await insertTopic(topicData as Map<String, dynamic>);
       }
     }
 
@@ -258,123 +259,123 @@ class DatabaseService {
     final db = await database;
 
     // Delete all rows from each table
-    await db.delete('collections');
-    await db.delete('documents');
-    await db.delete('notes');
+    // await db.delete('subjects');
+    // await db.delete('topics');
+    // await db.delete('notes');
   }
 
-  // CRUD Operations for 'collections' table
-  Future<int> insertCollection(Map<String, dynamic> collection) async {
+  // CRUD Operations for 'subjects' table
+  Future<int> insertSubject(Map<String, dynamic> subject) async {
     final db = await database;
-    return await db.insert('collections', collection);
+    return await db.insert('subjects', subject);
   }
 
-  Future<List<Map<String, dynamic>>> getAllCollections() async {
+  Future<List<Map<String, dynamic>>> getAllSubjects() async {
     final db = await database;
-    return await db.query('collections');
+    return await db.query('subjects');
   }
 
-  Future<Map<String, dynamic>> getCollectionById(int id) async {
+  Future<Map<String, dynamic>> getSubjectById(int id) async {
     final db = await database;
-    final List<Map<String, dynamic>> collections = await db.query(
-      'collections',
+    final List<Map<String, dynamic>> subjects = await db.query(
+      'subjects',
       where: 'id = ?',
       whereArgs: [id],
     );
 
-    if (collections.isNotEmpty) {
-      return collections.first;
+    if (subjects.isNotEmpty) {
+      return subjects.first;
     } else {
-      throw Exception('Collection with ID $id not found.');
+      throw Exception('subject with ID $id not found.');
     }
   }
 
-  Future<int> updateCollectionTitle(int collectionId, String newTitle) async {
+  Future<int> updateSubjectTitle(int subjectId, String newTitle) async {
     final db = await database;
-    final Map<String, dynamic> collection = {
+    final Map<String, dynamic> subject = {
       'title': newTitle,
     };
-    return await db.update('collections', collection,
-        where: 'id = ?', whereArgs: [collectionId]);
+    return await db.update('subjects', subject,
+        where: 'id = ?', whereArgs: [subjectId]);
   }
 
-  Future<int> updateCollectionDescription(int collectionId, String newDescription) async {
+  Future<int> updateSubjectDescription(int subjectId, String newDescription) async {
     final db = await database;
-    final Map<String, dynamic> collection = {
+    final Map<String, dynamic> subject = {
       'description': newDescription,
     };
-    return await db.update('collections', collection,
-        where: 'id = ?', whereArgs: [collectionId]);
+    return await db.update('subjects', subject,
+        where: 'id = ?', whereArgs: [subjectId]);
   }
 
-  Future<int> updateCollection(Map<String, dynamic> collection) async {
+  Future<int> updateSubject(Map<String, dynamic> subject) async {
     final db = await database;
-    return await db.update('collections', collection,
-        where: 'collection_id = ?', whereArgs: [collection['collection_id']]);
+    return await db.update('subjects', subject,
+        where: 'subject_id = ?', whereArgs: [subject['subject_id']]);
   }
 
-  Future<int> deleteCollection(int collectionId) async {
+  Future<int> deleteSubject(int subjectId) async {
     final db = await database;
-    return await db.delete('collections',
-        where: 'id = ?', whereArgs: [collectionId]);
+    return await db.delete('subjects',
+        where: 'id = ?', whereArgs: [subjectId]);
   }
 
-  // CRUD Operations for 'documents' table
-  Future<int> insertDocument(Map<String, dynamic> document) async {
+  // CRUD Operations for 'topics' table
+  Future<int> insertTopic(Map<String, dynamic> topic) async {
     final db = await database;
-    return await db.insert('documents', document);
+    return await db.insert('topics', topic);
   }
 
-  Future<List<Map<String, dynamic>>> getAllDocuments() async {
+  Future<List<Map<String, dynamic>>> getAllTopics() async {
     final db = await database;
-    return await db.query('documents');
+    return await db.query('topics');
   }
 
-  Future<List<Map<String, dynamic>>> getDocumentsByCollectionId(
-      int collectionId) async {
+  Future<List<Map<String, dynamic>>> getTopicsBySubjectId(
+      int subjectId) async {
     final db = await database;
-    final List<Map<String, dynamic>> documents = await db.query(
-      'documents',
-      where: 'collection_id = ?',
-      whereArgs: [collectionId],
+    final List<Map<String, dynamic>> topics = await db.query(
+      'topics',
+      where: 'subject_id = ?',
+      whereArgs: [subjectId],
     );
-    return documents;
+    return topics;
   }
 
-  Future<Map<String, dynamic>> getDocumentById(int id) async {
+  Future<Map<String, dynamic>> getTopicById(int id) async {
     final db = await database;
-    final List<Map<String, dynamic>> documents = await db.query(
-      'documents',
+    final List<Map<String, dynamic>> topics = await db.query(
+      'topics',
       where: 'id = ?',
       whereArgs: [id],
     );
 
-    if (documents.isNotEmpty) {
-      return documents.first;
+    if (topics.isNotEmpty) {
+      return topics.first;
     } else {
-      throw Exception('Document with ID $id not found.');
+      throw Exception('topic with ID $id not found.');
     }
   }
 
-  Future<int> updateDocument(Map<String, dynamic> document) async {
+  Future<int> updateTopic(Map<String, dynamic> topic) async {
     final db = await database;
-    return await db.update('documents', document,
-        where: 'document_id = ?', whereArgs: [document['document_id']]);
+    return await db.update('topics', topic,
+        where: 'topic_id = ?', whereArgs: [topic['topic_id']]);
   }
 
-  Future<int> updateDocumentTitle(int documentId, String newTitle) async {
+  Future<int> updateTopicTitle(int topicId, String newTitle) async {
     final db = await database;
-    final Map<String, dynamic> document = {
+    final Map<String, dynamic> topic = {
       'title': newTitle,
     };
-    return await db.update('documents', document,
-        where: 'id = ?', whereArgs: [documentId]);
+    return await db.update('topics', topic,
+        where: 'id = ?', whereArgs: [topicId]);
   }
 
-  Future<int> deleteDocument(int documentId) async {
+  Future<int> deleteTopic(int topicId) async {
     final db = await database;
     return await db
-        .delete('documents', where: 'id = ?', whereArgs: [documentId]);
+        .delete('topics', where: 'id = ?', whereArgs: [topicId]);
   }
 
   // CRUD Operations for 'notes' table
@@ -399,11 +400,11 @@ class DatabaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getAllNotesByDocumentId(
-      int documentId) async {
+  Future<List<Map<String, dynamic>>> getAllNotesByTopicId(
+      int topicId) async {
     final db = await database;
     return await db
-        .query('notes', where: 'document_id = ?', whereArgs: [documentId]);
+        .query('notes', where: 'topic_id = ?', whereArgs: [topicId]);
   }
 
   Future<int> updateNote(Map<String, dynamic> note) async {

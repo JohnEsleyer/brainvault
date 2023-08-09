@@ -1,4 +1,4 @@
-import 'package:brainvault/screens/document_screen.dart';
+import 'package:brainvault/screens/topic_screen.dart';
 import 'package:brainvault/screens/note_screen.dart';
 import 'package:brainvault/services/database_service.dart';
 import 'package:brainvault/widgets/markdown_widget.dart';
@@ -12,11 +12,11 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  // List<Map<String, dynamic>> _searchResults = [];
-  List<Map<String, dynamic>> _resultsDocuments = [];
+
+  List<Map<String, dynamic>> _resultsTopics = [];
   List<Map<String, dynamic>> _resultsNotes = [];
   bool _isLoading = false;
-  bool _documentsVisibility = false;
+  bool _topicsVisibility = false;
   bool _notesVisibility = false;
 
   void _onSearchTextSubmitted(String query) async {
@@ -25,22 +25,22 @@ class _SearchScreenState extends State<SearchScreen> {
     });
     if (query.isEmpty) {
       setState(() {
-        _resultsDocuments.clear();
+        _resultsTopics.clear();
         _resultsNotes.clear();
       });
       return;
     }
-    _resultsDocuments.clear();
+    _resultsTopics.clear();
     _resultsNotes.clear();
     DatabaseService databaseService = DatabaseService();
     List<Map<String, dynamic>> results =
-        await databaseService.searchDocumentsAndNotes(query);
+        await databaseService.searchTopicsAndNotes(query);
 
-    // Store documents and notes separately
+    // Store topics and notes separately
     for (Map<String, dynamic> res in results) {
-      if (res['table_name'] == 'document') {
+      if (res['table_name'] == 'topic') {
         setState(() {
-          _resultsDocuments.add(res);
+          _resultsTopics.add(res);
         });
       } else {
         // Check if note has more than 5 lines.
@@ -57,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
           Map<String, dynamic> tempMap = {};
           tempMap['id'] = res['id'];
-          tempMap['document_id'] = res['document_id'];
+          tempMap['topic_id'] = res['topic_id'];
           tempMap['table_name'] = res['table_name'];
           tempMap['position'] = res['position'];
           tempMap['type'] = res['id'];
@@ -74,10 +74,10 @@ class _SearchScreenState extends State<SearchScreen> {
     }
     await Future.delayed(Duration(seconds: 1));
     setState(() {
-      if (_resultsDocuments.length == 0) {
-        _documentsVisibility = false;
+      if (_resultsTopics.length == 0) {
+        _topicsVisibility = false;
       } else {
-        _documentsVisibility = true;
+        _topicsVisibility = true;
       }
       if (_resultsNotes.length == 0) {
         _notesVisibility = false;
@@ -86,7 +86,7 @@ class _SearchScreenState extends State<SearchScreen> {
       }
       _isLoading = false;
     });
-    print('Documents: $_resultsDocuments');
+    print('topics: $_resultsTopics');
     print('Notes: ${_resultsNotes}');
   }
 
@@ -170,13 +170,13 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _documentsVisibility
+                            _topicsVisibility
                                 ? Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Documents',
+                                        'topics',
                                         style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold,
@@ -198,7 +198,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                           child: Row(
                                             children: [
                                               for (var result
-                                                  in _resultsDocuments)
+                                                  in _resultsTopics)
                                                 Padding(
                                                   padding: const EdgeInsets.all(
                                                       10.0),
@@ -207,8 +207,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       Navigator.push(context,
                                                           MaterialPageRoute(
                                                         builder: (context) {
-                                                          return DocumentScreen(
-                                                              documentId:
+                                                          return TopicScreen(
+                                                              topicId:
                                                                   result['id'],
                                                               studyMode: false);
                                                         },
@@ -255,38 +255,39 @@ class _SearchScreenState extends State<SearchScreen> {
                                       ),
                                       Wrap(
                                         children: [
-                                            for (var result in _resultsNotes)
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      NoteScreen(
-                                                    noteId: result['id'],
-                                                    readMode: true,
-                                                    content: '',
-                                                    type: 'markdown',
+                                          for (var result in _resultsNotes)
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          NoteScreen(
+                                                        noteId: result['id'],
+                                                        readMode: true,
+                                                        content: '',
+                                                        type: 'markdown',
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: palette[2],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: MarkdownWidget(
+                                                    markdown: result['content'],
                                                   ),
                                                 ),
-                                              );
-                                            },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: palette[2],
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: MarkdownWidget(
-                                                markdown: result['content'],
                                               ),
                                             ),
-                                          ),
-                                        ),
                                         ],
                                       ),
-                                    
                                     ],
                                   )
                                 : Container(),

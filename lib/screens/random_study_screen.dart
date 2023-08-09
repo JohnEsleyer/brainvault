@@ -1,5 +1,5 @@
 import 'package:brainvault/colors.dart';
-import 'package:brainvault/screens/document_screen.dart';
+import 'package:brainvault/screens/topic_screen.dart';
 import 'package:brainvault/screens/note_screen.dart';
 import 'package:brainvault/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class _RandomStudyState extends State<RandomStudy> {
   void loadData() async {
     _docsNNotes = [];
     try {
-      var docs = await dbHelper.getAllDocuments();
+      var docs = await dbHelper.getAllTopics();
       var notes = await dbHelper.getAllNotes();
 
       // To improve performance, restrict elements to 50 of length only.
@@ -64,16 +64,16 @@ class _RandomStudyState extends State<RandomStudy> {
   }
 
   Widget _renderDocNote() {
-    if (_docsNNotes[index]['table_name'] == 'document') {
-      // if index is document
+    if (_docsNNotes[index]['table_name'] == 'topic') {
+      // if index is topic
       return Padding(
         padding: const EdgeInsets.only(
           left: 8.0,
           right: 8.0,
           bottom: 8.0,
         ),
-        child: DocumentScreen(
-          documentId: _docsNNotes[index]['id'],
+        child: TopicScreen(
+          topicId: _docsNNotes[index]['id'],
           studyMode: true,
         ),
       );

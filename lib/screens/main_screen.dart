@@ -170,7 +170,7 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   String userString = '__';
-  List<String> collectionList = [];
+  List<String> subjectList = [];
   final dbHelper = DatabaseService();
   int count = 1;
 
@@ -184,45 +184,45 @@ class _TestState extends State<Test> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  List<Map<String, dynamic>> collections =
-                      await dbHelper.getAllCollections();
-                  if (collections.isNotEmpty) {
-                    // Display the retrieved brain collections
-                    print('Brain Collections:');
+                  List<Map<String, dynamic>> subjects =
+                      await dbHelper.getAllSubjects();
+                  if (subjects.isNotEmpty) {
+                    // Display the retrieved brain subjects
+                    print('Brain subjects:');
                     setState(() {
-                      for (var collection in collections) {
-                        collectionList.add(collection['title']);
+                      for (var subject in subjects) {
+                        subjectList.add(subject['title']);
                       }
                     });
                   } else {
-                    print('No collections found.');
+                    print('No subjects found.');
                   }
                 } catch (e) {
-                  print('Error while getting collections: $e');
+                  print('Error while getting subjects: $e');
                 }
               },
               child: Text("Display all"),
             ),
             ElevatedButton(
-              child: Text("Insert Collection"),
+              child: Text("Insert subject"),
               onPressed: () async {
                 var data = {
-                  'title': 'Sample Collection',
-                  'description': 'This is a sample brain collection.',
+                  'title': 'Sample subject',
+                  'description': 'This is a sample brain subject.',
                 
                 };
                 try {
-                  await dbHelper.insertCollection(data);
+                  await dbHelper.insertSubject(data);
                 } catch (e) {
-                  print('Error while inserting a collection: $e');
+                  print('Error while inserting a subject: $e');
                 }
               },
             ),
             ElevatedButton(
               onPressed: () async {
                 var data = {
-                  'collection_id': 2,
-                  'title': 'Sample Document',
+                  'subject_id': 2,
+                  'title': 'Sample topic',
                   'position': count,
                   'created_at': DateTime.now().toIso8601String(),
                   'last_reviewed': DateTime.now().toIso8601String(),
@@ -231,15 +231,15 @@ class _TestState extends State<Test> {
                 };
 
                 try{
-                  await dbHelper.insertDocument(data);
+                  await dbHelper.insertTopic(data);
                   setState(() {
                     count++;
                   });
                 }catch(e){
-                  print('Error inserting document: $e');
+                  print('Error inserting topic: $e');
                 }
               },
-              child: Text('Insert document'),
+              child: Text('Insert topic'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -249,8 +249,8 @@ class _TestState extends State<Test> {
             ),
             Column(
               children: [
-                for (var i = 0; i < collectionList.length; i++)
-                  Text('Title: ${collectionList[i]}'),
+                for (var i = 0; i < subjectList.length; i++)
+                  Text('Title: ${subjectList[i]}'),
               ],
             ),
             // ElevatedButton(onPressed: (){

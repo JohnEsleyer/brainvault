@@ -2,7 +2,7 @@ import 'package:brainvault/screens/random_study_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:brainvault/colors.dart';
-import 'package:brainvault/screens/collection_screen.dart';
+import 'package:brainvault/screens/subject_screen.dart';
 import 'package:brainvault/screens/search_screen.dart';
 
 import '../services/database_service.dart';
@@ -14,21 +14,21 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final dbHelper = DatabaseService();
-  late Future<List<Map<String, dynamic>>> allCollections;
+  late Future<List<Map<String, dynamic>>> allsubjects;
 
   @override
   void initState() {
     super.initState();
-    allCollections = dbHelper.getAllCollections();
+    allsubjects = dbHelper.getAllSubjects();
   }
 
   void refreshData() async {
     try {
-      Future<List<Map<String, dynamic>>> collections =
-          dbHelper.getAllCollections();
+      Future<List<Map<String, dynamic>>> subjects =
+          dbHelper.getAllSubjects();
       // When succesfull
       setState(() {
-        allCollections = collections;
+        allsubjects = subjects;
       });
     } catch (e) {
       print('Failed to refreshd data: $e');
@@ -108,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
 
-              // Collections
+              // subjects
               Container(
                 width: con_width,
                 decoration: BoxDecoration(
@@ -129,7 +129,7 @@ class _DashboardState extends State<Dashboard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Collections",
+                            "subjects",
                             style: TextStyle(
                                 fontSize: 30, fontWeight: FontWeight.bold),
                           ),
@@ -138,14 +138,14 @@ class _DashboardState extends State<Dashboard> {
                             child: GestureDetector(
                               onTap: () async {
                                 var data = {
-                                  'title': 'Untitled Collection',
-                                  'description': 'This is a brain collection.',
+                                  'title': 'Untitled subject',
+                                  'description': 'This is a brain subject.',
                                 };
                                 try {
-                                  await dbHelper.insertCollection(data);
+                                  await dbHelper.insertSubject(data);
                                 } catch (e) {
                                   print(
-                                      'Error while inserting a collection: $e');
+                                      'Error while inserting a subject: $e');
                                 }
                                 refreshData();
                               },
@@ -166,7 +166,7 @@ class _DashboardState extends State<Dashboard> {
                       Container(
                         height: 130,
                         child: FutureBuilder(
-                          future: allCollections,
+                          future: allsubjects,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -176,8 +176,8 @@ class _DashboardState extends State<Dashboard> {
                                           .white)); // Display a loading indicator while waiting for data.
                             } else if (snapshot.hasError) {
                               print(
-                                  "Error fetching brain collections: ${snapshot.error}");
-                              return Text("Error fetching brain collections");
+                                  "Error fetching brain subjects: ${snapshot.error}");
+                              return Text("Error fetching brain subjects");
                             } else {
                               // Handle the case when the future is complete and data is available.
                               if (snapshot.data != null) {
@@ -199,8 +199,8 @@ class _DashboardState extends State<Dashboard> {
                                               await Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (_) {
-                                                return CollectionScreen(
-                                                    collectionId: id);
+                                                return SubjectScreen(
+                                                    subjectId: id);
                                               }));
                                               refreshData();
                                             },
@@ -237,7 +237,7 @@ class _DashboardState extends State<Dashboard> {
                                       );
                                     });
                               } else {
-                                return Text("No brain collections available.");
+                                return Text("No brain subjects available.");
                               }
                             }
                           },
