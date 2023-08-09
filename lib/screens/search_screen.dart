@@ -104,11 +104,16 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         color: palette[3],
         height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
+            SizedBox(
+              height: 20,
+            ),
+            // Search bar
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Hero(
@@ -197,8 +202,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                           scrollDirection: Axis.horizontal,
                                           child: Row(
                                             children: [
-                                              for (var result
-                                                  in _resultsTopics)
+                                              for (var result in _resultsTopics)
                                                 Padding(
                                                   padding: const EdgeInsets.all(
                                                       10.0),

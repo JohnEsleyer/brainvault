@@ -33,8 +33,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
   void loadData() async {
     try {
       subject = await dbHelper.getSubjectById(widget.subjectId);
-      topics =
-          await dbHelper.getTopicsBySubjectId(widget.subjectId);
+      topics = await dbHelper.getTopicsBySubjectId(widget.subjectId);
       _titleController.text = subject['title'];
       _descriptionController.text = subject['description'];
 
@@ -71,8 +70,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
   }
 
   void updateTitle() async {
-    await dbHelper.updateSubjectTitle(
-        widget.subjectId, _titleController.text);
+    await dbHelper.updateSubjectTitle(widget.subjectId, _titleController.text);
   }
 
   void updateDescription() async {
@@ -119,6 +117,9 @@ class _SubjectScreenState extends State<SubjectScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 20,
+                ),
                 // Title
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -131,13 +132,16 @@ class _SubjectScreenState extends State<SubjectScreen> {
                             onTap: () {
                               Navigator.pop(context);
                             },
-                            child: Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.80,
+                            width: MediaQuery.of(context).size.width * 0.70,
                             child: EditableText(
                               onChanged: (newText) {
                                 updateTitle();
@@ -160,53 +164,52 @@ class _SubjectScreenState extends State<SubjectScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          await  showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            backgroundColor: palette[2],
-                                            title:
-                                                Text('Delete this subject?'),
-                                            content:
-                                                Text('This action cannot be undone.'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text(
-                                                  'Cancel',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  _deleteSubject();
-                                                  Navigator.pop(
-                                                      context); // Close the dialog
-                                                  Navigator.pop(
-                                                      context); // Close the topic screen
-                                                },
-                                                child: Text(
-                                                  'Delete',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        });
+                          await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  backgroundColor: palette[2],
+                                  title: Text('Delete this subject?'),
+                                  content:
+                                      Text('This action cannot be undone.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        _deleteSubject();
+                                        Navigator.pop(
+                                            context); // Close the dialog
+                                        Navigator.pop(
+                                            context); // Close the topic screen
+                                      },
+                                      child: Text(
+                                        'Delete',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              });
                         },
                         child: MouseRegion(
-                          onHover: (event){
+                          onHover: (event) {
                             setState(() {
                               _isHoverDelete = true;
                             });
                           },
-                          onExit: (event){
+                          onExit: (event) {
                             setState(() {
                               _isHoverDelete = false;
                             });

@@ -67,14 +67,15 @@ class _RandomStudyState extends State<RandomStudy> {
     if (_docsNNotes[index]['table_name'] == 'topic') {
       // if index is topic
       return Padding(
-        padding: const EdgeInsets.only(
-          left: 8.0,
-          right: 8.0,
-          bottom: 8.0,
-        ),
-        child: TopicScreen(
-          topicId: _docsNNotes[index]['id'],
-          studyMode: true,
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.81,
+          color: palette[2],
+          child: TopicScreen(
+            topicId: _docsNNotes[index]['id'],
+            studyMode: true,
+          ),
         ),
       );
     } else {

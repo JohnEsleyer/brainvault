@@ -70,18 +70,17 @@ class _NoteScreenState extends State<NoteScreen> {
   Widget _display() {
     if (_editMode == true) {
       return Container(
-
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.82,
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          backgroundColor: palette[2],
+          // resizeToAvoidBottomInset: false,
           body: Container(
             color: palette[2],
             child: Padding(
               padding: const EdgeInsets.only(
                 left: 9.0,
                 top: 5.0,
-      
               ),
               child: TextField(
                 cursorColor: Colors.white,
@@ -113,6 +112,7 @@ class _NoteScreenState extends State<NoteScreen> {
           height: MediaQuery.of(context).size.height * 0.81,
           color: palette[2],
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: MarkdownWidget(
               markdown: _editingController.text,
             ),
@@ -128,19 +128,20 @@ class _NoteScreenState extends State<NoteScreen> {
     }
   }
 
-void _deleteNote() async {
-   await _dbHelper.deleteNote(widget.noteId);
-}
-
+  void _deleteNote() async {
+    await _dbHelper.deleteNote(widget.noteId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(_editingController.text);
     return Container(
       color: palette[1],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(
+            height: 30,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -179,10 +180,11 @@ void _deleteNote() async {
                                 ),
                               ),
                               TextButton(
-                                onPressed: ()  {
+                                onPressed: () {
                                   _deleteNote();
                                   Navigator.pop(context); // Close the dialog
-                                  Navigator.pop(context); // Close the note screen
+                                  Navigator.pop(
+                                      context); // Close the note screen
                                 },
                                 child: Text(
                                   'Delete',

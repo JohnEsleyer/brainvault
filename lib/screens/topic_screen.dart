@@ -71,8 +71,7 @@ class _TopicScreenState extends State<TopicScreen> {
   }
 
   void updateTitle() async {
-    await _dbHelper.updateTopicTitle(
-        widget.topicId, _titleController.text);
+    await _dbHelper.updateTopicTitle(widget.topicId, _titleController.text);
   }
 
   void _deleteTopic() async {
@@ -86,6 +85,7 @@ class _TopicScreenState extends State<TopicScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
+              backgroundColor: palette[1],
               floatingActionButton: Visibility(
                 visible: !widget.studyMode,
                 child: FloatingActionButton(
@@ -133,6 +133,9 @@ class _TopicScreenState extends State<TopicScreen> {
                   color: palette[1],
                   child: Column(
                     children: [
+                      SizedBox(
+                        height: 20,
+                      ),
                       // Title
                       Padding(
                         padding: const EdgeInsets.only(
@@ -150,15 +153,18 @@ class _TopicScreenState extends State<TopicScreen> {
                                     onTap: () {
                                       Navigator.pop(context);
                                     },
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.80,
+                                      MediaQuery.of(context).size.width * 0.70,
                                   child: EditableText(
                                     onChanged: (newText) {
                                       updateTitle();
@@ -181,7 +187,6 @@ class _TopicScreenState extends State<TopicScreen> {
                               ],
                             ),
                             Row(
-                            
                               children: [
                                 Visibility(
                                   visible: isLoading,
@@ -202,10 +207,9 @@ class _TopicScreenState extends State<TopicScreen> {
                                           builder: (context) {
                                             return AlertDialog(
                                               backgroundColor: palette[2],
-                                              title:
-                                                  Text('Delete this Topic?'),
-                                              content:
-                                                  Text('This action cannot be undone.'),
+                                              title: Text('Delete this Topic?'),
+                                              content: Text(
+                                                  'This action cannot be undone.'),
                                               actions: [
                                                 TextButton(
                                                   onPressed: () {
@@ -240,19 +244,21 @@ class _TopicScreenState extends State<TopicScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: MouseRegion(
-                                        onEnter: (even){
+                                        onEnter: (even) {
                                           setState(() {
                                             _isHoverDelete = true;
                                           });
                                         },
-                                        onExit: (event){
-                                           setState(() {
+                                        onExit: (event) {
+                                          setState(() {
                                             _isHoverDelete = false;
                                           });
                                         },
                                         child: Icon(
                                           Icons.delete_forever,
-                                          color: _isHoverDelete ? Colors.red : Colors.white,
+                                          color: _isHoverDelete
+                                              ? Colors.red
+                                              : Colors.white,
                                         ),
                                       ),
                                     ),
@@ -270,6 +276,7 @@ class _TopicScreenState extends State<TopicScreen> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
                             itemCount: _notes.length,
                             itemBuilder: (context, index) {
                               return LoadingIndicatorWidget(
