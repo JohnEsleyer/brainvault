@@ -13,6 +13,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
   List<Widget> _rendered = [];
   List<List<Widget>> _flashcardWidgets = [[]];
   bool _isFlashcard = false;
+  int _flashcardCounter = 0;
+  bool _startCounter = false;
 
   @override
   void initState() {
@@ -138,7 +140,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                     decoration: TextDecoration.none,
                     fontWeight: FontWeight.normal,
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -166,7 +168,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                     decoration: TextDecoration.none,
                     fontWeight: FontWeight.normal,
                     color: Colors.black,
-                    fontSize: 16,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -182,7 +184,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               decoration: TextDecoration.none,
               fontWeight: FontWeight.bold,
               color: Colors.white,
-              fontSize: 16,
+              fontSize: 14,
             ),
           ));
         } else {
@@ -195,7 +197,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               decoration: TextDecoration.none,
               fontWeight: FontWeight.bold,
               color: Colors.black,
-              fontSize: 16,
+              fontSize: 14,
             ),
           ));
         }
@@ -209,7 +211,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.normal,
               color: Colors.white,
-              fontSize: 16,
+              fontSize: 14,
             ),
           ));
         } else {
@@ -223,7 +225,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.normal,
               color: Colors.black,
-              fontSize: 16,
+              fontSize: 14,
             ),
           ));
         }
@@ -266,28 +268,44 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
         }
       } else if (line.startsWith('!{') && !_isFlashcard) {
         _isFlashcard = true;
+        _startCounter = true;
+        continue; // Continue to the next iteration to avoid incrementing _flashcardCounter
+      } else if (line.startsWith(',') && _isFlashcard) {
+        _startCounter = false;
       } else if (line.startsWith('}!') && _isFlashcard) {
         _isFlashcard = false;
 
-        
+        // Divide the map into two, front and back
+        var currentMap = _flashcardWidgets[
+            _flashcardWidgets.length > 0 ? _flashcardWidgets.length - 1 : 0];
 
+        List<List<Widget>> sections = [[], []];
+        // print('FlashcarCounter: $_flashcardCounter');
+        // print('currentMap: ${currentMap.length}');
+        // print('currentMapWidgets: $currentMap');
+
+        for (int i = 0; i < currentMap.length; i++) {
+          if (i + 1 <= _flashcardCounter) {
+            sections[0].add(currentMap[i]);
+          } else {
+            sections[1].add(currentMap[i]);
+          }
+        }
+        print(sections);
+
+        // Add flashcard to _rendered list
         _rendered.add(
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              children: _flashcardWidgets[_flashcardWidgets.length > 0
-                  ? _flashcardWidgets.length - 1
-                  : 0],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Flashcard(
+              front: sections[0],
+              back: sections[1],
             ),
           ),
         );
 
         _flashcardWidgets.add([]); // Add empty array
-
-        // _flashcardWidgets.clear();
+        _flashcardCounter = 0;
       } else {
         // Normal text
         if (!_isFlashcard) {
@@ -298,7 +316,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.normal,
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 14,
               ),
             ),
           );
@@ -313,11 +331,14 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.normal,
                 color: Colors.black,
-                fontSize: 16,
+                fontSize: 14,
               ),
             ),
           );
         }
+      }
+      if (_startCounter) {
+        _flashcardCounter++;
       }
     }
   }
@@ -330,6 +351,90 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: _rendered,
+      ),
+    );
+  }
+}
+
+class Flashcard extends StatefulWidget {
+  final List<Widget> front;
+  final List<Widget> back;
+
+  Flashcard({required this.front, required this.back});
+
+  @override
+  _FlashcardState createState() => _FlashcardState();
+}
+
+class _FlashcardState extends State<Flashcard> {
+  bool _showFront = true;
+
+  void _flipCard() {
+    setState(() {
+      _showFront = !_showFront;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: _flipCard,
+              child: Row(
+                children: [
+                  Icon(Icons.flip, color: Colors.black),
+                  SizedBox(width: 5),
+                  Text(
+                    _showFront ? 'Front' : 'Back',
+                    style: TextStyle(
+                      color: Colors.black,
+                      decoration: TextDecoration.none,
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            // width: 300,
+            // height: 200,
+            // decoration: BoxDecoration(
+            //   color: Colors.white,
+            //   borderRadius: BorderRadius.circular(10),
+            //   boxShadow: [
+            //     BoxShadow(
+            //       color: Colors.grey.withOpacity(0.3),
+            //       spreadRadius: 2,
+            //       blurRadius: 5,
+            //       offset: Offset(0, 3),
+            //     ),
+            //   ],
+            // ),
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+                child: _showFront
+                    ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                        children: widget.front,
+                      )
+                    : Column(
+                        children: widget.back,
+                      )),
+          ),
+        ],
       ),
     );
   }

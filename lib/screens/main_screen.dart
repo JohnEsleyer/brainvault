@@ -160,7 +160,7 @@ class _MainScreenState extends State<MainScreen> {
                         onTap: () async {
                           await dbHelper.uploadAndInsertJsonData();
                           Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Test()));
+                              MaterialPageRoute(builder: (context) => Dashboard()));
                         },
                         child: Container(
                           child: Row(
@@ -176,7 +176,7 @@ class _MainScreenState extends State<MainScreen> {
                       GestureDetector(
                         onTap: () async {
                           Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Test()));
+                              MaterialPageRoute(builder: (context) => Dashboard()));
                         },
                         child: Row(
                           children: [
