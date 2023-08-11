@@ -286,39 +286,63 @@ class _TopicScreenState extends State<TopicScreen> {
                             itemBuilder: (context, index) {
                               return LoadingIndicatorWidget(
                                 isLoading: _loadingNote == index,
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    if (!widget.studyMode) {
-                                      await Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) {
-                                        return NoteScreen(
-                                            readMode: true,
-                                            content: _notes[index]['content'],
-                                            noteId: _notes[index]['id'],
-                                            type: 'markdown');
-                                      }));
-                                      refreshData();
-                                      setState(() {
-                                        _loadingNote = index;
-                                      });
-                                      await Future.delayed(
-                                          Duration(seconds: 1));
-                                      setState(() {
-                                        _loadingNote = -1;
-                                      });
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: palette[2],
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: MarkdownWidget(
-                                        markdown: _notes[index]['content'],
-                                      ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: palette[2],
+                                    ),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            GestureDetector(
+                                                onTap: () async {
+                                                  if (!widget.studyMode) {
+                                                    await Navigator.of(context)
+                                                        .push(MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return NoteScreen(
+                                                          readMode: true,
+                                                          content: _notes[index]
+                                                              ['content'],
+                                                          noteId: _notes[index]
+                                                              ['id'],
+                                                          type: 'markdown');
+                                                    }));
+                                                    refreshData();
+                                                    setState(() {
+                                                      _loadingNote = index;
+                                                    });
+                                                    await Future.delayed(
+                                                        Duration(seconds: 1));
+                                                    setState(() {
+                                                      _loadingNote = -1;
+                                                    });
+                                                  }
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                    top:8.0,
+                                                    right: 8.0,
+                                                    
+                                                  ),
+                                                  child: Icon(
+                                                    size: 20,
+                                                    Icons.edit,
+                                                    color: Colors.white,
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                        MarkdownWidget(
+                                          markdown: _notes[index]['content'],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

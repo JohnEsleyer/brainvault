@@ -53,6 +53,7 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   sqlite3: ^2.1.0
   sqlite3_flutter_libs: ^0.5.15
+  code_editor: ^2.1.0
 
 dev_dependencies:
   flutter_test:

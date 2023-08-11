@@ -85,6 +85,8 @@ class _NoteScreenState extends State<NoteScreen> {
                 top: 5.0,
               ),
               child: TextField(
+                keyboardType: TextInputType.multiline,
+
                 cursorColor: Colors.white,
                 style: TextStyle(
                   fontSize: 16,

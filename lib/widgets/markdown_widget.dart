@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class MarkdownWidget extends StatefulWidget {
   final String markdown;
@@ -350,10 +351,18 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
   Widget build(BuildContext context) {
     print(_flashcardWidgets);
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _rendered,
+      padding: const EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+        bottom: 8.0,
+      ),
+      child: SelectableRegion(
+        selectionControls: materialTextSelectionControls,
+        focusNode: FocusNode(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _rendered,
+        ),
       ),
     );
   }
