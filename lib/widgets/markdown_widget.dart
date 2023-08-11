@@ -306,7 +306,10 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
         _flashcardWidgets.add([]); // Add empty array
         _flashcardCounter = 0;
-      } else {
+      } else if (line.startsWith('//')){
+        // Comment
+        // Do nothing
+      }else {
         // Normal text
         if (!_isFlashcard) {
           _rendered.add(
