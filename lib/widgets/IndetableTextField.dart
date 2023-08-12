@@ -10,11 +10,10 @@ class IndentableTextField extends StatefulWidget {
 }
 
 class _IndentableTextFieldState extends State<IndentableTextField> {
-  
   @override
   Widget build(BuildContext context) {
     return RawKeyboardListener(
-      focusNode: FocusNode(),
+      focusNode: FocusNode(canRequestFocus: true),
       onKey: (RawKeyEvent event) {
         if (event.runtimeType == RawKeyDownEvent &&
             event.isKeyPressed(LogicalKeyboardKey.tab)) {
@@ -22,7 +21,10 @@ class _IndentableTextFieldState extends State<IndentableTextField> {
         }
       },
       child: TextField(
-        focusNode: FocusNode(canRequestFocus: true),
+        focusNode: FocusNode(
+          canRequestFocus: true,
+          skipTraversal: true,
+        ),
         // enabled: true,
         // autofocus: true,
         keyboardType: TextInputType.multiline,
@@ -41,7 +43,7 @@ class _IndentableTextFieldState extends State<IndentableTextField> {
         minLines: null,
         onChanged: widget.onChanged,
         controller: widget.controller,
-       
+
         textInputAction: TextInputAction.newline,
       ),
     );
@@ -59,12 +61,6 @@ class _IndentableTextFieldState extends State<IndentableTextField> {
       selection: TextSelection.collapsed(
           offset: cursorPosition + 2), // Adjust the offset as needed
     );
-
   }
 
-  // @override
-  // void dispose() {
-  //   widget.controller.dispose();
-  //   super.dispose();
-  // }
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
+import 'package:flutter_highlight/flutter_highlight.dart';
+import 'package:flutter_highlight/themes/androidstudio.dart';
+import 'package:flutter_highlight/themes/atom-one-dark.dart';
+import 'package:flutter_highlight/themes/github-gist.dart';
+import 'package:flutter_highlight/themes/github.dart';
 import 'package:flutter_highlight/themes/vs.dart';
 import 'package:highlight/languages/python.dart';
 
@@ -19,6 +24,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
   bool _isFlashcard = false;
   int _flashcardCounter = 0;
   bool _startCounter = false;
+  bool _codeMode = false;
+  String _codeString = '';
 
   @override
   void initState() {
@@ -30,7 +37,33 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
     List<String> lines = widget.markdown.split('\n');
 
     for (String line in lines) {
-      print(line);
+      
+      if (_codeMode == true){
+        if (line.startsWith('```')){
+          _codeMode = false;
+          var code = _codeString;
+          _codeString = ' ';
+        print('Code: $code');
+        _rendered.add(
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              width: double.maxFinite,
+              child: HighlightView(
+                code,
+                language: 'python',
+                theme: atomOneDarkTheme,
+                padding: EdgeInsets.all(8),
+              ),
+            ),
+          ),
+        );
+          continue;
+        }
+        _codeString += line + '\n';
+        continue;
+      }
+
       if (line.startsWith('# ')) {
         // Header
         if (!_isFlashcard) {
@@ -310,21 +343,9 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
         _flashcardWidgets.add([]); // Add empty array
         _flashcardCounter = 0;
-      } else if (line.startsWith('/code')) {
-        final controller = CodeController(
-          text: 'print("Hello World")',
-          
-        );
-        _rendered.add(
-          Card(
-            child: CodeTheme(
-              data: CodeThemeData(styles: vsTheme),
-              child: CodeField(
-                controller: controller,
-              ),
-            ),
-          ),
-        );
+      } else if (line.startsWith('```')) {
+        _codeMode = true;
+    
       } else if(line.startsWith('---')){
         _rendered.add(
           Divider(
@@ -348,6 +369,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               ),
             ),
           );
+          
         } else {
           _flashcardWidgets[_flashcardWidgets.length > 0
                   ? _flashcardWidgets.length - 1
@@ -373,7 +395,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print(_flashcardWidgets);
+
     return Padding(
       padding: const EdgeInsets.only(
         left: 8.0,
