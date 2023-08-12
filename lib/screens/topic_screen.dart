@@ -224,7 +224,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                 Visibility(
                                   visible: !widget.studyMode,
                                   child: Tooltip(
-                                    message: 'Delete this topic',
+                                    message: 'Delete this topic section?',
                                     child: GestureDetector(
                                       onTap: () async {
                                         await showDialog(

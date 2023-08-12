@@ -37,27 +37,47 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
     List<String> lines = widget.markdown.split('\n');
 
     for (String line in lines) {
-      
-      if (_codeMode == true){
-        if (line.startsWith('```')){
+      if (_codeMode == true) {
+        if (line.startsWith('```')) {
           _codeMode = false;
           var code = _codeString;
           _codeString = ' ';
-        print('Code: $code');
-        _rendered.add(
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Container(
-              width: double.maxFinite,
-              child: HighlightView(
-                code,
-                language: 'python',
-                theme: atomOneDarkTheme,
-                padding: EdgeInsets.all(8),
+
+          if (!_isFlashcard) {
+            _rendered.add(
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  width: double.maxFinite,
+                  child: HighlightView(
+                    code,
+                    language: 'python',
+                    theme: atomOneDarkTheme,
+                    padding: EdgeInsets.all(8),
+                  ),
+                ),
               ),
-            ),
-          ),
-        );
+            );
+          } else {
+            _flashcardWidgets[_flashcardWidgets.length > 0
+                    ? _flashcardWidgets.length - 1
+                    : 0]
+                .add(
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  width: double.maxFinite,
+                  child: HighlightView(
+                    code,
+                    language: 'python',
+                    theme: atomOneDarkTheme,
+                    padding: EdgeInsets.all(8),
+                  ),
+                ),
+              ),
+            );
+          }
+
           continue;
         }
         _codeString += line + '\n';
@@ -243,6 +263,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
         if (!_isFlashcard) {
           _rendered.add(Text(
             line.substring(1, line.length - 1),
+            textAlign: TextAlign.left,
             style: TextStyle(
               decoration: TextDecoration.none,
               fontStyle: FontStyle.italic,
@@ -345,14 +366,13 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
         _flashcardCounter = 0;
       } else if (line.startsWith('```')) {
         _codeMode = true;
-    
-      } else if(line.startsWith('---')){
+      } else if (line.startsWith('---')) {
         _rendered.add(
           Divider(
             color: Colors.white,
           ),
         );
-      }else if (line.startsWith('//')) {
+      } else if (line.startsWith('//')) {
         // Comment
         // Do nothing
       } else {
@@ -361,6 +381,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
           _rendered.add(
             Text(
               line,
+              textAlign: TextAlign.left,
               style: TextStyle(
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.normal,
@@ -369,7 +390,6 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               ),
             ),
           );
-          
         } else {
           _flashcardWidgets[_flashcardWidgets.length > 0
                   ? _flashcardWidgets.length - 1
@@ -377,6 +397,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               .add(
             Text(
               line,
+              textAlign: TextAlign.left,
               style: TextStyle(
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.normal,
@@ -395,7 +416,6 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.only(
         left: 8.0,
@@ -489,6 +509,7 @@ class _FlashcardState extends State<Flashcard> {
                         children: widget.front,
                       )
                     : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: widget.back,
                       )),
           ),
