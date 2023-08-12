@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brainvault/widgets/IndetableTextField.dart';
 import 'package:brainvault/widgets/markdown_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -89,22 +90,7 @@ class _NoteScreenState extends State<NoteScreen> {
                   left: 9.0,
                   top: 5.0,
                 ),
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-          
-                  cursorColor: Colors.white,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                  decoration: InputDecoration(
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    border: InputBorder.none,
-                  ),
-                  expands: true,
-                  maxLines: null,
-                  minLines: null,
+                child: IndentableTextField(
                   controller: _editingController,
                   onChanged: (value) {
                     _updateDb();
