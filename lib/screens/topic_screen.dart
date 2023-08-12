@@ -224,18 +224,11 @@ class _TopicScreenState extends State<TopicScreen> {
                                     },
                                     child: Tooltip(
                                       message: 'Add Note',
-                                      child: Container(
-                                        decoration: BoxDecoration(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Icon(
+                                          Icons.add,
                                           color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Colors.black,
-                                          ),
                                         ),
                                       ),
                                     ),
@@ -245,7 +238,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                 Visibility(
                                   visible: !widget.studyMode,
                                   child: Tooltip(
-                                    message: 'Delete this topic section?',
+                                    message: 'Delete this topic section',
                                     child: GestureDetector(
                                       onTap: () async {
                                         await showDialog(

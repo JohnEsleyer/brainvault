@@ -107,10 +107,13 @@ class _NoteScreenState extends State<NoteScreen> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.81,
           color: palette[2],
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: MarkdownWidget(
-              markdown: _editingController.text,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: MarkdownWidget(
+                markdown: _editingController.text,
+              ),
             ),
           ),
         );
@@ -141,81 +144,7 @@ class _NoteScreenState extends State<NoteScreen> {
               height: 30,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.arrow_back,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            backgroundColor: palette[2],
-                            title: Text('Delete this note?'),
-                            content: Text('This action cannot be undone.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  _deleteNote();
-                                  Navigator.pop(context); // Close the dialog
-                                  Navigator.pop(
-                                      context); // Close the note screen
-                                },
-                                child: Text(
-                                  'Delete',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                  child: MouseRegion(
-                    onHover: (event) {
-                      setState(() {
-                        _isHoverDelete = true;
-                      });
-                    },
-                    onExit: (event) {
-                      setState(() {
-                        _isHoverDelete = false;
-                      });
-                    },
-                    child: Icon(
-                      Icons.delete_forever,
-                      color: _isHoverDelete ? Colors.red : Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+         
           Container(
             width: MediaQuery.of(context).size.width,
             child: Padding(
@@ -230,6 +159,21 @@ class _NoteScreenState extends State<NoteScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              left: 8.0,
+                              right: 8.0,
+                            ),
+                            child: Icon(
+                              Icons.arrow_back,
+                            ),
+                          ),
+                        ),
                         // Read Mode
                         Expanded(
                           flex: 1,
@@ -298,10 +242,77 @@ class _NoteScreenState extends State<NoteScreen> {
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8.0,
+                            right: 8.0,
+                            left: 8.0,
+                            
+                          ),
+                          child: GestureDetector(
+                            onTap: () async {
+                              await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: palette[2],
+                                      title: Text('Delete this note?'),
+                                      content:
+                                          Text('This action cannot be undone.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            _deleteNote();
+                                            Navigator.pop(
+                                                context); // Close the dialog
+                                            Navigator.pop(
+                                                context); // Close the note screen
+                                          },
+                                          child: Text(
+                                            'Delete',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: MouseRegion(
+                              onHover: (event) {
+                                setState(() {
+                                  _isHoverDelete = true;
+                                });
+                              },
+                              onExit: (event) {
+                                setState(() {
+                                  _isHoverDelete = false;
+                                });
+                              },
+                              child: Icon(
+                                Icons.delete_forever,
+                                color:
+                                    _isHoverDelete ? Colors.red : Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.83,
+                      height: MediaQuery.of(context).size.height * 0.90,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: palette[2],
