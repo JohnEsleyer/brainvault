@@ -8,6 +8,7 @@ import 'package:brainvault/services/database_service.dart';
 import 'package:flutter/rendering.dart';
 
 import '../colors.dart';
+import '../widgets/study_widget.dart';
 
 class TopicScreen extends StatefulWidget {
   TopicScreen({required this.topicId});
@@ -82,10 +83,10 @@ class _TopicScreenState extends State<TopicScreen> {
   void _readOrDelete(index, isRead) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return NoteScreen(
-          readMode: isRead,
-          content: _notes[index]['content'],
-          noteId: _notes[index]['id'],
-  );
+        readMode: isRead,
+        content: _notes[index]['content'],
+        noteId: _notes[index]['id'],
+      );
     }));
     refreshData();
     setState(() {
@@ -112,7 +113,6 @@ class _TopicScreenState extends State<TopicScreen> {
         content: data['content'],
         noteId: noteId,
         readMode: false,
-
       ),
     ));
     refreshData();
@@ -201,6 +201,20 @@ class _TopicScreenState extends State<TopicScreen> {
                                     height: 20,
                                     child: CircularProgressIndicator(
                                       color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                      return Study(notes: _notes);
+                                    }));
+                                  },
+                                  child: Tooltip(
+                                    message: 'Study this topic randomly',
+                                    child: Icon(
+                                      Icons.menu_book,
                                     ),
                                   ),
                                 ),

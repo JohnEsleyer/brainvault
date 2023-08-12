@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
 
+import '../colors.dart';
+
+// ignore: must_be_immutable
 class MarkdownWidget extends StatefulWidget {
   final String markdown;
   bool? previewMode;
@@ -26,6 +31,50 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
   void initState() {
     super.initState();
     _parseMarkdown();
+  }
+
+  void _imagePressed(imageUrl) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return Container(
+        color: palette[1],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Icon(Icons.arrow_back),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 500,
+              height: 300,
+              child: Hero(
+                tag: imageUrl,
+                child: Image.network(
+                  imageUrl,
+                ),
+              ),
+            ),
+            Text(
+              imageUrl,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                fontFamily: 'Calibri',
+                decoration: TextDecoration.none,
+                fontWeight: FontWeight.normal,
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      );
+    }));
   }
 
   void _parseMarkdown() {
@@ -290,13 +339,17 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
           String imageUrl = match.group(1) ?? '';
           if (imageUrl.isNotEmpty) {
             if (!_isFlashcard) {
-              _rendered.add(Center(
-                child: Container(
-                  height: 300,
+              _rendered.add(GestureDetector(
+                onTap: () => _imagePressed(imageUrl),
+                child: SizedBox(
+                  height: 200,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      imageUrl,
+                    child: Hero(
+                      tag: imageUrl,
+                      child: Image.network(
+                        imageUrl,
+                      ),
                     ),
                   ),
                 ),
@@ -305,13 +358,17 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               _flashcardWidgets[_flashcardWidgets.length > 0
                       ? _flashcardWidgets.length - 1
                       : 0]
-                  .add(Center(
-                child: Container(
-                  height: 300,
+                  .add(GestureDetector(
+                onTap: () => _imagePressed(imageUrl),
+                child: SizedBox(
+                  height: 200,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      imageUrl,
+                    child: Hero(
+                      tag: imageUrl,
+                      child: Image.network(
+                        imageUrl,
+                      ),
                     ),
                   ),
                 ),
@@ -378,6 +435,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
               line,
               textAlign: TextAlign.left,
               style: const TextStyle(
+                fontFamily: 'Calibri',
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.normal,
                 color: Colors.white,
@@ -390,10 +448,11 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                   ? _flashcardWidgets.length - 1
                   : 0]
               .add(
-            Text(
+          Text(
               line,
               textAlign: TextAlign.left,
               style: const TextStyle(
+                fontFamily: 'Calibri',
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.normal,
                 color: Colors.black,

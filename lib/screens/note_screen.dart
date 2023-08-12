@@ -102,9 +102,11 @@ class _NoteScreenState extends State<NoteScreen> {
       );
     } else {
       if (!_isLoading) {
+
+ 
         return Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 0.81,
+          height: MediaQuery.of(context).size.height * 0.89,
           color: palette[2],
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -112,6 +114,7 @@ class _NoteScreenState extends State<NoteScreen> {
               physics: const BouncingScrollPhysics(),
               child: MarkdownWidget(
                 markdown: _editingController.text,
+
               ),
             ),
           ),
