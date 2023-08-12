@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
@@ -223,29 +222,34 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
         if (!_isFlashcard) {
           _rendered.add(Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                child: Icon(
-                  Icons.circle,
-                  size: 10,
-                  color: Colors.white,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Text(
-                  line.substring(2),
-                  style: TextStyle(
-                    decoration: TextDecoration.none,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ],
-          ));
+  children: [
+    Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      child: Icon(
+        Icons.circle,
+        size: 10,
+        color: Colors.white,
+      ),
+    ),
+    Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: Text(
+          line.substring(2), // Assuming 'line' is your text content
+          softWrap: true,
+          style: TextStyle(
+            decoration: TextDecoration.none,
+            fontWeight: FontWeight.normal,
+            color: Colors.white,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
+          );
         } else {
           _flashcardWidgets[_flashcardWidgets.length > 0
                   ? _flashcardWidgets.length - 1
@@ -447,7 +451,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                   ? _flashcardWidgets.length - 1
                   : 0]
               .add(
-          Text(
+            Text(
               line,
               textAlign: TextAlign.left,
               style: const TextStyle(
@@ -470,11 +474,11 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
   @override
   Widget build(BuildContext context) {
     // If markdown is in preview mode, only show 3 elements
-    if ((widget.previewMode ?? false) && _rendered.length > 3) {
-      var temp = _rendered.sublist(0, 3);
+    if ((widget.previewMode ?? false) && _rendered.length > 5) {
+      var temp = _rendered.sublist(0, 5);
       temp.add(
         const Text(
-          '...',
+          '...\nRead more',
           style: TextStyle(
             decoration: TextDecoration.none,
             fontWeight: FontWeight.normal,
@@ -486,7 +490,10 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
       _rendered = temp;
     }
 
-    return SelectableRegion(
+    return widget.previewMode ?? true ? Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _rendered,
+      ) : SelectableRegion(
       selectionControls: materialTextSelectionControls,
       focusNode: FocusNode(),
       child: Column(

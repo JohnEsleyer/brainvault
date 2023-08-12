@@ -44,6 +44,7 @@ class DatabaseService {
             id INTEGER PRIMARY KEY,
             subject_id INTEGER,
             title TEXT,
+            table_name,
             FOREIGN KEY (subject_id) REFERENCES subjects (subject_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
@@ -54,6 +55,7 @@ class DatabaseService {
             id INTEGER PRIMARY KEY,
             topic_id INTEGER,
             content TEXT,
+            table_name,
             FOREIGN KEY (topic_id) REFERENCES topics (topic_id) 
               ON DELETE CASCADE ON UPDATE NO ACTION
           );

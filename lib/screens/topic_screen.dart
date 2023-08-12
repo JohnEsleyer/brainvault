@@ -103,8 +103,9 @@ class _TopicScreenState extends State<TopicScreen> {
 
     Map<String, dynamic> data = {
       'Topic_id': widget
-          .topicId, // Replace with the appropriate Topic_id of the associated Topic
+          .topicId, // Replace with the appropriate topic_id of the associated Topic
       'content': '',
+      'table_name': 'note',
     };
     int noteId = await _dbHelper.insertNote(data);
 
@@ -126,269 +127,231 @@ class _TopicScreenState extends State<TopicScreen> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
               backgroundColor: palette[1],
-              body: GestureDetector(
-                onDoubleTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => TopicScreen(
-                      topicId: widget.topicId,
+              body: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: palette[1],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Visibility(
+                      visible: Platform.isAndroid,
+                      child: const SizedBox(
+                        height: 20,
+                      ),
                     ),
-                  ));
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  color: palette[1],
-                  child: Column(
-                    children: [
-                      Visibility(
-                        visible: Platform.isAndroid,
-                        child: const SizedBox(
-                          height: 20,
-                        ),
+                    // Title
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                        left: 8.0,
                       ),
-                      // Title
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8.0,
-                          left: 8.0,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.arrow_back,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.55,
+                                child: EditableText(
+                                  onChanged: (newText) {
+                                    updateTitle();
                                   },
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
-                                    ),
+                                  expands: true,
+                                  maxLines: null,
+                                  minLines: null,
+                                  backgroundCursorColor: palette[1],
+                                  cursorColor: Colors.white,
+                                  controller: _titleController,
+                                  focusNode: FocusNode(canRequestFocus: true),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.55,
-                                  child: EditableText(
-                                    onChanged: (newText) {
-                                      updateTitle();
-                                    },
-                                    expands: true,
-                                    maxLines: null,
-                                    minLines: null,
-                                    backgroundCursorColor: palette[1],
-                                    cursorColor: Colors.white,
-                                    controller: _titleController,
-                                    focusNode: FocusNode(canRequestFocus: true),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Visibility(
-                                  visible: isLoading,
-                                  child: Container(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 5),
-                                GestureDetector(
-                                  onTap: (){
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                      return Study(notes: _notes);
-                                    }));
-                                  },
-                                  child: Tooltip(
-                                    message: 'Study this topic randomly',
-                                    child: Icon(
-                                      Icons.menu_book,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 5),
-                                GestureDetector(
-                                  onTap: _createNote,
-                                  child: const Tooltip(
-                                    message: 'Add Note',
-                                    child: Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 5),
-                                Tooltip(
-                                  message: 'Delete this topic section',
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      await showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              backgroundColor: palette[2],
-                                              title: const Text(
-                                                  'Delete this Topic?'),
-                                              content: const Text(
-                                                  'This action cannot be undone.'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Text(
-                                                    'Cancel',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    _deleteTopic();
-                                                    Navigator.pop(
-                                                        context); // Close the dialog
-                                                    Navigator.pop(
-                                                        context); // Close the Topic screen
-                                                  },
-                                                  child: const Text(
-                                                    'Delete',
-                                                    style: TextStyle(
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: MouseRegion(
-                                        onEnter: (even) {
-                                          setState(() {
-                                            _isHoverDelete = true;
-                                          });
-                                        },
-                                        onExit: (event) {
-                                          setState(() {
-                                            _isHoverDelete = false;
-                                          });
-                                        },
-                                        child: Icon(
-                                          Icons.delete_forever,
-                                          color: _isHoverDelete
-                                              ? Colors.red
-                                              : Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
+                              ),
+                            ],
                           ),
-                          child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            itemCount: _notes.length,
-                            itemBuilder: (context, index) {
-                              return LoadingIndicatorWidget(
-                                isLoading: _loadingNote == index,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: palette[2],
+                          Row(
+                            children: [
+                              Visibility(
+                                visible: isLoading,
+                                child: Container(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return Study(notes: _notes);
+                                  }));
+                                },
+                                child: Tooltip(
+                                  message: 'Study this topic randomly',
+                                  child: Icon(
+                                    Icons.menu_book,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              GestureDetector(
+                                onTap: _createNote,
+                                child: const Tooltip(
+                                  message: 'Add Note',
+                                  child: Padding(
+                                    padding: EdgeInsets.all(5.0),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
                                     ),
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            left: 8.0,
-                                            right: 8.0,
-                                          ),
-                                          child: MarkdownWidget(
-                                            markdown: _notes[index]['content'],
-                                            previewMode: true,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 8.0,
-                                            right: 8.0,
-                                            bottom: 8.0,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              GestureDetector(
-                                                  onTap: () => _readOrDelete(
-                                                      index, true),
-                                                  child: const Tooltip(
-                                                    message: 'Read more',
-                                                    child: Icon(
-                                                      Icons.open_in_full,
-                                                      color: Color.fromARGB(
-                                                          255, 150, 151, 151),
-                                                      size: 17,
-                                                    ),
-                                                  )),
-                                              GestureDetector(
-                                                onTap: () =>
-                                                    _readOrDelete(index, false),
-                                                child: const Tooltip(
-                                                  message: 'Edit',
-                                                  child: Icon(
-                                                    Icons.edit,
-                                                    size: 17,
-                                                    color: Color.fromARGB(
-                                                        255, 150, 151, 151),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Tooltip(
+                                message: 'Delete this topic section',
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            backgroundColor: palette[2],
+                                            title: const Text(
+                                                'Delete this Topic?'),
+                                            content: const Text(
+                                                'This action cannot be undone.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text(
+                                                  'Cancel',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  _deleteTopic();
+                                                  Navigator.pop(
+                                                      context); // Close the dialog
+                                                  Navigator.pop(
+                                                      context); // Close the Topic screen
+                                                },
+                                                child: const Text(
+                                                  'Delete',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
                                                   ),
                                                 ),
                                               ),
                                             ],
-                                          ),
-                                        ),
-                                      ],
+                                          );
+                                        });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: MouseRegion(
+                                      onEnter: (even) {
+                                        setState(() {
+                                          _isHoverDelete = true;
+                                        });
+                                      },
+                                      onExit: (event) {
+                                        setState(() {
+                                          _isHoverDelete = false;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.delete_forever,
+                                        color: _isHoverDelete
+                                            ? Colors.red
+                                            : Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              );
-                            },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Body
+                    Expanded(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Wrap(
+                          
+                            direction: Axis.horizontal,
+                            children: [
+
+                              // Display notes
+                              for (int index = 0;
+                                  index < _notes.length;
+                                  index++)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: LoadingIndicatorWidget(
+                                    isLoading: _loadingNote == index,
+                                    child: GestureDetector(
+
+                                      // Note is pressed
+                                      onTap: () => _readOrDelete(index, true),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: palette[2],
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: MarkdownWidget(
+                                                previewMode: true,
+                                                markdown: _notes[index]
+                                                    ['content'],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );

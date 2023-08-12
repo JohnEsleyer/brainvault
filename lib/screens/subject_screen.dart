@@ -91,6 +91,25 @@ class _SubjectScreenState extends State<SubjectScreen> {
     return dbHelper.getNotesForSubject(widget.subjectId);
   }
 
+  void _createNewTopic() async {
+    var data = {
+      'subject_id': widget.subjectId,
+      'title': 'Untitled',
+      'table_name': 'topic',
+    };
+    try {
+      int id = await dbHelper.insertTopic(data);
+
+      await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => TopicScreen(
+          topicId: id,
+        ),
+      ));
+      refreshData();
+    } catch (e) {
+      print("Topic creation failed: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,25 +117,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
       return Scaffold(
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add, color: Colors.black),
-          onPressed: () async {
-            var data = {
-              'subject_id': widget.subjectId,
-              'title': 'Untitled',
-            };
-            try {
-              int id = await dbHelper.insertTopic(data);
-
-              await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => TopicScreen(
-                  topicId: id,
-
-                ),
-              ));
-              refreshData();
-            } catch (e) {
-              print("topic creation failed: $e");
-            }
-          },
+          onPressed: _createNewTopic,
           backgroundColor: palette[6],
         ),
         body: Container(
@@ -175,20 +176,22 @@ class _SubjectScreenState extends State<SubjectScreen> {
                       ),
                       Row(
                         children: [
-                              GestureDetector(
-                                  onTap: () async {
-                                    var notes = await _obtainAllNotes();
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                      return Study(notes: notes);
-                                    }));
-                                  },
-                                  child: Tooltip(
-                                    message: 'Study the notes from this subject randomly',
-                                    child: Icon(
-                                      Icons.menu_book,
-                                    ),
-                                  ),
-                                ),
+                          GestureDetector(
+                            onTap: () async {
+                              var notes = await _obtainAllNotes();
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return Study(notes: notes);
+                              }));
+                            },
+                            child: Tooltip(
+                              message:
+                                  'Study the notes from this subject randomly',
+                              child: Icon(
+                                Icons.menu_book,
+                              ),
+                            ),
+                          ),
                           GestureDetector(
                             onTap: () async {
                               await showDialog(
@@ -243,7 +246,8 @@ class _SubjectScreenState extends State<SubjectScreen> {
                               },
                               child: Icon(
                                 Icons.delete_forever,
-                                color: _isHoverDelete ? Colors.red : Colors.white,
+                                color:
+                                    _isHoverDelete ? Colors.red : Colors.white,
                               ),
                             ),
                           ),
@@ -310,7 +314,6 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                       .push(MaterialPageRoute(
                                     builder: (_) => TopicScreen(
                                       topicId: topic['id'],
-                     
                                     ),
                                   ));
                                   refreshData();

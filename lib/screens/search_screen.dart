@@ -290,8 +290,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                                         BorderRadius.circular(
                                                             10),
                                                   ),
-                                                  child: MarkdownWidget(
-                                                    markdown: result['content'],
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: MarkdownWidget(
+                                                      markdown: result['content'],
+                                                    ),
                                                   ),
                                                 ),
                                               ),

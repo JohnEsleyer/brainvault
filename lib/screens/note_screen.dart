@@ -182,7 +182,7 @@ class _NoteScreenState extends State<NoteScreen> {
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
-                                _editMode = !_editMode;
+                                _editMode = false;
                               });
                             },
                             child: Container(
@@ -216,7 +216,7 @@ class _NoteScreenState extends State<NoteScreen> {
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
-                                _editMode = !_editMode;
+                                _editMode = true;
                               });
                             },
                             child: Container(

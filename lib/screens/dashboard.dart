@@ -139,7 +139,7 @@ class _DashboardState extends State<Dashboard> {
                               onTap: () async {
                                 var data = {
                                   'title': 'Untitled subject',
-                                  'description': 'This is a brain subject.',
+                                  'description': 'This is the description of the subject. Press me to start editing.',
                                 };
                                 try {
                                   await dbHelper.insertSubject(data);
