@@ -73,7 +73,7 @@ class _NoteScreenState extends State<NoteScreen> {
     if (_editMode == true) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.82,
+        height: MediaQuery.of(context).size.height * 0.89,
         child: Scaffold(
           backgroundColor: palette[2],
           // resizeToAvoidBottomInset: false,
