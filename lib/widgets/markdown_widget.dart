@@ -11,8 +11,9 @@ import 'package:highlight/languages/python.dart';
 
 class MarkdownWidget extends StatefulWidget {
   final String markdown;
+  bool? previewMode;
 
-  const MarkdownWidget({required this.markdown});
+  MarkdownWidget({required this.markdown, this.previewMode = false});
 
   @override
   _MarkdownWidgetState createState() => _MarkdownWidgetState();
@@ -416,24 +417,35 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 8.0,
-        right: 8.0,
-        bottom: 8.0,
-      ),
-      child: SelectableRegion(
-        selectionControls: materialTextSelectionControls,
-        focusNode: FocusNode(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: _rendered,
+    // If markdown is in preview mode, only show 3 elements
+    if ((widget.previewMode ?? false) && _rendered.length > 3) {
+      var temp = _rendered.sublist(0, 3);
+      temp.add(
+        Text(
+          '...',
+          style: TextStyle(
+            decoration: TextDecoration.none,
+            fontWeight: FontWeight.normal,
+            color: Colors.white,
+            fontSize: 14,
+          ),
         ),
+      );
+      _rendered = temp;
+    }
+
+    return SelectableRegion(
+      selectionControls: materialTextSelectionControls,
+      focusNode: FocusNode(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _rendered,
       ),
     );
   }
 }
 
+// Flashcard Widget
 class Flashcard extends StatefulWidget {
   final List<Widget> front;
   final List<Widget> back;

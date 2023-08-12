@@ -80,6 +80,26 @@ class _TopicScreenState extends State<TopicScreen> {
     await _dbHelper.deleteTopic(widget.topicId);
   }
 
+  void _readOrDelete(index, isRead) async {
+    if (!widget.studyMode) {
+      await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return NoteScreen(
+            readMode: isRead,
+            content: _notes[index]['content'],
+            noteId: _notes[index]['id'],
+            type: 'markdown');
+      }));
+      refreshData();
+      setState(() {
+        _loadingNote = index;
+      });
+      await Future.delayed(Duration(seconds: 1));
+      setState(() {
+        _loadingNote = -1;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -88,7 +108,6 @@ class _TopicScreenState extends State<TopicScreen> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
               backgroundColor: palette[1],
-            
               body: GestureDetector(
                 onDoubleTap: () {
                   if (widget.studyMode)
@@ -164,6 +183,17 @@ class _TopicScreenState extends State<TopicScreen> {
                             Row(
                               children: [
                                 Visibility(
+                                  visible: isLoading,
+                                  child: Container(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Visibility(
                                   visible: !widget.studyMode,
                                   child: GestureDetector(
                                     onTap: () async {
@@ -197,7 +227,8 @@ class _TopicScreenState extends State<TopicScreen> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
@@ -212,16 +243,6 @@ class _TopicScreenState extends State<TopicScreen> {
                                 ),
                                 SizedBox(width: 5),
                                 Visibility(
-                                  visible: isLoading,
-                                  child: Container(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                Visibility(
                                   visible: !widget.studyMode,
                                   child: Tooltip(
                                     message: 'Delete this topic section?',
@@ -232,7 +253,8 @@ class _TopicScreenState extends State<TopicScreen> {
                                             builder: (context) {
                                               return AlertDialog(
                                                 backgroundColor: palette[2],
-                                                title: Text('Delete this Topic?'),
+                                                title:
+                                                    Text('Delete this Topic?'),
                                                 content: Text(
                                                     'This action cannot be undone.'),
                                                 actions: [
@@ -319,59 +341,55 @@ class _TopicScreenState extends State<TopicScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Visibility(
-                                              visible: !widget.studyMode,
-                                              child: GestureDetector(
-                                                  onTap: () async {
-                                                    if (!widget.studyMode) {
-                                                      await Navigator.of(
-                                                              context)
-                                                          .push(
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) {
-                                                        return NoteScreen(
-                                                            readMode: true,
-                                                            content:
-                                                                _notes[index]
-                                                                    ['content'],
-                                                            noteId:
-                                                                _notes[index]
-                                                                    ['id'],
-                                                            type: 'markdown');
-                                                      }));
-                                                      refreshData();
-                                                      setState(() {
-                                                        _loadingNote = index;
-                                                      });
-                                                      await Future.delayed(
-                                                          Duration(seconds: 1));
-                                                      setState(() {
-                                                        _loadingNote = -1;
-                                                      });
-                                                    }
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                      top: 8.0,
-                                                      right: 8.0,
-                                                    ),
-                                                    child: Icon(
-                                                      size: 20,
-                                                      Icons.edit,
-                                                      color: Colors.white,
-                                                    ),
-                                                  )),
-                                            ),
-                                          ],
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 10.0,
+                                            left: 8.0,
+                                            right: 8.0,
+                                          ),
+                                          child: MarkdownWidget(
+                                            markdown: _notes[index]['content'],
+                                            previewMode: true,
+                                          ),
                                         ),
-                                        MarkdownWidget(
-                                          markdown: _notes[index]['content'],
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 8.0,
+                                            right: 8.0,
+                                            bottom: 8.0,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Visibility(
+                                                visible: !widget.studyMode,
+                                                child: GestureDetector(
+                                                    onTap: () => _readOrDelete(index, true),
+                                                    child: Tooltip(
+                                                      message: 'Read more',
+                                                      child: const Icon(
+                                                        Icons.open_in_full,
+                                                        color: Color.fromARGB(
+                                                            255, 150, 151, 151),
+                                                        size: 17,
+                                                      ),
+                                                    )),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () => _readOrDelete(index, false),
+                                                child: const Tooltip(
+                                                  message: 'Edit',
+                                                  child: Icon(
+                                                    Icons.edit,
+                                                    size: 17,
+                                                    color: Color.fromARGB(
+                                                        255, 150, 151, 151),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),

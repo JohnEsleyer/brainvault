@@ -27,12 +27,14 @@ class _IndentableTextFieldState extends State<IndentableTextField> {
         ),
         // enabled: true,
         // autofocus: true,
+        
         keyboardType: TextInputType.multiline,
         cursorColor: Colors.white,
         style: TextStyle(
           fontSize: 14,
         ),
         decoration: InputDecoration(
+          hintText: 'Start typing',
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
