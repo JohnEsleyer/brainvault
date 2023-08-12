@@ -88,37 +88,7 @@ class _TopicScreenState extends State<TopicScreen> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
               backgroundColor: palette[1],
-              floatingActionButton: Visibility(
-                visible: !widget.studyMode,
-                child: FloatingActionButton(
-                  onPressed: () async {
-                    // Create new note
-
-                    Map<String, dynamic> data = {
-                      'Topic_id': widget
-                          .topicId, // Replace with the appropriate Topic_id of the associated Topic
-                      'content': '',
-                      'position': _notes.length + 1,
-
-                      'type': 'markdown',
-                      'table_name': 'note',
-                    };
-                    int noteId = await _dbHelper.insertNote(data);
-
-                    await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => NoteScreen(
-                        content: data['content'],
-                        noteId: noteId,
-                        readMode: false,
-                        type: 'markdown',
-                      ),
-                    ));
-                    refreshData();
-                  },
-                  child: Icon(Icons.add, color: Colors.black),
-                  backgroundColor: Colors.white,
-                ),
-              ),
+            
               body: GestureDetector(
                 onDoubleTap: () {
                   if (widget.studyMode)
@@ -169,7 +139,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                 ),
                                 Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.70,
+                                      MediaQuery.of(context).size.width * 0.55,
                                   child: EditableText(
                                     onChanged: (newText) {
                                       updateTitle();
@@ -194,6 +164,54 @@ class _TopicScreenState extends State<TopicScreen> {
                             Row(
                               children: [
                                 Visibility(
+                                  visible: !widget.studyMode,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      // Create new note
+
+                                      Map<String, dynamic> data = {
+                                        'Topic_id': widget
+                                            .topicId, // Replace with the appropriate Topic_id of the associated Topic
+                                        'content': '',
+                                        'position': _notes.length + 1,
+
+                                        'type': 'markdown',
+                                        'table_name': 'note',
+                                      };
+                                      int noteId =
+                                          await _dbHelper.insertNote(data);
+
+                                      await Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (_) => NoteScreen(
+                                          content: data['content'],
+                                          noteId: noteId,
+                                          readMode: false,
+                                          type: 'markdown',
+                                        ),
+                                      ));
+                                      refreshData();
+                                    },
+                                    child: Tooltip(
+                                      message: 'Add Note',
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Icon(
+                                            Icons.add,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Visibility(
                                   visible: isLoading,
                                   child: Container(
                                     width: 20,
@@ -205,65 +223,68 @@ class _TopicScreenState extends State<TopicScreen> {
                                 ),
                                 Visibility(
                                   visible: !widget.studyMode,
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      await showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              backgroundColor: palette[2],
-                                              title: Text('Delete this Topic?'),
-                                              content: Text(
-                                                  'This action cannot be undone.'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    'Cancel',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
+                                  child: Tooltip(
+                                    message: 'Delete this topic',
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        await showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                backgroundColor: palette[2],
+                                                title: Text('Delete this Topic?'),
+                                                content: Text(
+                                                    'This action cannot be undone.'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      'Cancel',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    _deleteTopic();
-                                                    Navigator.pop(
-                                                        context); // Close the dialog
-                                                    Navigator.pop(
-                                                        context); // Close the Topic screen
-                                                  },
-                                                  child: Text(
-                                                    'Delete',
-                                                    style: TextStyle(
-                                                      color: Colors.red,
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      _deleteTopic();
+                                                      Navigator.pop(
+                                                          context); // Close the dialog
+                                                      Navigator.pop(
+                                                          context); // Close the Topic screen
+                                                    },
+                                                    child: Text(
+                                                      'Delete',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: MouseRegion(
-                                        onEnter: (even) {
-                                          setState(() {
-                                            _isHoverDelete = true;
-                                          });
-                                        },
-                                        onExit: (event) {
-                                          setState(() {
-                                            _isHoverDelete = false;
-                                          });
-                                        },
-                                        child: Icon(
-                                          Icons.delete_forever,
-                                          color: _isHoverDelete
-                                              ? Colors.red
-                                              : Colors.white,
+                                                ],
+                                              );
+                                            });
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: MouseRegion(
+                                          onEnter: (even) {
+                                            setState(() {
+                                              _isHoverDelete = true;
+                                            });
+                                          },
+                                          onExit: (event) {
+                                            setState(() {
+                                              _isHoverDelete = false;
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.delete_forever,
+                                            color: _isHoverDelete
+                                                ? Colors.red
+                                                : Colors.white,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -295,48 +316,58 @@ class _TopicScreenState extends State<TopicScreen> {
                                     ),
                                     width: MediaQuery.of(context).size.width,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
                                           children: [
-                                            GestureDetector(
-                                                onTap: () async {
-                                                  if (!widget.studyMode) {
-                                                    await Navigator.of(context)
-                                                        .push(MaterialPageRoute(
-                                                            builder: (context) {
-                                                      return NoteScreen(
-                                                          readMode: true,
-                                                          content: _notes[index]
-                                                              ['content'],
-                                                          noteId: _notes[index]
-                                                              ['id'],
-                                                          type: 'markdown');
-                                                    }));
-                                                    refreshData();
-                                                    setState(() {
-                                                      _loadingNote = index;
-                                                    });
-                                                    await Future.delayed(
-                                                        Duration(seconds: 1));
-                                                    setState(() {
-                                                      _loadingNote = -1;
-                                                    });
-                                                  }
-                                                },
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                    top:8.0,
-                                                    right: 8.0,
-                                                    
-                                                  ),
-                                                  child: Icon(
-                                                    size: 20,
-                                                    Icons.edit,
-                                                    color: Colors.white,
-                                                  ),
-                                                )),
+                                            Visibility(
+                                              visible: !widget.studyMode,
+                                              child: GestureDetector(
+                                                  onTap: () async {
+                                                    if (!widget.studyMode) {
+                                                      await Navigator.of(
+                                                              context)
+                                                          .push(
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) {
+                                                        return NoteScreen(
+                                                            readMode: true,
+                                                            content:
+                                                                _notes[index]
+                                                                    ['content'],
+                                                            noteId:
+                                                                _notes[index]
+                                                                    ['id'],
+                                                            type: 'markdown');
+                                                      }));
+                                                      refreshData();
+                                                      setState(() {
+                                                        _loadingNote = index;
+                                                      });
+                                                      await Future.delayed(
+                                                          Duration(seconds: 1));
+                                                      setState(() {
+                                                        _loadingNote = -1;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      top: 8.0,
+                                                      right: 8.0,
+                                                    ),
+                                                    child: Icon(
+                                                      size: 20,
+                                                      Icons.edit,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )),
+                                            ),
                                           ],
                                         ),
                                         MarkdownWidget(

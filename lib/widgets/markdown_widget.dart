@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_code_editor/flutter_code_editor.dart';
+import 'package:flutter_highlight/themes/vs.dart';
+import 'package:highlight/languages/python.dart';
 
 class MarkdownWidget extends StatefulWidget {
   final String markdown;
@@ -307,10 +310,31 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
         _flashcardWidgets.add([]); // Add empty array
         _flashcardCounter = 0;
-      } else if (line.startsWith('//')){
+      } else if (line.startsWith('/code')) {
+        final controller = CodeController(
+          text: 'print("Hello World")',
+          
+        );
+        _rendered.add(
+          Card(
+            child: CodeTheme(
+              data: CodeThemeData(styles: vsTheme),
+              child: CodeField(
+                controller: controller,
+              ),
+            ),
+          ),
+        );
+      } else if(line.startsWith('---')){
+        _rendered.add(
+          Divider(
+            color: Colors.white,
+          ),
+        );
+      }else if (line.startsWith('//')) {
         // Comment
         // Do nothing
-      }else {
+      } else {
         // Normal text
         if (!_isFlashcard) {
           _rendered.add(
@@ -436,10 +460,10 @@ class _FlashcardState extends State<Flashcard> {
             //   ],
             // ),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: _showFront
                     ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: widget.front,
                       )
                     : Column(

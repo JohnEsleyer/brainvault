@@ -119,8 +119,8 @@ class _DashboardState extends State<Dashboard> {
                   padding: const EdgeInsets.only(
                     top: 8.0,
                     bottom: 8.0,
-                    right: 4.0,
-                    left: 4.0,
+                    right: 6.0,
+                    left: 6.0,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,7 +211,7 @@ class _DashboardState extends State<Dashboard> {
                                                 height: 100,
                                                 width: 130,
                                                 decoration: BoxDecoration(
-                                                  color: palette[4],
+                                                  color: palette[6],
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(10)),
@@ -264,7 +264,7 @@ class _DashboardState extends State<Dashboard> {
                     width: con_width,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: palette[4],
+                      color: palette[6],
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     child: Center(

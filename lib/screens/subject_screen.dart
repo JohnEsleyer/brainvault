@@ -111,7 +111,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
               print("topic creation failed: $e");
             }
           },
-          backgroundColor: palette[5],
+          backgroundColor: palette[6],
         ),
         body: Container(
             width: MediaQuery.of(context).size.width,
@@ -295,7 +295,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                   height: 100,
                                   width: 150,
                                   decoration: BoxDecoration(
-                                    color: palette[4],
+                                    color: palette[6],
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10)),
                                   ),

@@ -77,33 +77,39 @@ class _NoteScreenState extends State<NoteScreen> {
         child: Scaffold(
           backgroundColor: palette[2],
           // resizeToAvoidBottomInset: false,
-          body: Container(
-            color: palette[2],
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 9.0,
-                top: 5.0,
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color.fromARGB(255, 22, 21, 21),
               ),
-              child: TextField(
-                keyboardType: TextInputType.multiline,
-
-                cursorColor: Colors.white,
-                style: TextStyle(
-                  fontSize: 16,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 9.0,
+                  top: 5.0,
                 ),
-                decoration: InputDecoration(
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  border: InputBorder.none,
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+          
+                  cursorColor: Colors.white,
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                  decoration: InputDecoration(
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    border: InputBorder.none,
+                  ),
+                  expands: true,
+                  maxLines: null,
+                  minLines: null,
+                  controller: _editingController,
+                  onChanged: (value) {
+                    _updateDb();
+                  },
                 ),
-                expands: true,
-                maxLines: null,
-                minLines: null,
-                controller: _editingController,
-                onChanged: (value) {
-                  _updateDb();
-                },
               ),
             ),
           ),
