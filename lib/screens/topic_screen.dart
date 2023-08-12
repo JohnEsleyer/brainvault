@@ -10,9 +10,8 @@ import 'package:flutter/rendering.dart';
 import '../colors.dart';
 
 class TopicScreen extends StatefulWidget {
-  TopicScreen({required this.topicId, required this.studyMode});
+  TopicScreen({required this.topicId});
 
-  final bool studyMode;
   final int topicId;
 
   @override
@@ -81,23 +80,42 @@ class _TopicScreenState extends State<TopicScreen> {
   }
 
   void _readOrDelete(index, isRead) async {
-    if (!widget.studyMode) {
-      await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return NoteScreen(
-            readMode: isRead,
-            content: _notes[index]['content'],
-            noteId: _notes[index]['id'],
-            type: 'markdown');
-      }));
-      refreshData();
-      setState(() {
-        _loadingNote = index;
-      });
-      await Future.delayed(Duration(seconds: 1));
-      setState(() {
-        _loadingNote = -1;
-      });
-    }
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return NoteScreen(
+          readMode: isRead,
+          content: _notes[index]['content'],
+          noteId: _notes[index]['id'],
+  );
+    }));
+    refreshData();
+    setState(() {
+      _loadingNote = index;
+    });
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      _loadingNote = -1;
+    });
+  }
+
+  void _createNote() async {
+    // Create new note
+
+    Map<String, dynamic> data = {
+      'Topic_id': widget
+          .topicId, // Replace with the appropriate Topic_id of the associated Topic
+      'content': '',
+    };
+    int noteId = await _dbHelper.insertNote(data);
+
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => NoteScreen(
+        content: data['content'],
+        noteId: noteId,
+        readMode: false,
+
+      ),
+    ));
+    refreshData();
   }
 
   @override
@@ -110,13 +128,11 @@ class _TopicScreenState extends State<TopicScreen> {
               backgroundColor: palette[1],
               body: GestureDetector(
                 onDoubleTap: () {
-                  if (widget.studyMode)
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => TopicScreen(
-                        topicId: widget.topicId,
-                        studyMode: false,
-                      ),
-                    ));
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => TopicScreen(
+                      topicId: widget.topicId,
+                    ),
+                  ));
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -126,7 +142,7 @@ class _TopicScreenState extends State<TopicScreen> {
                     children: [
                       Visibility(
                         visible: Platform.isAndroid,
-                        child: SizedBox(
+                        child: const SizedBox(
                           height: 20,
                         ),
                       ),
@@ -141,18 +157,15 @@ class _TopicScreenState extends State<TopicScreen> {
                           children: [
                             Row(
                               children: [
-                                Visibility(
-                                  visible: !widget.studyMode,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        Icons.arrow_back,
-                                        color: Colors.white,
-                                      ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -166,7 +179,6 @@ class _TopicScreenState extends State<TopicScreen> {
                                     expands: true,
                                     maxLines: null,
                                     minLines: null,
-                                    readOnly: widget.studyMode,
                                     backgroundCursorColor: palette[1],
                                     cursorColor: Colors.white,
                                     controller: _titleController,
@@ -193,113 +205,82 @@ class _TopicScreenState extends State<TopicScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 5),
-                                Visibility(
-                                  visible: !widget.studyMode,
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      // Create new note
-
-                                      Map<String, dynamic> data = {
-                                        'Topic_id': widget
-                                            .topicId, // Replace with the appropriate Topic_id of the associated Topic
-                                        'content': '',
-                                        'position': _notes.length + 1,
-
-                                        'type': 'markdown',
-                                        'table_name': 'note',
-                                      };
-                                      int noteId =
-                                          await _dbHelper.insertNote(data);
-
-                                      await Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (_) => NoteScreen(
-                                          content: data['content'],
-                                          noteId: noteId,
-                                          readMode: false,
-                                          type: 'markdown',
-                                        ),
-                                      ));
-                                      refreshData();
-                                    },
-                                    child: Tooltip(
-                                      message: 'Add Note',
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                        ),
+                                GestureDetector(
+                                  onTap: _createNote,
+                                  child: const Tooltip(
+                                    message: 'Add Note',
+                                    child: Padding(
+                                      padding: EdgeInsets.all(5.0),
+                                      child: Icon(
+                                        Icons.add,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 5),
-                                Visibility(
-                                  visible: !widget.studyMode,
-                                  child: Tooltip(
-                                    message: 'Delete this topic section',
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        await showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                backgroundColor: palette[2],
-                                                title:
-                                                    Text('Delete this Topic?'),
-                                                content: Text(
-                                                    'This action cannot be undone.'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      'Cancel',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      ),
+                                const SizedBox(width: 5),
+                                Tooltip(
+                                  message: 'Delete this topic section',
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              backgroundColor: palette[2],
+                                              title: const Text(
+                                                  'Delete this Topic?'),
+                                              content: const Text(
+                                                  'This action cannot be undone.'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text(
+                                                    'Cancel',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
                                                     ),
                                                   ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      _deleteTopic();
-                                                      Navigator.pop(
-                                                          context); // Close the dialog
-                                                      Navigator.pop(
-                                                          context); // Close the Topic screen
-                                                    },
-                                                    child: Text(
-                                                      'Delete',
-                                                      style: TextStyle(
-                                                        color: Colors.red,
-                                                      ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    _deleteTopic();
+                                                    Navigator.pop(
+                                                        context); // Close the dialog
+                                                    Navigator.pop(
+                                                        context); // Close the Topic screen
+                                                  },
+                                                  child: const Text(
+                                                    'Delete',
+                                                    style: TextStyle(
+                                                      color: Colors.red,
                                                     ),
                                                   ),
-                                                ],
-                                              );
-                                            });
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: MouseRegion(
-                                          onEnter: (even) {
-                                            setState(() {
-                                              _isHoverDelete = true;
-                                            });
-                                          },
-                                          onExit: (event) {
-                                            setState(() {
-                                              _isHoverDelete = false;
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.delete_forever,
-                                            color: _isHoverDelete
-                                                ? Colors.red
-                                                : Colors.white,
-                                          ),
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: MouseRegion(
+                                        onEnter: (even) {
+                                          setState(() {
+                                            _isHoverDelete = true;
+                                          });
+                                        },
+                                        onExit: (event) {
+                                          setState(() {
+                                            _isHoverDelete = false;
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.delete_forever,
+                                          color: _isHoverDelete
+                                              ? Colors.red
+                                              : Colors.white,
                                         ),
                                       ),
                                     ),
@@ -355,22 +336,21 @@ class _TopicScreenState extends State<TopicScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
-                                              Visibility(
-                                                visible: !widget.studyMode,
-                                                child: GestureDetector(
-                                                    onTap: () => _readOrDelete(index, true),
-                                                    child: Tooltip(
-                                                      message: 'Read more',
-                                                      child: const Icon(
-                                                        Icons.open_in_full,
-                                                        color: Color.fromARGB(
-                                                            255, 150, 151, 151),
-                                                        size: 17,
-                                                      ),
-                                                    )),
-                                              ),
                                               GestureDetector(
-                                                onTap: () => _readOrDelete(index, false),
+                                                  onTap: () => _readOrDelete(
+                                                      index, true),
+                                                  child: const Tooltip(
+                                                    message: 'Read more',
+                                                    child: Icon(
+                                                      Icons.open_in_full,
+                                                      color: Color.fromARGB(
+                                                          255, 150, 151, 151),
+                                                      size: 17,
+                                                    ),
+                                                  )),
+                                              GestureDetector(
+                                                onTap: () =>
+                                                    _readOrDelete(index, false),
                                                 child: const Tooltip(
                                                   message: 'Edit',
                                                   child: Icon(
@@ -402,8 +382,8 @@ class _TopicScreenState extends State<TopicScreen> {
             return Scaffold(
                 body: Container(
               color: palette[1],
-              child:
-                  Center(child: CircularProgressIndicator(color: Colors.white)),
+              child: const Center(
+                  child: CircularProgressIndicator(color: Colors.white)),
             ));
           }
         });

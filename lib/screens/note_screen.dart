@@ -11,13 +11,12 @@ class NoteScreen extends StatefulWidget {
   final bool readMode;
   final String content; // if empty => load data from db
   final int noteId;
-  final String type; // Flash card note type or not and other future types
 
   NoteScreen(
       {required this.readMode,
       required this.content,
       required this.noteId,
-      required this.type});
+      });
 
   @override
   _NoteScreenState createState() => _NoteScreenState();

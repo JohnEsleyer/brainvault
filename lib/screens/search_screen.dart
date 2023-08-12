@@ -220,7 +220,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                           return TopicScreen(
                                                               topicId:
                                                                   result['id'],
-                                                              studyMode: false);
+                                                             );
                                                         },
                                                       ));
                                                     },
@@ -278,7 +278,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                         noteId: result['id'],
                                                         readMode: true,
                                                         content: '',
-                                                        type: 'markdown',
+
                                                       ),
                                                     ),
                                                   );

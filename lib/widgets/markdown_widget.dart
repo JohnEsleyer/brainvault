@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_highlight/themes/androidstudio.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
-import 'package:flutter_highlight/themes/github-gist.dart';
-import 'package:flutter_highlight/themes/github.dart';
-import 'package:flutter_highlight/themes/vs.dart';
-import 'package:highlight/languages/python.dart';
 
 class MarkdownWidget extends StatefulWidget {
   final String markdown;
@@ -369,7 +363,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
         _codeMode = true;
       } else if (line.startsWith('---')) {
         _rendered.add(
-          Divider(
+          const Divider(
             color: Colors.white,
           ),
         );
@@ -383,7 +377,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             Text(
               line,
               textAlign: TextAlign.left,
-              style: TextStyle(
+              style: const TextStyle(
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.normal,
                 color: Colors.white,
@@ -399,7 +393,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             Text(
               line,
               textAlign: TextAlign.left,
-              style: TextStyle(
+              style: const TextStyle(
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.normal,
                 color: Colors.black,
@@ -421,7 +415,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
     if ((widget.previewMode ?? false) && _rendered.length > 3) {
       var temp = _rendered.sublist(0, 3);
       temp.add(
-        Text(
+        const Text(
           '...',
           style: TextStyle(
             decoration: TextDecoration.none,
@@ -487,7 +481,7 @@ class _FlashcardState extends State<Flashcard> {
                   SizedBox(width: 5),
                   Text(
                     _showFront ? 'Front' : 'Back',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       decoration: TextDecoration.none,
                       fontSize: 14,
@@ -498,33 +492,17 @@ class _FlashcardState extends State<Flashcard> {
               ),
             ),
           ),
-          Container(
-            // width: 300,
-            // height: 200,
-            // decoration: BoxDecoration(
-            //   color: Colors.white,
-            //   borderRadius: BorderRadius.circular(10),
-            //   boxShadow: [
-            //     BoxShadow(
-            //       color: Colors.grey.withOpacity(0.3),
-            //       spreadRadius: 2,
-            //       blurRadius: 5,
-            //       offset: Offset(0, 3),
-            //     ),
-            //   ],
-            // ),
-            child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: _showFront
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: widget.front,
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: widget.back,
-                      )),
-          ),
+          Padding(
+              padding: EdgeInsets.all(8.0),
+              child: _showFront
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.front,
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.back,
+                    )),
         ],
       ),
     );

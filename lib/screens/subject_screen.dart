@@ -94,8 +94,6 @@ class _SubjectScreenState extends State<SubjectScreen> {
             var data = {
               'subject_id': widget.subjectId,
               'title': 'Untitled',
-              'position': topics.length + 1,
-              'table_name': 'topic',
             };
             try {
               int id = await dbHelper.insertTopic(data);
@@ -103,7 +101,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
               await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => TopicScreen(
                   topicId: id,
-                  studyMode: false,
+
                 ),
               ));
               refreshData();
@@ -286,7 +284,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                       .push(MaterialPageRoute(
                                     builder: (_) => TopicScreen(
                                       topicId: topic['id'],
-                                      studyMode: false,
+                     
                                     ),
                                   ));
                                   refreshData();
