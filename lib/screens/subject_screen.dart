@@ -5,6 +5,8 @@ import 'package:brainvault/colors.dart';
 import 'package:brainvault/screens/topic_screen.dart';
 import 'package:brainvault/services/database_service.dart';
 
+import '../widgets/study_widget.dart';
+
 class SubjectScreen extends StatefulWidget {
   final int subjectId;
 
@@ -84,6 +86,12 @@ class _SubjectScreenState extends State<SubjectScreen> {
     await dbHelper.deleteSubject(widget.subjectId);
   }
 
+  // Obtain all notes from the subject
+  Future<List<Map<String, dynamic>>> _obtainAllNotes() async {
+    return dbHelper.getNotesForSubject(widget.subjectId);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     if (!isLoading) {
@@ -144,7 +152,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                             ),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.70,
+                            width: MediaQuery.of(context).size.width * 0.55,
                             child: EditableText(
                               onChanged: (newText) {
                                 updateTitle();
@@ -165,63 +173,81 @@ class _SubjectScreenState extends State<SubjectScreen> {
                           ),
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () async {
-                          await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  backgroundColor: palette[2],
-                                  title: Text('Delete this subject?'),
-                                  content:
-                                      Text('This action cannot be undone.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text(
-                                        'Cancel',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                      Row(
+                        children: [
+                              GestureDetector(
+                                  onTap: () async {
+                                    var notes = await _obtainAllNotes();
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                      return Study(notes: notes);
+                                    }));
+                                  },
+                                  child: Tooltip(
+                                    message: 'Study the notes from this subject randomly',
+                                    child: Icon(
+                                      Icons.menu_book,
                                     ),
-                                    TextButton(
-                                      onPressed: () {
-                                        _deleteSubject();
-                                        Navigator.pop(
-                                            context); // Close the dialog
-                                        Navigator.pop(
-                                            context); // Close the topic screen
-                                      },
-                                      child: Text(
-                                        'Delete',
-                                        style: TextStyle(
-                                          color: Colors.red,
+                                  ),
+                                ),
+                          GestureDetector(
+                            onTap: () async {
+                              await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: palette[2],
+                                      title: Text('Delete this subject?'),
+                                      content:
+                                          Text('This action cannot be undone.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              });
-                        },
-                        child: MouseRegion(
-                          onHover: (event) {
-                            setState(() {
-                              _isHoverDelete = true;
-                            });
-                          },
-                          onExit: (event) {
-                            setState(() {
-                              _isHoverDelete = false;
-                            });
-                          },
-                          child: Icon(
-                            Icons.delete_forever,
-                            color: _isHoverDelete ? Colors.red : Colors.white,
+                                        TextButton(
+                                          onPressed: () {
+                                            _deleteSubject();
+                                            Navigator.pop(
+                                                context); // Close the dialog
+                                            Navigator.pop(
+                                                context); // Close the topic screen
+                                          },
+                                          child: Text(
+                                            'Delete',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: MouseRegion(
+                              onHover: (event) {
+                                setState(() {
+                                  _isHoverDelete = true;
+                                });
+                              },
+                              onExit: (event) {
+                                setState(() {
+                                  _isHoverDelete = false;
+                                });
+                              },
+                              child: Icon(
+                                Icons.delete_forever,
+                                color: _isHoverDelete ? Colors.red : Colors.white,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
