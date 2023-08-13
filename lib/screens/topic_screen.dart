@@ -308,7 +308,7 @@ class _TopicScreenState extends State<TopicScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: SingleChildScrollView(
-                          child: MediaQuery.of(context).size.width < 500 ? 
+                          child: MediaQuery.of(context).size.width < 650 ? 
                           // Portrait View
                           Column(
                             children: [
@@ -369,12 +369,14 @@ class _TopicScreenState extends State<TopicScreen> {
                                       // Note is pressed
                                       onTap: () => _readOrDelete(index, true),
                                       child: Container(
+                                        width: 300,
                                         decoration: BoxDecoration(
                                           color: palette[2],
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
                                         child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Padding(
                                               padding:
