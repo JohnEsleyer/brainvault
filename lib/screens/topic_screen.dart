@@ -308,8 +308,9 @@ class _TopicScreenState extends State<TopicScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: SingleChildScrollView(
-                          child: MediaQuery.of(context).size.width < 500 ? Column(
-
+                          child: MediaQuery.of(context).size.width < 500 ? 
+                          // Portrait View
+                          Column(
                             children: [
                               // Display notes
                               for (int index = 0;
@@ -352,7 +353,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                 ),
                             ],
                           ) : 
-                          // Desktop
+                          // Landscape view
                           Wrap(
                             direction: Axis.horizontal,
                             children: [

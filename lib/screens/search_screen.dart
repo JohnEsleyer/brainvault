@@ -47,31 +47,10 @@ class _SearchScreenState extends State<SearchScreen> {
       } else {
         // Check if note has more than 5 lines.
 
-        if (countLines(res['content']) > 5) {
-          // Limit the content to 5 lines only
-
-          var tempString = getFirstFiveLines(res['content']);
-
-          // Add 'See more' text
-
-          tempString = tempString + '\n\n\nSee more...';
-          print('tempString: ${tempString}');
-
-          Map<String, dynamic> tempMap = {};
-          tempMap['id'] = res['id'];
-          tempMap['topic_id'] = res['topic_id'];
-          tempMap['table_name'] = res['table_name'];
-          tempMap['position'] = res['position'];
-          tempMap['type'] = res['id'];
-          tempMap['content'] = tempString;
-          setState(() {
-            _resultsNotes.add(tempMap);
-          });
-        } else {
           setState(() {
             _resultsNotes.add(res);
           });
-        }
+  
       }
     }
     await Future.delayed(Duration(seconds: 1));
@@ -90,17 +69,6 @@ class _SearchScreenState extends State<SearchScreen> {
     });
     print('topics: $_resultsTopics');
     print('Notes: ${_resultsNotes}');
-  }
-
-  int countLines(String inputString) {
-    List<String> lines = inputString.split('\n');
-    return lines.length;
-  }
-
-  String getFirstFiveLines(String inputString) {
-    List<String> lines = inputString.split('\n');
-    int endIndex = lines.length < 5 ? lines.length : 5;
-    return lines.sublist(0, endIndex).join('\n');
   }
 
   @override
@@ -263,6 +231,51 @@ class _SearchScreenState extends State<SearchScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                      MediaQuery.of(context).size.width < 500 ?
+
+                                      // Portrait view
+                                       Column(
+                                        children: [
+                                          for (var result in _resultsNotes)
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          NoteScreen(
+                                                        noteId: result['id'],
+                                                        readMode: true,
+                                                        content: '',
+
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  width: double.maxFinite,
+                                                  decoration: BoxDecoration(
+                                                    color: palette[2],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: MarkdownWidget(
+                                                      previewMode: true,
+                                                      markdown: result['content'],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ) :
+
+                                      // Landscape view
                                       Wrap(
                                         children: [
                                           for (var result in _resultsNotes)
@@ -293,6 +306,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(8.0),
                                                     child: MarkdownWidget(
+                                                      previewMode: true,
                                                       markdown: result['content'],
                                                     ),
                                                   ),

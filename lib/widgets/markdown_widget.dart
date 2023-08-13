@@ -57,15 +57,19 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                 ),
               ),
             ),
-            Text(
-              imageUrl,
-              textAlign: TextAlign.left,
-              style: const TextStyle(
-                fontFamily: 'Calibri',
-                decoration: TextDecoration.none,
-                fontWeight: FontWeight.normal,
-                color: Colors.white,
-                fontSize: 14,
+            SelectableRegion(
+              focusNode: FocusNode(),
+              selectionControls: materialTextSelectionControls,
+              child: Text(
+                imageUrl,
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  fontFamily: 'Calibri',
+                  decoration: TextDecoration.none,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
               ),
             ),
           ],
