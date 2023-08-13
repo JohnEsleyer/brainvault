@@ -158,9 +158,14 @@ class _MainScreenState extends State<MainScreen> {
                       // Open Brain button
                       GestureDetector(
                         onTap: () async {
-                          await dbHelper.uploadAndInsertJsonData();
-                          Navigator.of(context).push(
+                          try{
+                            await dbHelper.uploadAndInsertJsonData();
+                              Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Dashboard()));
+                          }catch(e){
+                            print('Failed to open filer3');
+                          }
+                        
                         },
                         child: Container(
                           child: Row(

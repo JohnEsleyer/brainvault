@@ -203,6 +203,8 @@ class DatabaseService {
 
       // Insert subjects, topics, and notes
       await insertDataFromJson(jsonData);
+    }else{
+      throw Exception('Failed to open file');
     }
   }
 
