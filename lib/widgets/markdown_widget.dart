@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
+import 'package:markdown_widget/config/highlight_themes.dart';
 
 import '../colors.dart';
 
@@ -23,7 +24,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
   int _flashcardCounter = 0;
   bool _startCounter = false;
   bool _codeMode = false;
-  String _codeString = '';
+  String codeString = '';
 
   @override
   void initState() {
@@ -77,27 +78,55 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
   void _parseMarkdown() {
     List<String> lines = widget.markdown.split('\n');
-
+    String codeString = '';
+    String codeLang =
+        'python'; // Python is the default language for code blocks.
     for (String line in lines) {
       if (_codeMode == true) {
         if (line.startsWith('```')) {
           _codeMode = false;
-          var code = _codeString;
-          _codeString = ' ';
+          var code = codeString;
+          var lang = codeLang;
+          codeString = ' ';
+          codeLang = 'python';
 
           if (!_isFlashcard) {
             _rendered.add(
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  width: double.maxFinite,
-                  child: HighlightView(
-                    code,
-                    language: 'python',
-                    theme: atomOneDarkTheme,
-                    padding: EdgeInsets.all(8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.code,
+                        size: 12,
+                      ),
+                      SizedBox(width: 3),
+                      Text(
+                        lang,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
+                          fontFamily: 'calibri',
+                          color: const Color.fromARGB(255, 148, 147, 147),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      width: double.maxFinite,
+                      child: HighlightView(
+                        code,
+                        language: lang,
+                        theme: a11yDarkTheme,
+                        padding: const EdgeInsets.all(8),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             );
           } else {
@@ -111,7 +140,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                   width: double.maxFinite,
                   child: HighlightView(
                     code,
-                    language: 'python',
+                    language: lang,
                     theme: atomOneDarkTheme,
                     padding: EdgeInsets.all(8),
                   ),
@@ -122,7 +151,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
 
           continue;
         }
-        _codeString += line + '\n';
+        codeString += line + '\n';
         continue;
       }
 
@@ -221,34 +250,34 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
         // Bullet
 
         if (!_isFlashcard) {
-          _rendered.add(Row(
-  children: [
-    Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8),
-      child: Icon(
-        Icons.circle,
-        size: 10,
-        color: Colors.white,
-      ),
-    ),
-    Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: Text(
-          line.substring(2), // Assuming 'line' is your text content
-          softWrap: true,
-          style: TextStyle(
-            decoration: TextDecoration.none,
-            fontWeight: FontWeight.normal,
-            color: Colors.white,
-            fontSize: 14,
-          ),
-        ),
-      ),
-    ),
-  ],
-),
-
+          _rendered.add(
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8),
+                  child: Icon(
+                    Icons.circle,
+                    size: 10,
+                    color: Colors.white,
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      line.substring(2), // Assuming 'line' is your text content
+                      softWrap: true,
+                      style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         } else {
           _flashcardWidgets[_flashcardWidgets.length > 0
@@ -420,6 +449,15 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
         _flashcardWidgets.add([]); // Add empty array
         _flashcardCounter = 0;
       } else if (line.startsWith('```')) {
+        // extract the language
+        // e.g. ```go or etc
+        RegExp codeLangSpecifier = RegExp(r'```([a-zA-Z\+\-\#]+)');
+        List<String> codeBlocks = [];
+        Match? match = codeLangSpecifier.firstMatch(line);
+        if (match != null && match.groupCount == 1) {
+          codeLang = match.group(1) ?? '';
+        }
+
         _codeMode = true;
       } else if (line.startsWith('---')) {
         _rendered.add(
@@ -490,17 +528,19 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
       _rendered = temp;
     }
 
-    return widget.previewMode ?? true ? Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _rendered,
-      ) : SelectableRegion(
-      selectionControls: materialTextSelectionControls,
-      focusNode: FocusNode(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _rendered,
-      ),
-    );
+    return widget.previewMode ?? true
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _rendered,
+          )
+        : SelectableRegion(
+            selectionControls: materialTextSelectionControls,
+            focusNode: FocusNode(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _rendered,
+            ),
+          );
   }
 }
 
