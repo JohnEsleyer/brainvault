@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:markdown_widget/config/highlight_themes.dart';
 
 import '../colors.dart';
@@ -452,7 +450,6 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
         // extract the language
         // e.g. ```go or etc
         RegExp codeLangSpecifier = RegExp(r'```([a-zA-Z\+\-\#]+)');
-        List<String> codeBlocks = [];
         Match? match = codeLangSpecifier.firstMatch(line);
         if (match != null && match.groupCount == 1) {
           codeLang = match.group(1) ?? '';

@@ -303,10 +303,13 @@ class _NoteScreenState extends State<NoteScreen> {
                                   _isHoverDelete = false;
                                 });
                               },
-                              child: Icon(
-                                Icons.delete_forever,
-                                color:
-                                    _isHoverDelete ? Colors.red : Colors.white,
+                              child: Tooltip(
+                                message: 'Delete this note',
+                                child: Icon(
+                                  Icons.delete_forever,
+                                  color:
+                                      _isHoverDelete ? Colors.red : Colors.white,
+                                ),
                               ),
                             ),
                           ),

@@ -308,11 +308,9 @@ class _TopicScreenState extends State<TopicScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: SingleChildScrollView(
-                          child: Wrap(
-                          
-                            direction: Axis.horizontal,
-                            children: [
+                          child: MediaQuery.of(context).size.width < 500 ? Column(
 
+                            children: [
                               // Display notes
                               for (int index = 0;
                                   index < _notes.length;
@@ -322,22 +320,71 @@ class _TopicScreenState extends State<TopicScreen> {
                                   child: LoadingIndicatorWidget(
                                     isLoading: _loadingNote == index,
                                     child: GestureDetector(
-
+                                      // Note is pressed
+                                      onTap: () => _readOrDelete(index, true),
+                                      child: Container(
+                                        width: double.maxFinite,
+                                        decoration: BoxDecoration(
+                                          color: palette[2],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: MarkdownWidget(
+                                                previewMode: true,
+                                                markdown: _notes[index]
+                                                            ['content']
+                                                        .isEmpty
+                                                    ? 'This note is empty         \n \n \n'
+                                                    : _notes[index]['content'],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ) : 
+                          // Desktop
+                          Wrap(
+                            direction: Axis.horizontal,
+                            children: [
+                              // Display notes
+                              for (int index = 0;
+                                  index < _notes.length;
+                                  index++)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: LoadingIndicatorWidget(
+                                    isLoading: _loadingNote == index,
+                                    child: GestureDetector(
                                       // Note is pressed
                                       onTap: () => _readOrDelete(index, true),
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: palette[2],
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
                                         child: Column(
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: MarkdownWidget(
                                                 previewMode: true,
                                                 markdown: _notes[index]
-                                                    ['content'],
+                                                            ['content']
+                                                        .isEmpty
+                                                    ? 'This note is empty         \n \n \n'
+                                                    : _notes[index]['content'],
                                               ),
                                             ),
                                           ],

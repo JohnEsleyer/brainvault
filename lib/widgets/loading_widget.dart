@@ -1,7 +1,7 @@
 import 'package:brainvault/widgets/blinking_fade_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../colors.dart';
+
 
 class LoadingIndicatorWidget extends StatelessWidget {
   final Widget child;
