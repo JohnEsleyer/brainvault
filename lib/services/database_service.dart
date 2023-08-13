@@ -146,20 +146,10 @@ class DatabaseService {
     print('Selected directory path: ${directory?.path}');
   }
 
-  Future<void> generateAndDownloadJsonFile() async {
+  Future<void> saveJSON() async {
     DatabaseService databaseService = DatabaseService();
     Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
 
-    // Get the directory based on the platform
-    // Directory? directory;
-    // if (Platform.isWindows || Platform.isLinux) {
-    //   directory = await getDownloadsDirectory();
-    // } else if (Platform.isAndroid) {
-    //   directory = await getExternalStorageDirectory();
-    // } else {
-    //   // Unsupported platform, handle it accordingly
-    //   return;
-    // }
 
     if (directory == null) {
       // Directory is not available, handle it accordingly

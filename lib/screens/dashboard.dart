@@ -13,26 +13,41 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  final dbHelper = DatabaseService();
-  late Future<List<Map<String, dynamic>>> allsubjects;
+  final _dbHelper = DatabaseService();
+  late Future<List<Map<String, dynamic>>> _allSubjects;
 
   @override
   void initState() {
     super.initState();
-    allsubjects = dbHelper.getAllSubjects();
+    _allSubjects = _dbHelper.getAllSubjects();
   }
 
-  void refreshData() async {
+  void _refreshData() async {
     try {
-      Future<List<Map<String, dynamic>>> subjects =
-          dbHelper.getAllSubjects();
+      Future<List<Map<String, dynamic>>> subjects = _dbHelper.getAllSubjects();
       // When succesfull
       setState(() {
-        allsubjects = subjects;
+        _allSubjects = subjects;
       });
     } catch (e) {
       print('Failed to refreshd data: $e');
     }
+  }
+
+  void _addNewSubject() async {
+    var data = {
+      'title': 'Untitled subject',
+      'description':
+          'This is the description of the subject. Press me to start editing.',
+    };
+    try {
+      await _dbHelper.insertSubject(data);
+    } catch (e) {
+      print('Error while inserting a subject: $e');
+    }
+    _dbHelper.saveJSON();
+    _refreshData();
+    
   }
 
   @override
@@ -48,26 +63,7 @@ class _DashboardState extends State<Dashboard> {
           centerTitle: true,
           backgroundColor: palette[2],
           automaticallyImplyLeading: false,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () async {
-                  dbHelper.generateAndDownloadJsonFile();
-                },
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.save,
-                      color: Colors.white,
-                      size: 15,
-                    ),
-                    Text('Save'),
-                  ],
-                ),
-              ),
-            ),
-          ],
+       
         ),
       ),
       body: Container(
@@ -136,19 +132,7 @@ class _DashboardState extends State<Dashboard> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
-                              onTap: () async {
-                                var data = {
-                                  'title': 'Untitled subject',
-                                  'description': 'This is the description of the subject. Press me to start editing.',
-                                };
-                                try {
-                                  await dbHelper.insertSubject(data);
-                                } catch (e) {
-                                  print(
-                                      'Error while inserting a subject: $e');
-                                }
-                                refreshData();
-                              },
+                              onTap: _addNewSubject,
                               child: Container(
                                 width: 30,
                                 height: 30,
@@ -166,7 +150,7 @@ class _DashboardState extends State<Dashboard> {
                       Container(
                         height: 130,
                         child: FutureBuilder(
-                          future: allsubjects,
+                          future: _allSubjects,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -202,7 +186,7 @@ class _DashboardState extends State<Dashboard> {
                                                 return SubjectScreen(
                                                     subjectId: id);
                                               }));
-                                              refreshData();
+                                              _refreshData();
                                             },
                                             child: Padding(
                                               padding:
@@ -255,7 +239,6 @@ class _DashboardState extends State<Dashboard> {
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                        
                         builder: (context) => RandomStudy(),
                       ),
                     );

@@ -20,8 +20,8 @@ class TopicScreen extends StatefulWidget {
 }
 
 class _TopicScreenState extends State<TopicScreen> {
-  bool isLoading = false;
-  late Future<void> loadingData;
+  bool _isLoading = false;
+  late Future<void> _loadingData;
 
   final _dbHelper = DatabaseService();
   bool _isHoverDelete = false;
@@ -36,7 +36,7 @@ class _TopicScreenState extends State<TopicScreen> {
   void initState() {
     super.initState();
 
-    loadingData = loadData();
+    _loadingData = loadData();
   }
 
   Future<void> loadData() async {
@@ -51,7 +51,7 @@ class _TopicScreenState extends State<TopicScreen> {
 
   void refreshData() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
     try {
       var doc = await _dbHelper.getTopicById(widget.topicId);
@@ -68,16 +68,18 @@ class _TopicScreenState extends State<TopicScreen> {
 
     await Future.delayed(Duration(seconds: 1));
     setState(() {
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
   void updateTitle() async {
     await _dbHelper.updateTopicTitle(widget.topicId, _titleController.text);
+    _dbHelper.saveJSON();
   }
 
   void _deleteTopic() async {
     await _dbHelper.deleteTopic(widget.topicId);
+    _dbHelper.saveJSON();
   }
 
   void _readOrDelete(index, isRead) async {
@@ -116,13 +118,15 @@ class _TopicScreenState extends State<TopicScreen> {
         readMode: false,
       ),
     ));
+
+    _dbHelper.saveJSON();
     refreshData();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: loadingData,
+        future: _loadingData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
@@ -188,7 +192,7 @@ class _TopicScreenState extends State<TopicScreen> {
                           Row(
                             children: [
                               Visibility(
-                                visible: isLoading,
+                                visible: _isLoading,
                                 child: Container(
                                   width: 20,
                                   height: 20,

@@ -297,6 +297,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   );
                                                 },
                                                 child: Container(
+                                                  width: 300,
                                                   decoration: BoxDecoration(
                                                     color: palette[2],
                                                     borderRadius:

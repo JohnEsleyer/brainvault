@@ -18,9 +18,9 @@ class SubjectScreen extends StatefulWidget {
 }
 
 class _SubjectScreenState extends State<SubjectScreen> {
-  final dbHelper = DatabaseService();
-  late List<Map<String, dynamic>> topics;
-  late Map<String, dynamic> subject;
+  final _dbHelper = DatabaseService();
+  late List<Map<String, dynamic>> _topics;
+  late Map<String, dynamic> _subject;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -36,10 +36,10 @@ class _SubjectScreenState extends State<SubjectScreen> {
 
   void loadData() async {
     try {
-      subject = await dbHelper.getSubjectById(widget.subjectId);
-      topics = await dbHelper.getTopicsBySubjectId(widget.subjectId);
-      _titleController.text = subject['title'];
-      _descriptionController.text = subject['description'];
+      _subject = await _dbHelper.getSubjectById(widget.subjectId);
+      _topics = await _dbHelper.getTopicsBySubjectId(widget.subjectId);
+      _titleController.text = _subject['title'];
+      _descriptionController.text = _subject['description'];
 
       // When successfull
       setState(() {
@@ -55,14 +55,14 @@ class _SubjectScreenState extends State<SubjectScreen> {
       hidden = false;
     });
     try {
-      var col = await dbHelper.getSubjectById(widget.subjectId);
-      var doc = await dbHelper.getTopicsBySubjectId(widget.subjectId);
+      var col = await _dbHelper.getSubjectById(widget.subjectId);
+      var doc = await _dbHelper.getTopicsBySubjectId(widget.subjectId);
 
       // When succesfull
       setState(
         () {
-          subject = col;
-          topics = doc;
+          _subject = col;
+          _topics = doc;
         },
       );
     } catch (e) {
@@ -74,21 +74,24 @@ class _SubjectScreenState extends State<SubjectScreen> {
   }
 
   void updateTitle() async {
-    await dbHelper.updateSubjectTitle(widget.subjectId, _titleController.text);
+    await _dbHelper.updateSubjectTitle(widget.subjectId, _titleController.text);
+    _dbHelper.saveJSON();
   }
 
   void updateDescription() async {
-    await dbHelper.updateSubjectDescription(
+    await _dbHelper.updateSubjectDescription(
         widget.subjectId, _descriptionController.text);
+    _dbHelper.saveJSON();
   }
 
   void _deleteSubject() async {
-    await dbHelper.deleteSubject(widget.subjectId);
+    await _dbHelper.deleteSubject(widget.subjectId);
+    _dbHelper.saveJSON();
   }
 
   // Obtain all notes from the subject
   Future<List<Map<String, dynamic>>> _obtainAllNotes() async {
-    return dbHelper.getNotesForSubject(widget.subjectId);
+    return _dbHelper.getNotesForSubject(widget.subjectId);
   }
 
   void _createNewTopic() async {
@@ -98,13 +101,17 @@ class _SubjectScreenState extends State<SubjectScreen> {
       'table_name': 'topic',
     };
     try {
-      int id = await dbHelper.insertTopic(data);
+      int id = await _dbHelper.insertTopic(data);
 
       await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => TopicScreen(
           topicId: id,
         ),
       ));
+      
+      // Save data to brain file
+      _dbHelper.saveJSON();
+
       refreshData();
     } catch (e) {
       print("Topic creation failed: $e");
@@ -305,7 +312,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                       width: MediaQuery.of(context).size.width,
                       child: Wrap(
                         children: [
-                          for (var topic in topics)
+                          for (var topic in _topics)
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: GestureDetector(

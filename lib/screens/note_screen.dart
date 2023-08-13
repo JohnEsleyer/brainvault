@@ -67,6 +67,7 @@ class _NoteScreenState extends State<NoteScreen> {
 
   void _updateDb() {
     _dbHelper.updateNoteContent(widget.noteId, _editingController.text);
+    _dbHelper.saveJSON();
   }
 
   Widget _display() {
@@ -131,6 +132,7 @@ class _NoteScreenState extends State<NoteScreen> {
 
   void _deleteNote() async {
     await _dbHelper.deleteNote(widget.noteId);
+    _dbHelper.saveJSON();
   }
 
   @override
