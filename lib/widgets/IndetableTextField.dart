@@ -13,7 +13,7 @@ class _IndentableTextFieldState extends State<IndentableTextField> {
   @override
   Widget build(BuildContext context) {
     return RawKeyboardListener(
-      focusNode: FocusNode(canRequestFocus: true),
+      focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
       onKey: (RawKeyEvent event) {
         if (event.runtimeType == RawKeyDownEvent &&
             event.isKeyPressed(LogicalKeyboardKey.tab)) {
@@ -21,10 +21,10 @@ class _IndentableTextFieldState extends State<IndentableTextField> {
         }
       },
       child: TextField(
-        focusNode: FocusNode(
-          canRequestFocus: true,
-          skipTraversal: true,
-        ),   
+        // focusNode: FocusNode(
+        //   canRequestFocus: true,
+        //   skipTraversal: true,
+        // ),   
         keyboardType: TextInputType.multiline,
         cursorColor: Colors.white,
         style: TextStyle(

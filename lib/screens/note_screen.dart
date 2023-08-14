@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:brainvault/widgets/IndetableTextField.dart';
@@ -30,6 +31,8 @@ class _NoteScreenState extends State<NoteScreen> {
   bool _isLoading = false;
   bool _isHoverDelete = false;
   bool _isReadLandscapeLoading = false;
+  TextEditingController _textEditingController = TextEditingController();
+  Timer? _debounceTimer;
 
   void initState() {
     super.initState();
@@ -40,6 +43,13 @@ class _NoteScreenState extends State<NoteScreen> {
       _editMode = true;
       _loadData();
     }
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    _debounceTimer?.cancel();
+    super.dispose();
   }
 
   void _loadData() async {
@@ -203,22 +213,22 @@ class _NoteScreenState extends State<NoteScreen> {
     );
   }
 
-  Widget _popScreenWidget(){
-    return  GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 8.0,
-                left: 8.0,
-                right: 8.0,
-              ),
-              child: Icon(
-                Icons.arrow_back,
-              ),
-            ),
-          );
+  Widget _popScreenWidget() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 8.0,
+          left: 8.0,
+          right: 8.0,
+        ),
+        child: Icon(
+          Icons.arrow_back,
+        ),
+      ),
+    );
   }
 
   Widget _topBar() {
@@ -226,7 +236,7 @@ class _NoteScreenState extends State<NoteScreen> {
       // Portrait view of top bar
       return Row(
         children: [
-         _popScreenWidget(),
+          _popScreenWidget(),
           // Read Mode
           Expanded(
             flex: 1,
@@ -363,6 +373,23 @@ class _NoteScreenState extends State<NoteScreen> {
     }
   }
 
+  // Executed when editor in landscape layout is active
+  void _onTextChangedLandscape(String newText) {
+    // Load the read section in landscape layout
+    setState(() {
+      _isReadLandscapeLoading = true;
+    });
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(seconds: 1), () {
+      // Stop the loading of read section
+      setState(() {
+        _isReadLandscapeLoading = false;
+      });
+      // Update db
+      _updateDb();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -387,7 +414,7 @@ class _NoteScreenState extends State<NoteScreen> {
                 ),
                 child: Column(
                   children: [
-                   _topBar(),
+                    _topBar(),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.90,
                       decoration: BoxDecoration(
@@ -458,24 +485,7 @@ class _NoteScreenState extends State<NoteScreen> {
                                             ),
                                             child: IndentableTextField(
                                               controller: _editingController,
-                                              onChanged: (value) async {
-                                                if (_isReadLandscapeLoading ==
-                                                    false) {
-                                                  setState(() {
-                                                    _isReadLandscapeLoading =
-                                                        true;
-                                                  });
-
-                                                  await Future.delayed(
-                                                      Duration(seconds: 1));
-                                                  setState(() {
-                                                    _isReadLandscapeLoading =
-                                                        false;
-                                                  });
-                                                }
-
-                                                _updateDb();
-                                              },
+                                              onChanged: _onTextChangedLandscape
                                             ),
                                           ),
                                         ),
