@@ -19,6 +19,12 @@ class DatabaseService {
 
   DatabaseService.internal();
 
+  void setFilename(String name){
+    fileName = name;
+  }
+
+  Directory? get getDirectory => directory;
+
   Future<Database> get database async {
     if (_db != null) return _db!;
     _db = await initDb();
@@ -131,7 +137,7 @@ class DatabaseService {
     return jsonUint8List;
   }
 
-  void openDirectoryPicker() async {
+  Future<bool> openDirectoryPicker() async {
     try {
       final result = await FilePicker.platform.getDirectoryPath();
       if (result != null) {
@@ -139,11 +145,12 @@ class DatabaseService {
       }
     } catch (e) {
       print('Error picking directory: $e');
-      return;
+      return false;
     }
 
     directory = directory;
     print('Selected directory path: ${directory?.path}');
+    return true;
   }
 
   Future<void> saveJSON() async {
