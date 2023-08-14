@@ -44,6 +44,7 @@ class _IndentableTextFieldState extends State<IndentableTextField> {
         maxLines: null,
         minLines: null,
         onChanged: widget.onChanged,
+
         controller: widget.controller,
 
         textInputAction: TextInputAction.newline,

@@ -58,7 +58,8 @@ class _StudyState extends State<Study>{
                   color: palette[1],
                 ),
                 child: LoadingIndicatorWidget(
-                  child: GestureDetector(
+                  isStudy: true,
+                  child: GestureDetector( 
         onDoubleTap: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => NoteScreen(

@@ -194,8 +194,8 @@ class _TopicScreenState extends State<TopicScreen> {
                               Visibility(
                                 visible: _isLoading,
                                 child: Container(
-                                  width: 20,
-                                  height: 20,
+                                  width: 15,
+                                  height: 15,
                                   child: CircularProgressIndicator(
                                     color: Colors.white,
                                   ),
@@ -216,7 +216,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 5),
+                              const SizedBox(width: 5),
                               GestureDetector(
                                 onTap: _createNote,
                                 child: const Tooltip(
@@ -230,7 +230,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 5),
+                              const SizedBox(width: 2),
                               Tooltip(
                                 message: 'Delete this topic section',
                                 child: GestureDetector(
@@ -276,7 +276,11 @@ class _TopicScreenState extends State<TopicScreen> {
                                         });
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(
+                                      top: 8,
+                                      bottom: 8,
+                                      right: 8,
+                                    ),
                                     child: MouseRegion(
                                       onEnter: (even) {
                                         setState(() {

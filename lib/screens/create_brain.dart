@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:brainvault/services/database_service.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../colors.dart';
 
@@ -53,7 +52,7 @@ class _CreateBrainState extends State<CreateBrain> {
                         controller: _controller,
                         cursorColor: Colors.white,
                         decoration: const InputDecoration(
-                          hintText: 'Type the name of the .brain file',
+                          hintText: 'Name of the .brain file',
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
                         ),
