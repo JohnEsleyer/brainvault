@@ -155,7 +155,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'topics',
+                                        'Topics',
                                         style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold,
