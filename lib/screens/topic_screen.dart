@@ -145,166 +145,183 @@ class _TopicScreenState extends State<TopicScreen> {
                       ),
                     ),
                     // Title
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 8.0,
-                        left: 8.0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.white,
+                    IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 8.0,
+                          left: 8.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.55,
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.55,
-                                child: EditableText(
-                                  onChanged: (newText) {
-                                    updateTitle();
-                                  },
-                                  expands: true,
-                                  maxLines: null,
-                                  minLines: null,
-                                  backgroundCursorColor: palette[1],
-                                  cursorColor: Colors.white,
-                                  controller: _titleController,
-                                  focusNode: FocusNode(canRequestFocus: true),
-                                  style: TextStyle(
+                                  Expanded(
+                                    child: TextField(
+                                    
+                                    enabled: true,
+                                    focusNode: FocusNode(
+                                    canRequestFocus: true,
+                                    skipTraversal: true,
+                                    ),
+                                    // keyboardType: TextInputType.multiline,
+                                    cursorColor: Colors.white,
+                                    style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
+                                    ),
+                                    decoration: InputDecoration(
+                                    hintText: 'Topic Title',
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    border: InputBorder.none,
+                                    ),
+                                    expands: true,
+                                    maxLines: null,
+                                    minLines: null,
+                                    onChanged: (newText) {
+                                    updateTitle();
+                                    },
+                                    controller: _titleController,
+                                    textInputAction: TextInputAction.newline,
+                                                                  ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Visibility(
-                                visible: _isLoading,
-                                child: Container(
-                                  width: 15,
-                                  height: 15,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 5),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return Study(notes: _notes);
-                                  }));
-                                },
-                                child: Tooltip(
-                                  message: 'Study this topic randomly',
-                                  child: Icon(
-                                    Icons.menu_book,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 5),
-                              GestureDetector(
-                                onTap: _createNote,
-                                child: const Tooltip(
-                                  message: 'Add Note',
-                                  child: Padding(
-                                    padding: EdgeInsets.all(5.0),
-                                    child: Icon(
-                                      Icons.add,
+                            ),
+                            Row(
+                              children: [
+                                Visibility(
+                                  visible: _isLoading,
+                                  child: Container(
+                                    width: 15,
+                                    height: 15,
+                                    child: CircularProgressIndicator(
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 2),
-                              Tooltip(
-                                message: 'Delete this topic section',
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            backgroundColor: palette[2],
-                                            title: const Text(
-                                                'Delete this Topic?'),
-                                            content: const Text(
-                                                'This action cannot be undone.'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text(
-                                                  'Cancel',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  _deleteTopic();
-                                                  Navigator.pop(
-                                                      context); // Close the dialog
-                                                  Navigator.pop(
-                                                      context); // Close the Topic screen
-                                                },
-                                                child: const Text(
-                                                  'Delete',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        });
+                                SizedBox(width: 5),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                      return Study(notes: _notes);
+                                    }));
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 8,
-                                      right: 8,
+                                  child: Tooltip(
+                                    message: 'Study this topic randomly',
+                                    child: Icon(
+                                      Icons.menu_book,
                                     ),
-                                    child: MouseRegion(
-                                      onEnter: (even) {
-                                        setState(() {
-                                          _isHoverDelete = true;
-                                        });
-                                      },
-                                      onExit: (event) {
-                                        setState(() {
-                                          _isHoverDelete = false;
-                                        });
-                                      },
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                GestureDetector(
+                                  onTap: _createNote,
+                                  child: const Tooltip(
+                                    message: 'Add Note',
+                                    child: Padding(
+                                      padding: EdgeInsets.all(5.0),
                                       child: Icon(
-                                        Icons.delete_forever,
-                                        color: _isHoverDelete
-                                            ? Colors.red
-                                            : Colors.white,
+                                        Icons.add,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                const SizedBox(width: 2),
+                                Tooltip(
+                                  message: 'Delete this topic section',
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              backgroundColor: palette[2],
+                                              title: const Text(
+                                                  'Delete this Topic?'),
+                                              content: const Text(
+                                                  'This action cannot be undone.'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text(
+                                                    'Cancel',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    _deleteTopic();
+                                                    Navigator.pop(
+                                                        context); // Close the dialog
+                                                    Navigator.pop(
+                                                        context); // Close the Topic screen
+                                                  },
+                                                  child: const Text(
+                                                    'Delete',
+                                                    style: TextStyle(
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 8,
+                                        bottom: 8,
+                                        right: 8,
+                                      ),
+                                      child: MouseRegion(
+                                        onEnter: (even) {
+                                          setState(() {
+                                            _isHoverDelete = true;
+                                          });
+                                        },
+                                        onExit: (event) {
+                                          setState(() {
+                                            _isHoverDelete = false;
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.delete_forever,
+                                          color: _isHoverDelete
+                                              ? Colors.red
+                                              : Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 

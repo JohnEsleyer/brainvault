@@ -108,7 +108,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
           topicId: id,
         ),
       ));
-      
+
       // Save data to brain file
       _dbHelper.saveJSON();
 
@@ -140,127 +140,145 @@ class _SubjectScreenState extends State<SubjectScreen> {
                   ),
                 ),
                 // Title
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
+                IntrinsicHeight(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.arrow_back,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                            ),
+                              Expanded(
+                                     
+                                child: TextField(
+                                  
+                                  enabled: true,
+                                  focusNode: FocusNode(
+                                    canRequestFocus: true,
+                                    skipTraversal: true,
+                                  ),
+                                  // keyboardType: TextInputType.multiline,
+                                  cursorColor: Colors.white,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: 'Subject Title',
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    border: InputBorder.none,
+                                  ),
+                                  expands: true,
+                                  maxLines: null,
+                                  minLines: null,
+                                  onChanged: (newText) {
+                                    updateTitle();
+                                  },
+                                  controller: _titleController,
+                                  textInputAction: TextInputAction.newline,
+                                ),
+                              ),
+                            ],
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.55,
-                            child: EditableText(
-                              onChanged: (newText) {
-                                updateTitle();
+                        ),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                var notes = await _obtainAllNotes();
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return Study(notes: notes);
+                                }));
                               },
-                              expands: true,
-                              maxLines: null,
-                              minLines: null,
-                              backgroundCursorColor: palette[1],
-                              cursorColor: Colors.white,
-                              controller: _titleController,
-                              focusNode: FocusNode(canRequestFocus: true),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
+                              child: Tooltip(
+                                message:
+                                    'Study the notes from this subject randomly',
+                                child: Icon(
+                                  Icons.menu_book,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              var notes = await _obtainAllNotes();
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return Study(notes: notes);
-                              }));
-                            },
-                            child: Tooltip(
-                              message:
-                                  'Study the notes from this subject randomly',
-                              child: Icon(
-                                Icons.menu_book,
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              await showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      backgroundColor: palette[2],
-                                      title: Text('Delete this subject?'),
-                                      content:
-                                          Text('This action cannot be undone.'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'Cancel',
-                                            style: TextStyle(
-                                              color: Colors.white,
+                            GestureDetector(
+                              onTap: () async {
+                                await showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        backgroundColor: palette[2],
+                                        title: Text('Delete this subject?'),
+                                        content:
+                                            Text('This action cannot be undone.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              'Cancel',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            _deleteSubject();
-                                            Navigator.pop(
-                                                context); // Close the dialog
-                                            Navigator.pop(
-                                                context); // Close the topic screen
-                                          },
-                                          child: Text(
-                                            'Delete',
-                                            style: TextStyle(
-                                              color: Colors.red,
+                                          TextButton(
+                                            onPressed: () {
+                                              _deleteSubject();
+                                              Navigator.pop(
+                                                  context); // Close the dialog
+                                              Navigator.pop(
+                                                  context); // Close the topic screen
+                                            },
+                                            child: Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    );
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: MouseRegion(
+                                onHover: (event) {
+                                  setState(() {
+                                    _isHoverDelete = true;
                                   });
-                            },
-                            child: MouseRegion(
-                              onHover: (event) {
-                                setState(() {
-                                  _isHoverDelete = true;
-                                });
-                              },
-                              onExit: (event) {
-                                setState(() {
-                                  _isHoverDelete = false;
-                                });
-                              },
-                              child: Icon(
-                                Icons.delete_forever,
-                                color:
-                                    _isHoverDelete ? Colors.red : Colors.white,
+                                },
+                                onExit: (event) {
+                                  setState(() {
+                                    _isHoverDelete = false;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.delete_forever,
+                                  color:
+                                      _isHoverDelete ? Colors.red : Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 // Description and other buttons

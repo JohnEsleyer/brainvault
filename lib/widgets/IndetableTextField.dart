@@ -24,10 +24,7 @@ class _IndentableTextFieldState extends State<IndentableTextField> {
         focusNode: FocusNode(
           canRequestFocus: true,
           skipTraversal: true,
-        ),
-        // enabled: true,
-        // autofocus: true,
-        
+        ),   
         keyboardType: TextInputType.multiline,
         cursorColor: Colors.white,
         style: TextStyle(
