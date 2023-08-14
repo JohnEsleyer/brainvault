@@ -47,23 +47,30 @@ class _DashboardState extends State<Dashboard> {
     }
     _dbHelper.saveJSON();
     _refreshData();
-    
   }
 
   @override
   Widget build(BuildContext context) {
     // Container size
-    double con_width = MediaQuery.of(context).size.width * 0.90;
+    double conWidth = MediaQuery.of(context).size.width * 0.90;
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
+        preferredSize: const Size.fromHeight(50.0),
         child: AppBar(
-          title: Text('BrainVault'),
+          title: const Text('BrainVault'),
           centerTitle: true,
           backgroundColor: palette[2],
           automaticallyImplyLeading: false,
-       
+          leading: GestureDetector(
+            onTap: (){
+              _dbHelper.closeDatabase();
+              Navigator.popAndPushNamed(context, '/');
+            },
+            child: const Icon(
+              Icons.logout,
+            ),
+          ),
         ),
       ),
       body: Container(
@@ -88,7 +95,7 @@ class _DashboardState extends State<Dashboard> {
                         color: palette[2],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      width: con_width,
+                      width: conWidth,
                       height: 50,
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -106,7 +113,7 @@ class _DashboardState extends State<Dashboard> {
 
               // subjects
               Container(
-                width: con_width,
+                width: conWidth,
                 decoration: BoxDecoration(
                   color: palette[2],
                   borderRadius: BorderRadius.circular(10),
@@ -244,7 +251,7 @@ class _DashboardState extends State<Dashboard> {
                     );
                   },
                   child: Container(
-                    width: con_width,
+                    width: conWidth,
                     height: 100,
                     decoration: BoxDecoration(
                       color: palette[6],

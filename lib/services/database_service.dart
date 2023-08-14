@@ -26,8 +26,9 @@ class DatabaseService {
   Directory? get getDirectory => directory;
 
   Future<Database> get database async {
-    if (_db != null) return _db!;
+    if (_db != null && _db!.isOpen) return _db!;
     _db = await initDb();
+
     return _db!;
   }
 
