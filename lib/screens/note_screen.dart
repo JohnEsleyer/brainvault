@@ -318,15 +318,15 @@ class _NoteScreenState extends State<NoteScreen> {
             flex: 1,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10),
                   topRight: Radius.circular(10),
                 ),
                 color: palette[2],
               ),
-              child: Center(
+              child: const Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     'Read View',
                     style: TextStyle(
@@ -345,15 +345,15 @@ class _NoteScreenState extends State<NoteScreen> {
             flex: 1,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10),
                   topRight: Radius.circular(10),
                 ),
                 color: palette[1],
               ),
-              child: Center(
+              child: const Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     'Editor',
                     style: TextStyle(
@@ -399,7 +399,7 @@ class _NoteScreenState extends State<NoteScreen> {
         children: [
           Visibility(
             visible: Platform.isAndroid,
-            child: SizedBox(
+            child: const SizedBox(
               height: 30,
             ),
           ),
@@ -464,29 +464,23 @@ class _NoteScreenState extends State<NoteScreen> {
                                   // Editor (Landscape)
                                   Expanded(
                                     flex: 1,
-                                    child: Container(
-                                      // height:
-                                      //     MediaQuery.of(context).size.height *
-                                      //         0.89,
-                                      child: Scaffold(
-                                        backgroundColor: palette[1],
-                                        // resizeToAvoidBottomInset: false,
-                                        body: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color:
-                                                Color.fromARGB(255, 22, 21, 21),
+                                    child: Scaffold(
+                                      backgroundColor: palette[1],
+                                      body: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color:
+                                              const Color.fromARGB(255, 22, 21, 21),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 9.0,
+                                            top: 5.0,
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 9.0,
-                                              top: 5.0,
-                                            ),
-                                            child: IndentableTextField(
-                                              controller: _editingController,
-                                              onChanged: _onTextChangedLandscape
-                                            ),
+                                          child: IndentableTextField(
+                                            controller: _editingController,
+                                            onChanged: _onTextChangedLandscape
                                           ),
                                         ),
                                       ),

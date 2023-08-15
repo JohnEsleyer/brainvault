@@ -14,23 +14,29 @@ class _CreateBrainState extends State<CreateBrain> {
   TextEditingController _controller = TextEditingController();
   DatabaseService _dbHelper = DatabaseService();
   Directory? _dir = null;
+  Color _textFieldBorderColor = Colors.white;
 
   void initState() {
     super.initState();
   }
 
   void _setFilename() {
-     _dbHelper.setFilename(_controller.text + '.brain');
+    _dbHelper.setFilename(_controller.text + '.brain');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: palette[2],
+        elevation: 0,
+      ),
       body: Container(
         color: palette[2],
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+           
             SizedBox(height: 20),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -41,13 +47,18 @@ class _CreateBrainState extends State<CreateBrain> {
                     width: MediaQuery.of(context).size.width * 0.8,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white),
+                      border: Border.all(color: _textFieldBorderColor),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                       child: TextField(
-                        onChanged: (value){
+                        onChanged: (value) {
                           _setFilename();
+                          if (_textFieldBorderColor != Colors.white) {
+                            setState(() {
+                              _textFieldBorderColor = Colors.white;
+                            });
+                          }
                         },
                         controller: _controller,
                         cursorColor: Colors.white,
@@ -78,9 +89,10 @@ class _CreateBrainState extends State<CreateBrain> {
                       ),
                       Text("File Path: "),
                       Container(
-                        width: MediaQuery.of(context).size.width - 122,
-                          child:
-                              Text(_dir != null ? _dir?.path as String : 'Press the folder icon to select a folder')),
+                          width: MediaQuery.of(context).size.width - 122,
+                          child: Text(_dir != null
+                              ? _dir?.path as String
+                              : 'Press the folder icon to select a folder')),
                     ],
                   ),
                 ),
@@ -93,8 +105,14 @@ class _CreateBrainState extends State<CreateBrain> {
                 children: [
                   // Create button
                   GestureDetector(
-                    onTap: (){
-                      Navigator.popAndPushNamed(context, '/dashboard');
+                    onTap: () {
+                      if (_controller.text.isNotEmpty) {
+                        Navigator.popAndPushNamed(context, '/dashboard');
+                      } else {
+                        setState(() {
+                          _textFieldBorderColor = Colors.red;
+                        });
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(
