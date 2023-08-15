@@ -161,8 +161,7 @@ class _MainScreenState extends State<MainScreen> {
                       GestureDetector(
                         onTap: () async {
                           await dbHelper.uploadAndInsertJsonData();
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Dashboard()));
+                          Navigator.of(context).popAndPushNamed('/dashboard');
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
