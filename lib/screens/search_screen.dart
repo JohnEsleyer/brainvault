@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:brainvault/screens/topic_screen.dart';
@@ -47,13 +48,12 @@ class _SearchScreenState extends State<SearchScreen> {
       } else {
         // Check if note has more than 5 lines.
 
-          setState(() {
-            _resultsNotes.add(res);
-          });
-  
+        setState(() {
+          _resultsNotes.add(res);
+        });
       }
     }
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     setState(() {
       if (_resultsTopics.length == 0) {
         _topicsVisibility = false;
@@ -67,8 +67,18 @@ class _SearchScreenState extends State<SearchScreen> {
       }
       _isLoading = false;
     });
-    print('topics: $_resultsTopics');
-    print('Notes: ${_resultsNotes}');
+  }
+
+  void _openNoteScreen(result) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => NoteScreen(
+          noteId: result['id'],
+          readMode: true,
+          content: result['content'],
+        ),
+      ),
+    );
   }
 
   @override
@@ -82,7 +92,7 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             Visibility(
               visible: Platform.isAndroid,
-              child: SizedBox(
+              child: const SizedBox(
                 height: 20,
               ),
             ),
@@ -106,14 +116,14 @@ class _SearchScreenState extends State<SearchScreen> {
                             onTap: () {
                               Navigator.of(context).pop();
                             },
-                            child: Icon(Icons.close)),
+                            child: const Icon(Icons.close)),
                       ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: TextField(
                             cursorColor: Colors.white,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               focusColor: Colors.white,
                               hoverColor: Colors.white,
                               focusedBorder: InputBorder.none,
@@ -125,8 +135,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Icon(Icons.search, color: Colors.white),
                       ),
                     ],
@@ -154,7 +164,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      const Text(
                                         'Topics',
                                         style: TextStyle(
                                           fontSize: 30,
@@ -186,9 +196,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                                           MaterialPageRoute(
                                                         builder: (context) {
                                                           return TopicScreen(
-                                                              topicId:
-                                                                  result['id'],
-                                                             );
+                                                            topicId:
+                                                                result['id'],
+                                                          );
                                                         },
                                                       ));
                                                     },
@@ -224,98 +234,92 @@ class _SearchScreenState extends State<SearchScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      const Text(
                                         'Notes',
                                         style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      MediaQuery.of(context).size.width < 500 ?
+                                      MediaQuery.of(context).size.width < 650
+                                          ?
 
-                                      // Portrait view
-                                       Column(
-                                        children: [
-                                          for (var result in _resultsNotes)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          NoteScreen(
-                                                        noteId: result['id'],
-                                                        readMode: true,
-                                                        content: '',
-
+                                          // Portrait view
+                                          Column(
+                                              children: [
+                                                for (var result
+                                                    in _resultsNotes)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: GestureDetector(
+                                                      onTap: (){
+                                                        _openNoteScreen(result);
+                                                      },
+                                                      child: Container(
+                                                        width: double.maxFinite,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: palette[2],
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: MarkdownWidget(
+                                                            previewMode: true,
+                                                            markdown: result[
+                                                                'content'],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  );
-                                                },
-                                                child: Container(
-                                                  width: double.maxFinite,
-                                                  decoration: BoxDecoration(
-                                                    color: palette[2],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
                                                   ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: MarkdownWidget(
-                                                      previewMode: true,
-                                                      markdown: result['content'],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ) :
+                                              ],
+                                            )
+                                          :
 
-                                      // Landscape view
-                                      Wrap(
-                                        children: [
-                                          for (var result in _resultsNotes)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          NoteScreen(
-                                                        noteId: result['id'],
-                                                        readMode: true,
-                                                        content: '',
-
+                                          // Landscape view
+                                          Wrap(
+                                              children: [
+                                                for (var result
+                                                    in _resultsNotes)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        _openNoteScreen(result);
+                                                      },
+                                                      child: Container(
+                                                        width: 300,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: palette[2],
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: MarkdownWidget(
+                                                            previewMode: true,
+                                                            markdown: result[
+                                                                'content'],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  );
-                                                },
-                                                child: Container(
-                                                  width: 300,
-                                                  decoration: BoxDecoration(
-                                                    color: palette[2],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
                                                   ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: MarkdownWidget(
-                                                      previewMode: true,
-                                                      markdown: result['content'],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                              ],
                                             ),
-                                        ],
-                                      ),
                                     ],
                                   )
                                 : Container(),
