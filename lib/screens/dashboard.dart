@@ -79,110 +79,148 @@ class _DashboardState extends State<Dashboard> {
     double conWidth = MediaQuery.of(context).size.width * 0.90;
 
     return _expandSubjects
-        ? Scaffold(
-            body: Container(
-              width: double.maxFinite,
-              height: double.maxFinite,
-              color: palette[2],
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Visibility(
-                    visible: Platform.isAndroid,
-                    child: SizedBox(height: 20),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _expandSubjects = false;
-                            });
-                          },
-                          child: const Icon(
-                            Icons.close,
+        ? WillPopScope(
+            onWillPop: () async {
+              setState(() {
+                _expandSubjects = false;
+              });
+              return false;
+            },
+            child: Scaffold(
+              body: Container(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                color: palette[2],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Visibility(
+                      visible: Platform.isAndroid,
+                      child: SizedBox(height: 20),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _expandSubjects = false;
+                              });
+                            },
+                            child: const Icon(
+                              Icons.close,
+                            ),
                           ),
                         ),
-                      ),
-                     _addSubjectWidget(),
-                    ],
-                  ),
-                  Expanded(
-                    child: FutureBuilder(
-                      future: _allSubjects,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator(
-                                  color: Colors
-                                      .white)); // Display a loading indicator while waiting for data.
-                        } else if (snapshot.hasError) {
-                          return const Text("Error fetching brain subjects");
-                        } else {
-                          // Handle the case when the future is complete and data is available.
-                          if (snapshot.data != null) {
-                            // Process the data and display it in the UI.
-                            // ...
-                            List<dynamic>? data = snapshot.data;
+                        _addSubjectWidget(),
+                      ],
+                    ),
+                    Expanded(
+                      child: FutureBuilder(
+                        future: _allSubjects,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator(
+                                    color: Colors
+                                        .white)); // Display a loading indicator while waiting for data.
+                          } else if (snapshot.hasError) {
+                            return const Text("Error fetching brain subjects");
+                          } else {
+                            // Handle the case when the future is complete and data is available.
+                            if (snapshot.data != null) {
+                              // Process the data and display it in the UI.
+                              // ...
+                              List<dynamic>? data = snapshot.data;
 
-                            return Wrap(
-                              children: [
-                                for (var sub in data ?? [])
-                                  GestureDetector(
-                                    onTap: () async {
-                                      int id = await sub['id'];
-                                      await Navigator.of(context)
-                                          .push(MaterialPageRoute(builder: (_) {
-                                        return SubjectScreen(subjectId: id);
-                                      }));
-                                      _refreshData();
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 100,
-                                        width: 130,
-                                        decoration: BoxDecoration(
-                                          color: palette[6],
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10)),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            '${sub['title']}',
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 10,
+                              return Wrap(
+                                children: [
+                                  for (var sub in data ?? [])
+                                    GestureDetector(
+                                      onTap: () async {
+                                        int id = await sub['id'];
+                                        await Navigator.of(context).push(
+                                            MaterialPageRoute(builder: (_) {
+                                          return SubjectScreen(subjectId: id);
+                                        }));
+                                        _refreshData();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          height: 100,
+                                          width: 130,
+                                          decoration: BoxDecoration(
+                                            color: palette[6],
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10)),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${sub['title']}',
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 10,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                              ],
-                            );
-                          } else {
-                            return const Text("No brain subjects available.");
+                                ],
+                              );
+                            } else {
+                              return const Text("No brain subjects available.");
+                            }
                           }
-                        }
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           )
         : WillPopScope(
-          onWillPop: () async {
-            _dbHelper.closeDatabase();
-            return true;
-          },
-          child: Scaffold(
+            onWillPop: () async {
+              _dbHelper.closeDatabase();
+              var shouldClose = true;
+              await showDialog(
+                barrierDismissible: false,
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      backgroundColor: palette[2],
+                      title: const Text('Close the app?'),
+                      actions: [
+                        TextButton(
+                          onPressed: (){
+                            shouldClose = false;
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancel', style: TextStyle(color: Colors.white),),
+                        ),
+                        TextButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                            shouldClose = true;
+                          },
+                          child: const Text(
+                            'Close',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    );
+                  });
+              return shouldClose;
+            },
+            child: Scaffold(
               appBar: PreferredSize(
                 preferredSize: const Size.fromHeight(50.0),
                 child: AppBar(
@@ -239,7 +277,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                       ),
-        
+
                       // Subjects
                       Container(
                         width: conWidth,
@@ -258,7 +296,8 @@ class _DashboardState extends State<Dashboard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text(
                                     "Subjects",
@@ -306,7 +345,7 @@ class _DashboardState extends State<Dashboard> {
                                         // Process the data and display it in the UI.
                                         // ...
                                         List<dynamic>? data = snapshot.data;
-        
+
                                         return ListView.builder(
                                             shrinkWrap: false,
                                             scrollDirection: Axis.horizontal,
@@ -316,11 +355,14 @@ class _DashboardState extends State<Dashboard> {
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () async {
-                                                      int id = await data?[index]
-                                                          ['id'];
-                                                      await Navigator.of(context)
-                                                          .push(MaterialPageRoute(
-                                                              builder: (_) {
+                                                      int id =
+                                                          await data?[index]
+                                                              ['id'];
+                                                      await Navigator.of(
+                                                              context)
+                                                          .push(
+                                                              MaterialPageRoute(
+                                                                  builder: (_) {
                                                         return SubjectScreen(
                                                             subjectId: id);
                                                       }));
@@ -333,22 +375,26 @@ class _DashboardState extends State<Dashboard> {
                                                       child: Container(
                                                         height: 100,
                                                         width: 130,
-                                                        decoration: BoxDecoration(
+                                                        decoration:
+                                                            BoxDecoration(
                                                           color: palette[6],
                                                           borderRadius:
                                                               const BorderRadius
                                                                       .all(
-                                                                  Radius.circular(
-                                                                      10)),
+                                                                  Radius
+                                                                      .circular(
+                                                                          10)),
                                                         ),
                                                         child: Center(
                                                           child: Text(
                                                             '${data?[index]['title']}',
                                                             style:
                                                                 const TextStyle(
-                                                              color: Colors.black,
+                                                              color:
+                                                                  Colors.black,
                                                               fontWeight:
-                                                                  FontWeight.bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                               fontSize: 10,
                                                             ),
                                                           ),
@@ -374,7 +420,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                       ),
-        
+
                       // Random Study Mode
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -418,6 +464,6 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
             ),
-        );
+          );
   }
 }
