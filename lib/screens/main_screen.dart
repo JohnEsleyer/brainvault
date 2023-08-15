@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../services/database_service.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -17,6 +19,14 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
   }
 
+  void _importBrain() async {
+    bool isSuccessful = await dbHelper.uploadAndInsertJsonData();
+    if (isSuccessful) {
+      Navigator.of(context).popAndPushNamed('/dashboard');
+    }
+  }
+
+  @override 
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 800) {
@@ -24,43 +34,33 @@ class _MainScreenState extends State<MainScreen> {
         return Scaffold(
           body: Container(
             width: double.infinity,
-            color: Color.fromARGB(255, 25, 25, 25),
+            color: const Color.fromARGB(255, 25, 25, 25),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
-                Text(
+                const Text(
                   "BrainVault",
                   style: TextStyle(
                     fontSize: 40,
                   ),
                 ),
-                // Text(
-                //   "BrainVault is a software tool that acts as your personal knowledge base.",
-                //   style: TextStyle(
-                //     fontSize: 12,
-                //   ),
-                // ),
-                SizedBox(height: 90),
-                Container(
+       
+                const SizedBox(height: 90),
+                SizedBox(
                   width: 200,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () async {
-                          await dbHelper.uploadAndInsertJsonData();
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Dashboard()));
-                        },
+                        onTap: _importBrain,
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
                             child: Row(
                               children: [
                                 Icon(
@@ -78,21 +78,21 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       GestureDetector(
                         onTap: () async {
                           // dbHelper.openDirectoryPicker();
                           // dbHelper.clearDatabase();
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => CreateBrain()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CreateBrain()));
                         },
-                        child:Container(
+                        child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
                             child: Row(
                               children: [
                                 Icon(
@@ -126,7 +126,7 @@ class _MainScreenState extends State<MainScreen> {
                 height: double.infinity,
                 width: MediaQuery.of(context).size.width / 2,
                 color: Color.fromARGB(237, 34, 34, 34),
-                child: Center(
+                child: const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -136,12 +136,7 @@ class _MainScreenState extends State<MainScreen> {
                           fontSize: 40,
                         ),
                       ),
-                      // Text(
-                      //   "BrainVault is a software tool that acts as your personal knowledge base.",
-                      //   style: TextStyle(
-                      //     fontSize: 12,
-                      //   ),
-                      // ),
+
                     ],
                   ),
                 ),
@@ -149,20 +144,16 @@ class _MainScreenState extends State<MainScreen> {
               Container(
                 height: double.infinity,
                 width: MediaQuery.of(context).size.width / 2,
-                color: Color.fromARGB(255, 25, 25, 25),
+                color: const Color.fromARGB(255, 25, 25, 25),
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-
                       // Import brain
                       GestureDetector(
-                        onTap: () async {
-                          await dbHelper.uploadAndInsertJsonData();
-                          Navigator.of(context).popAndPushNamed('/dashboard');
-                        },
+                        onTap: _importBrain,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
@@ -171,8 +162,8 @@ class _MainScreenState extends State<MainScreen> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
                                   Icon(
@@ -191,17 +182,15 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                       ),
-                      
 
                       // Create new brain
                       GestureDetector(
                         onTap: () async {
-                          // dbHelper.openDirectoryPicker();
-                          // dbHelper.clearDatabase();
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => CreateBrain()));
+
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CreateBrain()));
                         },
-                        child:Padding(
+                        child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             width: 200,
@@ -209,8 +198,8 @@ class _MainScreenState extends State<MainScreen> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
                                   Icon(
@@ -240,4 +229,3 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 }
-

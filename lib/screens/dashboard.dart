@@ -39,7 +39,7 @@ class _DashboardState extends State<Dashboard> {
 
   void _addNewSubject() async {
     var data = {
-      'title': 'Untitled subject',
+      'title': 'Untitled Subject',
       'description':
           'This is the description of the subject. Press me to start editing.',
     };

@@ -138,14 +138,13 @@ class DatabaseService {
   }
 
   Future<bool> openDirectoryPicker() async {
-
-      final result = await FilePicker.platform.getDirectoryPath();
-      if (result != null) {
-        directory = Directory(result);
-        directory = directory;
-        print('Selected directory path: ${directory?.path}');
-        return true;
-      }
+    final result = await FilePicker.platform.getDirectoryPath();
+    if (result != null) {
+      directory = Directory(result);
+      directory = directory;
+      print('Selected directory path: ${directory?.path}');
+      return true;
+    }
 
     return false;
   }
@@ -184,7 +183,7 @@ class DatabaseService {
   }
 
 // Method for importing and inserting JSON data into the database
-  Future<void> uploadAndInsertJsonData() async {
+  Future<bool> uploadAndInsertJsonData() async {
     // Show a file picker dialog to let the user select a file
     FilePickerResult? result = await getFilePickerResult();
 
@@ -192,23 +191,26 @@ class DatabaseService {
       // Get the selected file
       PlatformFile file = result.files.first;
 
-      // Obtain the file name
-      fileName = file.name;
+      // Check if the selected file has an extension of ".brain"
+      if (file.extension == 'brain') {
+        // Obtain the file name
+        fileName = file.name;
 
-      // Get the directory path of the selected file
-      directory = Directory(file.path ?? '').parent;
+        // Get the directory path of the selected file
+        directory = Directory(file.path ?? '').parent;
 
-      // Read the selected JSON file as text
-      String jsonDataString = await readJsonFileAsString(file);
+        // Read the selected JSON file as text
+        String jsonDataString = await readJsonFileAsString(file);
 
-      // Parse the JSON data
-      Map<String, dynamic> jsonData = json.decode(jsonDataString);
+        // Parse the JSON data
+        Map<String, dynamic> jsonData = json.decode(jsonDataString);
 
-      // Insert subjects, topics, and notes
-      await insertDataFromJson(jsonData);
-    } else {
-      throw Exception('Failed to open file');
-    }
+        // Insert subjects, topics, and notes
+        await insertDataFromJson(jsonData);
+        return true;
+      } 
+    } 
+    return false;
   }
 
 // Function to get the file picker result

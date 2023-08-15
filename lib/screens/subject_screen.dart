@@ -97,7 +97,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
   void _createNewTopic() async {
     var data = {
       'subject_id': widget.subjectId,
-      'title': 'Untitled',
+      'title': 'Untitled Topic',
       'table_name': 'topic',
     };
     try {
