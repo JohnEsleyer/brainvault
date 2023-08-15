@@ -87,7 +87,7 @@ class _NoteScreenState extends State<NoteScreen> {
     if (_editMode == true) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.89,
+        height: MediaQuery.of(context).size.height * 0.88,
         child: Scaffold(
           backgroundColor: palette[2],
           // resizeToAvoidBottomInset: false,
@@ -118,7 +118,7 @@ class _NoteScreenState extends State<NoteScreen> {
       if (!_isLoading) {
         return Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 0.89,
+          height: MediaQuery.of(context).size.height * 0.85,
           color: palette[2],
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -416,7 +416,7 @@ class _NoteScreenState extends State<NoteScreen> {
                   children: [
                     _topBar(),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.90,
+                      height: MediaQuery.of(context).size.height * 0.89,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: palette[2],

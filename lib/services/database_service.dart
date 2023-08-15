@@ -19,7 +19,7 @@ class DatabaseService {
 
   DatabaseService.internal();
 
-  void setFilename(String name){
+  void setFilename(String name) {
     fileName = name;
   }
 
@@ -33,7 +33,8 @@ class DatabaseService {
   }
 
   Future<Database> initDb() async {
-    return await openDatabase(inMemoryDatabasePath, onCreate: _onCreate, version: 1);
+    return await openDatabase(inMemoryDatabasePath,
+        onCreate: _onCreate, version: 1);
   }
 
   void _onCreate(Database db, int version) async {
@@ -67,7 +68,6 @@ class DatabaseService {
               ON DELETE CASCADE ON UPDATE NO ACTION
           );
           ''');
-    
   }
 
   void closeDatabase() async {
@@ -75,8 +75,7 @@ class DatabaseService {
   }
 
   // Method to search topics and notes based on title and content.
-  Future<List<Map<String, dynamic>>> searchTopicsAndNotes(
-      String query) async {
+  Future<List<Map<String, dynamic>>> searchTopicsAndNotes(String query) async {
     final db = await database;
 
     // Regular expression pattern to remove HTML tags and extract plain text content.
@@ -139,25 +138,21 @@ class DatabaseService {
   }
 
   Future<bool> openDirectoryPicker() async {
-    try {
+
       final result = await FilePicker.platform.getDirectoryPath();
       if (result != null) {
         directory = Directory(result);
+        directory = directory;
+        print('Selected directory path: ${directory?.path}');
+        return true;
       }
-    } catch (e) {
-      print('Error picking directory: $e');
-      return false;
-    }
 
-    directory = directory;
-    print('Selected directory path: ${directory?.path}');
-    return true;
+    return false;
   }
 
   Future<void> saveJSON() async {
     DatabaseService databaseService = DatabaseService();
     Uint8List jsonData = await databaseService.getDatabaseDataAsJson();
-
 
     if (directory == null) {
       // Directory is not available, handle it accordingly
@@ -211,7 +206,7 @@ class DatabaseService {
 
       // Insert subjects, topics, and notes
       await insertDataFromJson(jsonData);
-    }else{
+    } else {
       throw Exception('Failed to open file');
     }
   }
@@ -233,8 +228,7 @@ class DatabaseService {
 
 // Function to insert subjects, topics, and notes from JSON data
   Future<void> insertDataFromJson(Map<String, dynamic> jsonData) async {
-    if (jsonData.containsKey('subjects') &&
-        jsonData['subjects'] is List) {
+    if (jsonData.containsKey('subjects') && jsonData['subjects'] is List) {
       List<dynamic> subjectsData = jsonData['subjects'];
       for (var subjectData in subjectsData) {
         await insertSubject(subjectData as Map<String, dynamic>);
@@ -255,8 +249,6 @@ class DatabaseService {
       }
     }
   }
-
-
 
   // CRUD Operations for 'subjects' table
   Future<int> insertSubject(Map<String, dynamic> subject) async {
@@ -289,17 +281,18 @@ class DatabaseService {
     final Map<String, dynamic> subject = {
       'title': newTitle,
     };
-    return await db.update('subjects', subject,
-        where: 'id = ?', whereArgs: [subjectId]);
+    return await db
+        .update('subjects', subject, where: 'id = ?', whereArgs: [subjectId]);
   }
 
-  Future<int> updateSubjectDescription(int subjectId, String newDescription) async {
+  Future<int> updateSubjectDescription(
+      int subjectId, String newDescription) async {
     final db = await database;
     final Map<String, dynamic> subject = {
       'description': newDescription,
     };
-    return await db.update('subjects', subject,
-        where: 'id = ?', whereArgs: [subjectId]);
+    return await db
+        .update('subjects', subject, where: 'id = ?', whereArgs: [subjectId]);
   }
 
   Future<int> updateSubject(Map<String, dynamic> subject) async {
@@ -310,8 +303,7 @@ class DatabaseService {
 
   Future<int> deleteSubject(int subjectId) async {
     final db = await database;
-    return await db.delete('subjects',
-        where: 'id = ?', whereArgs: [subjectId]);
+    return await db.delete('subjects', where: 'id = ?', whereArgs: [subjectId]);
   }
 
   // CRUD Operations for 'topics' table
@@ -325,8 +317,7 @@ class DatabaseService {
     return await db.query('topics');
   }
 
-  Future<List<Map<String, dynamic>>> getTopicsBySubjectId(
-      int subjectId) async {
+  Future<List<Map<String, dynamic>>> getTopicsBySubjectId(int subjectId) async {
     final db = await database;
     final List<Map<String, dynamic>> topics = await db.query(
       'topics',
@@ -362,14 +353,13 @@ class DatabaseService {
     final Map<String, dynamic> topic = {
       'title': newTitle,
     };
-    return await db.update('topics', topic,
-        where: 'id = ?', whereArgs: [topicId]);
+    return await db
+        .update('topics', topic, where: 'id = ?', whereArgs: [topicId]);
   }
 
   Future<int> deleteTopic(int topicId) async {
     final db = await database;
-    return await db
-        .delete('topics', where: 'id = ?', whereArgs: [topicId]);
+    return await db.delete('topics', where: 'id = ?', whereArgs: [topicId]);
   }
 
   // CRUD Operations for 'notes' table
@@ -384,8 +374,8 @@ class DatabaseService {
   }
 
   Future<List<Map<String, dynamic>>> getNotesForSubject(int subjectId) async {
-     final db = await database;
-      return await db.query(
+    final db = await database;
+    return await db.query(
       'notes',
       where: 'topic_id IN (SELECT id FROM topics WHERE subject_id = ?)',
       whereArgs: [subjectId],
@@ -403,11 +393,9 @@ class DatabaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getAllNotesByTopicId(
-      int topicId) async {
+  Future<List<Map<String, dynamic>>> getAllNotesByTopicId(int topicId) async {
     final db = await database;
-    return await db
-        .query('notes', where: 'topic_id = ?', whereArgs: [topicId]);
+    return await db.query('notes', where: 'topic_id = ?', whereArgs: [topicId]);
   }
 
   Future<int> updateNote(Map<String, dynamic> note) async {

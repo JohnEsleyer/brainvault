@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:brainvault/screens/random_study_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -85,6 +87,10 @@ class _DashboardState extends State<Dashboard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Visibility(
+                    visible: Platform.isAndroid,
+                    child: SizedBox(height: 20),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

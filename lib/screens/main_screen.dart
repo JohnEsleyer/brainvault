@@ -35,12 +35,12 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 40,
                   ),
                 ),
-                Text(
-                  "BrainVault is a software tool that acts as your personal knowledge base.",
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
+                // Text(
+                //   "BrainVault is a software tool that acts as your personal knowledge base.",
+                //   style: TextStyle(
+                //     fontSize: 12,
+                //   ),
+                // ),
                 SizedBox(height: 90),
                 Container(
                   width: 200,
@@ -136,12 +136,12 @@ class _MainScreenState extends State<MainScreen> {
                           fontSize: 40,
                         ),
                       ),
-                      Text(
-                        "BrainVault is a software tool that acts as your personal knowledge base.",
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
+                      // Text(
+                      //   "BrainVault is a software tool that acts as your personal knowledge base.",
+                      //   style: TextStyle(
+                      //     fontSize: 12,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

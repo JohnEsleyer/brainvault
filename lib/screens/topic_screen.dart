@@ -130,6 +130,16 @@ class _TopicScreenState extends State<TopicScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
+              
+              floatingActionButton: Visibility(
+                visible: Platform.isAndroid,
+                child: FloatingActionButton(
+                  
+                  onPressed: _createNote,
+                  backgroundColor: Colors.white,
+                  child: const Icon(Icons.add, color: Colors.black),
+                ),
+              ),
               backgroundColor: palette[1],
               body: Container(
                 width: MediaQuery.of(context).size.width,
@@ -233,15 +243,18 @@ class _TopicScreenState extends State<TopicScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 5),
-                                GestureDetector(
-                                  onTap: _createNote,
-                                  child: const Tooltip(
-                                    message: 'Add Note',
-                                    child: Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
+                                Visibility(
+                                  visible: !Platform.isAndroid,
+                                  child: GestureDetector(
+                                    onTap: _createNote,
+                                    child: const Tooltip(
+                                      message: 'Add Note',
+                                      child: Padding(
+                                        padding: EdgeInsets.all(5.0),
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),

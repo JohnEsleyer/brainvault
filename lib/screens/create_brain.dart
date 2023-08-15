@@ -13,8 +13,10 @@ class CreateBrain extends StatefulWidget {
 class _CreateBrainState extends State<CreateBrain> {
   TextEditingController _controller = TextEditingController();
   DatabaseService _dbHelper = DatabaseService();
-  Directory? _dir = null;
+  Directory? _dir;
   Color _textFieldBorderColor = Colors.white;
+  Color _filePathColor = Colors.white;
+
 
   void initState() {
     super.initState();
@@ -36,7 +38,6 @@ class _CreateBrainState extends State<CreateBrain> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-           
             SizedBox(height: 20),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -71,6 +72,7 @@ class _CreateBrainState extends State<CreateBrain> {
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -78,21 +80,30 @@ class _CreateBrainState extends State<CreateBrain> {
                       SizedBox(width: 20),
                       GestureDetector(
                         onTap: () async {
-                          await _dbHelper.openDirectoryPicker();
-                          setState(() {
-                            _dir = _dbHelper.getDirectory;
-                          });
+                          var isSuccessful =
+                              await _dbHelper.openDirectoryPicker();
+                          if (isSuccessful) {
+                            setState(() {
+                              _dir = _dbHelper.getDirectory;
+                              _filePathColor = Colors.white;
+                            });
+                          } else {
+                            setState(() {
+                              _filePathColor = Colors.red;
+                            });
+                          }
+
                         },
                         child: Icon(
                           Icons.folder_open,
                         ),
                       ),
-                      Text("File Path: "),
+                      Text("File Path: ", style: TextStyle(color: _filePathColor),),
                       Container(
                           width: MediaQuery.of(context).size.width - 122,
                           child: Text(_dir != null
                               ? _dir?.path as String
-                              : 'Press the folder icon to select a folder')),
+                              : 'Press the folder icon to select a folder', style: TextStyle(color: _filePathColor))),
                     ],
                   ),
                 ),
@@ -107,7 +118,14 @@ class _CreateBrainState extends State<CreateBrain> {
                   GestureDetector(
                     onTap: () {
                       if (_controller.text.isNotEmpty) {
-                        Navigator.popAndPushNamed(context, '/dashboard');
+
+                        if (_dir != null) {
+                          Navigator.popAndPushNamed(context, '/dashboard');
+                        } else {
+                          setState(() {
+                            _filePathColor = Colors.red;
+                          });
+                        }
                       } else {
                         setState(() {
                           _textFieldBorderColor = Colors.red;
