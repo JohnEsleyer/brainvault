@@ -6,7 +6,9 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+// import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DatabaseService {
   String dbPath = 'brain.db';
@@ -33,6 +35,9 @@ class DatabaseService {
   }
 
   Future<Database> initDb() async {
+    if (kIsWeb){
+      databaseFactory = databaseFactoryFfiWeb;
+    }
     return await openDatabase(inMemoryDatabasePath,
         onCreate: _onCreate, version: 1);
   }
