@@ -18,7 +18,7 @@ class Study extends StatefulWidget{
 
 class _StudyState extends State<Study>{
   bool _isLoading = false;
-  late List<Map<String, dynamic>> notes;
+
   int index = 0;
 
   @override
@@ -52,7 +52,7 @@ class _StudyState extends State<Study>{
             // Body
             Expanded(
               flex: 15,
-              child: Container(
+              child: widget.notes.isNotEmpty ? Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: palette[1],
@@ -88,78 +88,81 @@ class _StudyState extends State<Study>{
       ),
                   isLoading: _isLoading,
                 ),
-              ),
+              ) : const Center(child: Text('Unable to find any notes'))
             ),
 
             // Bottom bar
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      setState(() {
-                        index = (index - 1) % widget.notes.length;
-                        _isLoading = true;
-                      });
-
-                      await Future.delayed(Duration(seconds: 1));
-                      setState(() {
-                        _isLoading = false;
-                      });
-                  
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Back",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black,
+            Visibility(
+              visible: widget.notes.isNotEmpty,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        setState(() {
+                          index = (index - 1) % widget.notes.length;
+                          _isLoading = true;
+                        });
+            
+                        await Future.delayed(Duration(seconds: 1));
+                        setState(() {
+                          _isLoading = false;
+                        });
+                    
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            "Back",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      setState(() {
-                        index = (index + 1) % widget.notes.length;
-                        _isLoading = true;
-                      });
-
-                      await Future.delayed(Duration(seconds: 1));
-                      setState(() {
-                        _isLoading = false;
-                      });
-                  
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Next",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black,
+                    GestureDetector(
+                      onTap: () async {
+                        setState(() {
+                          index = (index + 1) % widget.notes.length;
+                          _isLoading = true;
+                        });
+            
+                        await Future.delayed(Duration(seconds: 1));
+                        setState(() {
+                          _isLoading = false;
+                        });
+                    
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            "Next",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
