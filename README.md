@@ -6,7 +6,7 @@
 <h1 align="center">BrainVault</h1>
 </p>
 
-### Introduction
+#  Introduction
 BrainVault is a distinctive markdown-based note-taking application that serves as your dedicated personal knowledge repository. With a distinct focus on retention, this app sets itself apart by being more opinionated in its approach. BrainVault reimagines the concept of notes, treating them as flashcards rather than mere documents. Designed to store concise information snippets in a more simpler a way.
 
 **Personal Note**: This application was primarily intended to function as my personal note-taking app. It drew inspiration from two well-known applications: Obsidian Notes and Anki. I created this app because I wanted to blend the markdown writing style from Obsidian with the process of crafting flashcards. Currently, I use this app along with the aforementioned note taking apps (Obsidian and Anki). I use BrainVault to save quick bits of information like code examples, word meanings, and brief facts. On the other hand, when I want to keep things that are all linked together, I opt for Obsidian.
@@ -31,7 +31,12 @@ The ultimate building blocks, notes, resides within individual topics. These not
 The decision to limit the hierarchy is motivated by the aim to prevent users from creating convoluted systems that might eventually detract from the learning experience. As the structure becomes more intricate, traversing through the tree of information can become cumbersome and counterproductive.
 
 ---
-### Supported Markdown Features
+# Features
+- Study mode: Turn a subject or topic section into a deck of flashcards.
+- Markdown editor
+- Auto-save
+
+ ### Supported Markdown Features
 - Three types of headers denoted by the '#' symbol (e.g. #, ##, ###)
 - Bold text (\*\**Bold Text***)
 - Italic text (\_Italic text_)
@@ -45,7 +50,37 @@ The decision to limit the hierarchy is motivated by the aim to prevent users fro
 ### Two-sided section
 You can add a two-sided section in your notes:
 ![image](https://github.com/JohnEsleyer/BrainVault/assets/66754038/c7113ec1-949f-41e3-b230-38d8225d5e78)
-![image](https://github.com/JohnEsleyer/BrainVault/assets/66754038/d085b0fc-08ac-4671-bcd5-e724c8bb9241)
 
+![twosided](https://github.com/JohnEsleyer/BrainVault/assets/66754038/2510b10b-d3c1-4055-9b1b-2e89ec6f9e8e)
 
+### Supported Platforms
+- Android
+- Linux
+- Windows (Not Tested)
+- Web (In development)
+
+---
+# Manual Installation
+### Android
+Open the terminal and type the following
+```
+flutter build apk --release
+```
+### Linux
+```
+flutter build linux --release
+```
+### Windows (Not tested)
+I haven't tested the application in windows yet because all my computers are running in Linux.
+```
+flutter build windows --release
+```
+
+# Contributing
+I welcome any contributions from the open-source community to make this project better. However, I must emphasize that a positive and respectful environment is paramount.  My lines of code aren't flawless, they reflect a work in progress. Many of them may not be fully optimized and lack a refined structure. Your collaboration and constructive input are valued as we collectively work towards improvement.
+
+### Making Contributions
+1. Fork the repository and create a new branch for your contribution.
+2. Write meaningful commit messages.
+3. Submit a pull request to the main branch of this repository.
 
