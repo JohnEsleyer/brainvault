@@ -30,7 +30,9 @@ class _RandomStudyState extends State<RandomStudy> {
       if (notes.length > 50) {
         notes = getRandom50Elements(notes);
       }
-      _notes.addAll(notes);
+      // Convert the immutable notes list to a mutable list
+      _notes = List<Map<String, dynamic>>.from(notes);
+
       _notes.shuffle();
       setState(() {
         _isLoading = false;
@@ -41,13 +43,14 @@ class _RandomStudyState extends State<RandomStudy> {
   }
 
   List<T> getRandom50Elements<T>(List<T> list) {
-    final random = new Random();
+    final random = Random();
+    var originalList = List<T>.from(list); // Create a copy of the input list
     var _randomList = <T>[];
 
     for (var i = 0; i < 50; i++) {
-      var index = random.nextInt(list.length - i);
-      _randomList.add(list[index]);
-      list.removeAt(index);
+      var index = random.nextInt(originalList.length - i);
+      _randomList.add(originalList[index]);
+      originalList.removeAt(index); // Remove from the copy, not the input list
     }
 
     return _randomList;
@@ -55,10 +58,12 @@ class _RandomStudyState extends State<RandomStudy> {
 
   @override
   Widget build(BuildContext context) {
-    print(_notes);
+
     if (_isLoading) {
-      return Center(
-        child: CircularProgressIndicator(),
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
       );
     }
     return Study(
