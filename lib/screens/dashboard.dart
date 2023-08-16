@@ -136,43 +136,47 @@ class _DashboardState extends State<Dashboard> {
                               // ...
                               List<dynamic>? data = snapshot.data;
 
-                              return Wrap(
-                                children: [
-                                  for (var sub in data ?? [])
-                                    GestureDetector(
-                                      onTap: () async {
-                                        int id = await sub['id'];
-                                        await Navigator.of(context).push(
-                                            MaterialPageRoute(builder: (_) {
-                                          return SubjectScreen(subjectId: id);
-                                        }));
-                                        _refreshData();
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          height: 100,
-                                          width: 130,
-                                          decoration: BoxDecoration(
-                                            color: palette[6],
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(10)),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              '${sub['title']}',
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 10,
+                              return SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                child: Wrap(
+                                  
+                                  children: [
+                                    for (var sub in data ?? [])
+                                      GestureDetector(
+                                        onTap: () async {
+                                          int id = await sub['id'];
+                                          await Navigator.of(context).push(
+                                              MaterialPageRoute(builder: (_) {
+                                            return SubjectScreen(subjectId: id);
+                                          }));
+                                          _refreshData();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            height: 100,
+                                            width: 130,
+                                            decoration: BoxDecoration(
+                                              color: palette[6],
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10)),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '${sub['title']}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 10,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               );
                             } else {
                               return const Text("No brain subjects available.");
@@ -314,9 +318,9 @@ class _DashboardState extends State<Dashboard> {
                                             _expandSubjects = true;
                                           });
                                         },
-                                        child: Tooltip(
+                                        child: const Tooltip(
                                           message: 'See all',
-                                          child: const Icon(Icons.open_in_full),
+                                          child: Icon(Icons.open_in_full),
                                         ),
                                       ),
                                       // Add new subject
@@ -347,6 +351,7 @@ class _DashboardState extends State<Dashboard> {
                                         List<dynamic>? data = snapshot.data;
 
                                         return ListView.builder(
+                                          physics: const BouncingScrollPhysics(),
                                             shrinkWrap: false,
                                             scrollDirection: Axis.horizontal,
                                             itemCount: data?.length,

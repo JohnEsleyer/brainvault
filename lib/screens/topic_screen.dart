@@ -346,6 +346,7 @@ class _TopicScreenState extends State<TopicScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
                           child: MediaQuery.of(context).size.width < 650 ? 
                           // Portrait View
                           Column(

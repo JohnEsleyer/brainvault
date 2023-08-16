@@ -135,7 +135,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
               children: [
                 Visibility(
                   visible: Platform.isAndroid,
-                  child: SizedBox(
+                  child: const SizedBox(
                     height: 20,
                   ),
                 ),
@@ -146,7 +146,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
+                        SizedBox(
                           width: MediaQuery.of(context).size.width * 0.60,
                           child: Row(
                             children: [
@@ -154,8 +154,8 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                 onTap: () {
                                   Navigator.pop(context);
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
                                   child: Icon(
                                     Icons.arrow_back,
                                     color: Colors.white,
@@ -163,9 +163,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                 ),
                               ),
                               Expanded(
-                                     
                                 child: TextField(
-                                  
                                   enabled: true,
                                   focusNode: FocusNode(
                                     canRequestFocus: true,
@@ -173,12 +171,12 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                   ),
                                   // keyboardType: TextInputType.multiline,
                                   cursorColor: Colors.white,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     hintText: 'Subject Title',
                                     enabledBorder: InputBorder.none,
                                     focusedBorder: InputBorder.none,
@@ -208,7 +206,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                   return Study(notes: notes);
                                 }));
                               },
-                              child: Tooltip(
+                              child: const Tooltip(
                                 message:
                                     'Study the notes from this subject randomly',
                                 child: Icon(
@@ -223,15 +221,16 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                     builder: (context) {
                                       return AlertDialog(
                                         backgroundColor: palette[2],
-                                        title: Text('Delete this subject?'),
-                                        content:
-                                            Text('This action cannot be undone.'),
+                                        title:
+                                            const Text('Delete this subject?'),
+                                        content: const Text(
+                                            'This action cannot be undone.'),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
                                               Navigator.pop(context);
                                             },
-                                            child: Text(
+                                            child: const Text(
                                               'Cancel',
                                               style: TextStyle(
                                                 color: Colors.white,
@@ -246,7 +245,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                               Navigator.pop(
                                                   context); // Close the topic screen
                                             },
-                                            child: Text(
+                                            child: const Text(
                                               'Delete',
                                               style: TextStyle(
                                                 color: Colors.red,
@@ -270,8 +269,9 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                 },
                                 child: Icon(
                                   Icons.delete_forever,
-                                  color:
-                                      _isHoverDelete ? Colors.red : Colors.white,
+                                  color: _isHoverDelete
+                                      ? Colors.red
+                                      : Colors.white,
                                 ),
                               ),
                             ),
@@ -282,53 +282,59 @@ class _SubjectScreenState extends State<SubjectScreen> {
                   ),
                 ),
                 // Description and other buttons
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.90,
-                        child: EditableText(
-                          onChanged: (newText) {
-                            updateDescription();
-                          },
-                          expands: true,
-                          maxLines: null,
-                          minLines: null,
-                          backgroundCursorColor: palette[1],
-                          cursorColor: Colors.white,
-                          controller: _descriptionController,
-                          focusNode: FocusNode(canRequestFocus: true),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      if (!hidden)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                      color: Colors.white)),
+                IntrinsicHeight(
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                hintText: 'Description',
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                border: InputBorder.none,
+                              ),
+                              onChanged: (newText) {
+                                updateDescription();
+                              },
+                              expands: true,
+                              maxLines: null,
+                              minLines: null,
+                              cursorColor: Colors.white,
+                              controller: _descriptionController,
+                              focusNode: FocusNode(canRequestFocus: true),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                              ),
                             ),
-                          ],
-                        ),
-                    ],
+                          ),
+                          if (!hidden)
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                    color: Colors.white),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
 
                 Expanded(
                   child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
                     child: Container(
                       width: MediaQuery.of(context).size.width,
                       child: Wrap(
+                        alignment: WrapAlignment.center,
                         children: [
                           for (var topic in _topics)
                             Padding(
@@ -355,7 +361,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                     child: Text(
                                       topic['title'],
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.black,
                                       ),
                                     ),
@@ -372,7 +378,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
             )),
       );
     } else {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(color: Colors.white),
       );
     }
