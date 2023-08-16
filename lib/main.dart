@@ -20,6 +20,13 @@ void main() async {
   runApp(
     MaterialApp(
       theme: ThemeData(
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders:{
+            TargetPlatform.android: ZoomPageTransitionsBuilder(),
+            TargetPlatform.linux: NoTransition(),
+            TargetPlatform.windows: NoTransition(),
+          },
+        ),
         textTheme: ThemeData.dark().textTheme,
         iconTheme: const IconThemeData(
           color: Colors.white,
@@ -51,3 +58,21 @@ void main() async {
 
 
 
+
+
+
+class NoTransition<T> extends PageTransitionsBuilder {
+  const NoTransition();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    // Return the child widget directly without any transition animation
+    return child;
+  }
+}
