@@ -164,6 +164,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             Text(
               line.substring(2),
               style: TextStyle(
+                fontFamily: 'Calibri',
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
@@ -179,6 +180,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             Text(
               line.substring(2),
               style: TextStyle(
+                fontFamily: 'Calibri',
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
@@ -195,6 +197,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             Text(
               line.substring(3),
               style: TextStyle(
+                fontFamily: 'Calibri',
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.bold,
                 fontSize: 26,
@@ -210,6 +213,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             Text(
               line.substring(3),
               style: TextStyle(
+                fontFamily: 'Calibri',
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.bold,
                 fontSize: 26,
@@ -225,6 +229,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             Text(
               line.substring(4),
               style: TextStyle(
+                fontFamily: 'Calibri',
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
@@ -240,6 +245,7 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
             Text(
               line.substring(4),
               style: TextStyle(
+                fontFamily: 'Calibri',
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
@@ -255,8 +261,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
           _rendered.add(
             Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
+                const Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8),
                   child: Icon(
                     Icons.circle,
                     size: 10,
@@ -269,7 +275,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                     child: Text(
                       line.substring(2), // Assuming 'line' is your text content
                       softWrap: true,
-                      style: TextStyle(
+                      style: const TextStyle(
+                        fontFamily: 'Calibri',
                         decoration: TextDecoration.none,
                         fontWeight: FontWeight.normal,
                         color: Colors.white,
@@ -287,8 +294,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                   : 0]
               .add(Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
+              const Padding(
+                padding: EdgeInsets.only(left: 8, right: 8),
                 child: Icon(
                   Icons.circle,
                   size: 10,
@@ -299,7 +306,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                 padding: const EdgeInsets.only(left: 8),
                 child: Text(
                   line.substring(2),
-                  style: TextStyle(
+                  style: const TextStyle(
+                    fontFamily: 'Calibri',
                     decoration: TextDecoration.none,
                     fontWeight: FontWeight.normal,
                     color: Colors.black,
@@ -315,7 +323,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
         if (!_isFlashcard) {
           _rendered.add(Text(
             line.substring(2, line.length - 2),
-            style: TextStyle(
+            style: const TextStyle(
+              fontFamily: 'Calibri',
               decoration: TextDecoration.none,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -328,7 +337,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                   : 0]
               .add(Text(
             line.substring(2, line.length - 2),
-            style: TextStyle(
+            style: const TextStyle(
+              fontFamily: 'Calibri',
               decoration: TextDecoration.none,
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -342,7 +352,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
           _rendered.add(Text(
             line.substring(1, line.length - 1),
             textAlign: TextAlign.left,
-            style: TextStyle(
+            style: const TextStyle(
+              fontFamily: 'Calibri',
               decoration: TextDecoration.none,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.normal,
@@ -356,7 +367,8 @@ class _MarkdownWidgetState extends State<MarkdownWidget> {
                   : 0]
               .add(Text(
             line.substring(1, line.length - 1),
-            style: TextStyle(
+            style: const TextStyle(
+              fontFamily: 'Calibri',
               decoration: TextDecoration.none,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.normal,
