@@ -222,20 +222,22 @@ class _TopicScreenState extends State<TopicScreen> {
                                   child: Container(
                                     width: 15,
                                     height: 15,
-                                    child: CircularProgressIndicator(
+                                    child: const CircularProgressIndicator(
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) {
-                                      return Study(notes: _notes);
+                                      var shuffledNotes = _notes;
+                                      shuffledNotes.shuffle();
+                                      return Study(notes: shuffledNotes);
                                     }));
                                   },
-                                  child: Tooltip(
+                                  child: const Tooltip(
                                     message: 'Study this topic randomly',
                                     child: Icon(
                                       Icons.menu_book,

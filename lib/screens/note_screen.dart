@@ -96,7 +96,7 @@ class _NoteScreenState extends State<NoteScreen> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Color.fromARGB(255, 22, 21, 21),
+                color: const Color.fromARGB(255, 22, 21, 21),
               ),
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -131,7 +131,7 @@ class _NoteScreenState extends State<NoteScreen> {
           ),
         );
       } else {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(
             color: Colors.white,
           ),

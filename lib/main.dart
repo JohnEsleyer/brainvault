@@ -9,11 +9,7 @@ import 'package:brainvault/screens/main_screen.dart';
 import 'package:brainvault/widgets/custom_scroll_behavior.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-
-
 void main() async {
-  
-
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
   

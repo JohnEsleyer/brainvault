@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 import '../colors.dart';
@@ -8,7 +6,7 @@ import 'loading_widget.dart';
 import 'markdown_widget.dart';
 
 // ignore: must_be_immutable
-class Study extends StatefulWidget{
+class Study extends StatefulWidget {
   List<dynamic> notes;
   Study({required this.notes});
 
@@ -16,13 +14,13 @@ class Study extends StatefulWidget{
   _StudyState createState() => _StudyState();
 }
 
-class _StudyState extends State<Study>{
+class _StudyState extends State<Study> {
   bool _isLoading = false;
 
   int index = 0;
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         color: palette[0],
@@ -51,45 +49,46 @@ class _StudyState extends State<Study>{
             ),
             // Body
             Expanded(
-              flex: 15,
-              child: widget.notes.isNotEmpty ? Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: palette[1],
-                ),
-                child: LoadingIndicatorWidget(
-                  isStudy: true,
-                  child: GestureDetector( 
-        onDoubleTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => NoteScreen(
-              readMode: true,
-              noteId: widget.notes[index]['id'],
-              content: widget.notes[index]['content'],
-
-            ),
-          ));
-        },
-        child: Container(
-         width: double.maxFinite,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: palette[2],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: MarkdownWidget(
-                markdown: widget.notes[index]['content'],
-              ),
-            ),
-          ),
-        ),
-      ),
-                  isLoading: _isLoading,
-                ),
-              ) : const Center(child: Text('Unable to find any notes'))
-            ),
+                flex: 15,
+                child: widget.notes.isNotEmpty
+                    ? Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: palette[1],
+                        ),
+                        child: LoadingIndicatorWidget(
+                          isStudy: true,
+                          child: GestureDetector(
+                            onDoubleTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => NoteScreen(
+                                  readMode: true,
+                                  noteId: widget.notes[index]['id'],
+                                  content: widget.notes[index]['content'],
+                                ),
+                              ));
+                            },
+                            child: Container(
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: palette[2],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SingleChildScrollView(
+                                  physics: BouncingScrollPhysics(),
+                                  child: MarkdownWidget(
+                                    markdown: widget.notes[index]['content'],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          isLoading: _isLoading,
+                        ),
+                      )
+                    : const Center(child: Text('Unable to find any notes'))),
 
             // Bottom bar
             Visibility(
@@ -105,12 +104,11 @@ class _StudyState extends State<Study>{
                           index = (index - 1) % widget.notes.length;
                           _isLoading = true;
                         });
-            
+
                         await Future.delayed(Duration(seconds: 1));
                         setState(() {
                           _isLoading = false;
                         });
-                    
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -136,12 +134,11 @@ class _StudyState extends State<Study>{
                           index = (index + 1) % widget.notes.length;
                           _isLoading = true;
                         });
-            
+
                         await Future.delayed(Duration(seconds: 1));
                         setState(() {
                           _isLoading = false;
                         });
-                    
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -171,4 +168,3 @@ class _StudyState extends State<Study>{
     );
   }
 }
-

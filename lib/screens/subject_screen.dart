@@ -123,7 +123,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
     if (!isLoading) {
       return Scaffold(
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add, color: Colors.black),
+          child: const Icon(Icons.add, color: Colors.black),
           onPressed: _createNewTopic,
           backgroundColor: palette[6],
         ),
@@ -201,9 +201,11 @@ class _SubjectScreenState extends State<SubjectScreen> {
                             GestureDetector(
                               onTap: () async {
                                 var notes = await _obtainAllNotes();
+                                var shuffledNotes = List<Map<String, dynamic>>.from(notes);
+                                shuffledNotes.shuffle();
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
-                                  return Study(notes: notes);
+                                  return Study(notes: shuffledNotes);
                                 }));
                               },
                               child: const Tooltip(
