@@ -9,6 +9,14 @@
 #  Introduction
 BrainVault is a distinctive markdown-based note-taking application that serves as your dedicated personal knowledge repository. With a distinct focus on retention, this app sets itself apart by being more opinionated in its approach. BrainVault reimagines the concept of notes, treating them as flashcards rather than mere documents. Designed to store concise information snippets in a more simpler a way.
 
+### Screenshots
+
+![Screenshot from 2023-08-26 17-59-56](https://github.com/JohnEsleyer/BrainVault/assets/66754038/9343fb62-1b0a-4460-bb66-82b50b01f3c3)
+![Screenshot from 2023-08-26 17-33-23](https://github.com/JohnEsleyer/BrainVault/assets/66754038/a3d184f7-be47-428c-b343-619722cfe346)![Screenshot from 2023-08-26 17-33-29](https://github.com/JohnEsleyer/BrainVault/assets/66754038/64d8a4ec-eba8-432f-8f40-1e51c641ca8e)
+![Screenshot from 2023-08-26 17-33-40](https://github.com/JohnEsleyer/BrainVault/assets/66754038/ae86b241-d221-47a8-bb9d-bf8960b3cbc0)
+
+
+
 **Personal Note**: This application was primarily intended to function as my personal note-taking app. It drew inspiration from two well-known applications: Obsidian Notes and Anki. I created this app because I wanted to blend the markdown writing style from Obsidian with the process of crafting flashcards. Currently, I use this app along with the aforementioned note taking apps (Obsidian and Anki). I use BrainVault to save quick bits of information like code examples, word meanings, and brief facts. On the other hand, when I want to keep things that are all linked together, I opt for Obsidian.
 
 ---
@@ -83,4 +91,3 @@ I welcome any contributions from the open-source community to make this project 
 1. Fork the repository and create a new branch for your contribution.
 2. Write meaningful commit messages.
 3. Submit a pull request to the main branch of this repository.
-
