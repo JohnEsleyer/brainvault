@@ -60,7 +60,7 @@ You can add a two-sided section in your notes:
 - Web (In development)
 
 ---
-# Manual Installation
+# Installation
 ### Android
 Open the terminal and type the following
 ```
