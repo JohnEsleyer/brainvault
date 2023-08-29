@@ -232,7 +232,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                   onTap: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) {
-                                      var shuffledNotes = _notes;
+                                      var shuffledNotes = List<Map<String, dynamic>>.from(_notes);
                                       shuffledNotes.shuffle();
                                       return Study(notes: shuffledNotes);
                                     }));
