@@ -83,6 +83,10 @@ I haven't tested the application in windows yet because all my computers are run
 flutter build windows --release
 ```
 
+# Limitations
+- The application is still very slow.
+- Doesn't support Latex 
+
 # Contributing
 I welcome any contributions from the open-source community to make this project better. However, I must emphasize that a positive and respectful environment is paramount.  My lines of code aren't flawless, they reflect a work in progress. Many of them may not be fully optimized and lack a refined structure. Your collaboration and constructive input are valued as we collectively work towards improvement.
 
