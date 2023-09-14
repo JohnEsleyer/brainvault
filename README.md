@@ -20,7 +20,7 @@ BrainVault is an advance markdown-based note-taking application that serves as y
 
 ---
 ### How does the BrainVault organize notes?
-The app employes a streamlined organizational structure characterized by two fundamental tiers: subjects and topics, each housing a distinct level of content granularity. With subjects serving as overarching categories and topics providing subcategories within subjects, the hierarchy allows for a concise and manageable system. 
+The app employs a streamlined organizational structure characterized by two fundamental tiers: subjects and topics, each housing a distinct level of content granularity. With subjects serving as overarching categories and topics providing subcategories within subjects, the hierarchy allows for a concise and manageable system. 
 
 The conscious decision to limit the hierarchy to three levels aims to uphold efficiency and optimize the learning process by preventing the proliferation of intricate structures that could overshadow the core goal of assimilating information. This approach acknowledges the potential drawbacks of complex hierarchies, which can divert attention from studying and pose challenges in navigation as the structure expands. Consequently, the system underscores a judicious balance between organization and the primary objective of effective knowledge retention and acquisition.
 
