@@ -7,7 +7,7 @@
 </p>
 
 #  Introduction
-BrainVault is an advance markdown-based note-taking application that serves as your dedicated personal knowledge repository. With a focus on retention, this app sets itself apart by being more opinionated in its approach. BrainVault reimagines the concept of notes, treating them as flashcards rather than mere documents. Designed to store concise information snippets in a more simpler a way.
+An innovative note-taking application that combines the convenience of markdown-style writing with the functionality of a personal knowledge database presented in the form of flashcards.
 
 ### Screenshots
 
