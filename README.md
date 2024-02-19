@@ -7,7 +7,7 @@
 </p>
 
 #  Introduction
-An innovative note-taking application that combines the convenience of markdown-style writing with the functionality of a personal knowledge database presented in the form of flashcards.
+A note-taking application that combines the convenience of markdown-style writing with the functionality of a personal knowledge database presented in the form of flashcards. Designed for storing snippets of information for learning purposes.
 
 ### Screenshots
 
