@@ -9,14 +9,14 @@
 #  Introduction
 A note-taking application that combines the convenience of markdown-style writing with the functionality of a personal knowledge database presented in the form of flashcards. Designed for storing snippets of information for learning purposes.
 
+**Personal Note**: This application was primarily intended to function as my personal note-taking app. It drew inspiration from two well-known applications: Obsidian Notes and Anki. I created this app because I wanted to blend the markdown writing style from Obsidian with the process of crafting flashcards. Currently, I use this app along with the aforementioned note taking apps (Obsidian and Anki). I use BrainVault to save quick bits of information like code examples, word meanings, and brief facts. On the other hand, when I want to keep things that are all linked together, I opt for Obsidian.
+
+
 ### Screenshots
 
 ![Screenshot from 2023-08-26 17-59-56](https://github.com/JohnEsleyer/BrainVault/assets/66754038/9343fb62-1b0a-4460-bb66-82b50b01f3c3)
 ![Screenshot from 2023-08-26 17-33-23](https://github.com/JohnEsleyer/BrainVault/assets/66754038/a3d184f7-be47-428c-b343-619722cfe346)![Screenshot from 2023-08-26 17-33-29](https://github.com/JohnEsleyer/BrainVault/assets/66754038/64d8a4ec-eba8-432f-8f40-1e51c641ca8e)
 ![Screenshot from 2023-08-26 18-24-15](https://github.com/JohnEsleyer/BrainVault/assets/66754038/ffba4154-247b-48b7-9c83-9484b1d7be8e)
-
-
-**Personal Note**: This application was primarily intended to function as my personal note-taking app. It drew inspiration from two well-known applications: Obsidian Notes and Anki. I created this app because I wanted to blend the markdown writing style from Obsidian with the process of crafting flashcards. Currently, I use this app along with the aforementioned note taking apps (Obsidian and Anki). I use BrainVault to save quick bits of information like code examples, word meanings, and brief facts. On the other hand, when I want to keep things that are all linked together, I opt for Obsidian.
 
 ---
 ### How does the BrainVault organize notes?
